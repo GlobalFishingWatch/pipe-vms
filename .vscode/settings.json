@@ -1,0 +1,7 @@
+{
+  "python.analysis.extraPaths": [
+    "./packages/libs/logger",
+    "./packages/libs/utils",
+    "./packages/libs/bigquery"
+  ]
+}

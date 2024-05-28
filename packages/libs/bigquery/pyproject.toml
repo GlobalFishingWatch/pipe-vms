@@ -1,0 +1,38 @@
+[tool.coverage.run]
+branch = true
+source = [ "bigquery" ]
+
+[tool.coverage.report]
+exclude_lines = ['if TYPE_CHECKING:']
+show_missing = true
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report html:'../../../coverage/packages/libs/bigquery/html' --cov-report xml:'../../../coverage/packages/libs/bigquery/coverage.xml' --html='../../../reports/packages/libs/bigquery/unittests/html/index.html' --junitxml='../../../reports/packages/libs/bigquery/unittests/junit.xml'"
+
+[tool.poetry]
+name = "bigquery"
+version = "1.0.0"
+description = "BigQuery operations"
+authors = [ ]
+license = 'Proprietary'
+readme = 'README.md'
+
+  [[tool.poetry.packages]]
+  include = "bigquery"
+
+  [tool.poetry.dependencies]
+  python = ">=3.9,<=3.12.2"
+  google-cloud-bigquery = "^3.14.1"
+  jinja2 = "^3.1.2"
+
+  [tool.poetry.group.dev.dependencies]
+  autopep8 = "2.0.2"
+  flake8 = "6.0.0"
+  pytest = "7.3.1"
+  pytest-sugar = "0.9.7"
+  pytest-cov = "4.1.0"
+  pytest-html = "3.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

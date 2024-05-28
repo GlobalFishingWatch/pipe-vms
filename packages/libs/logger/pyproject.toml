@@ -1,0 +1,36 @@
+[tool.coverage.run]
+branch = true
+source = [ "logger" ]
+
+[tool.coverage.report]
+exclude_lines = ['if TYPE_CHECKING:']
+show_missing = true
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report html:'../../../coverage/packages/libs/logger/html' --cov-report xml:'../../../coverage/packages/libs/logger/coverage.xml' --html='../../../reports/packages/libs/logger/unittests/html/index.html' --junitxml='../../../reports/packages/libs/logger/unittests/junit.xml'"
+
+[tool.poetry]
+name = "logger"
+version = "1.0.0"
+description = "GFW Logger"
+authors = [ ]
+license = 'Proprietary'
+readme = 'README.md'
+
+  [[tool.poetry.packages]]
+  include = "logger"
+
+  [tool.poetry.dependencies]
+  python = ">=3.9,<=3.12.2"
+
+  [tool.poetry.group.dev.dependencies]
+  autopep8 = "2.0.2"
+  flake8 = "6.0.0"
+  pytest = "7.3.1"
+  pytest-sugar = "0.9.7"
+  pytest-cov = "4.1.0"
+  pytest-html = "3.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

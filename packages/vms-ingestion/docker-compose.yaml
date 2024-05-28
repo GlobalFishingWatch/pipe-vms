@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  vms_ingestion:
+    container_name: vms_ingestion
+    environment:
+      - GOOGLE_CLOUD_PROJECT=world-fishing-827
+    # command:
+    #   - --YYYYMMDD=20231219
+    #   - --source_base_vessel_identity=world-fishing-827.pipe_ais_v3_alpha_published.identity_base_vessel_info_match
+    #   - --source_ssvid_byyear=world-fishing-827.pipe_ais_v3_alpha_published.vi_ssvid_byyear
+    #   - --source_purse_seine_support_vessels_byyear=world-fishing-827.pipe_ais_v3_alpha_internal.purse_seine_support_vessels_byyear
+    #   - --destination_table_name=world-fishing-827.scratch_alvaro.test_pipe_3
+    #   - --destination_table_description="table description >>"
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: ./vms-ingestion/scheduler.Dockerfile
+    volumes:
+      - ~/.config/gcloud:/root/.config/gcloud
+      - ./assets:/app/builder/packages/vms-ingestion/assets
+      - ./common:/app/builder/packages/vms-ingestion/common
+      - ./vms_ingestion:/app/builder/packages/vms-ingestion/vms_ingestion
+      - ./tests:/app/builder/packages/vms-ingestion/tests
+      - ../libs:/app/builder/packages/libs
+
+volumes:
+  cloudsql-sockets:
