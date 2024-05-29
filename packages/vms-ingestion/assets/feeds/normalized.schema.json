@@ -157,9 +157,15 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "received_at",
+    "type": "TIMESTAMP",
+    "description": "The exact moment when this record was read/received in our platform (email, file, api call, etc..) from the source."
+  },  
+  {
+    "mode": "NULLABLE",
     "name": "ingested_at",
     "type": "TIMESTAMP",
-    "description": "The exact moment this record was read from the source."
+    "description": "The exact moment this record was ingested by us (GFW) this is when the raw record is stored in our raw BQ tables"
   },  
   {
     "mode": "NULLABLE",
