@@ -92,7 +92,7 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
                              )
 
     def read_source(self):
-        return ReadSource(source_query_template=self.source_query_template,
+        return ReadSource(source_query_template_path=self.source_query_path,
                           source_table=self.source,
                           date_range=(self.start_date, self.end_date),
                           labels=self.labels,

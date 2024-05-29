@@ -1,9 +1,15 @@
 import apache_beam as beam
+from jinja2 import Environment, FileSystemLoader
+
 import datetime as dt
 
+templates = Environment(
+    loader=FileSystemLoader(""),
+)
+
 class ReadSource(beam.PTransform):
-    def __init__(self, source_query_template, source_table, date_range, labels):
-        self.source_query_template = source_query_template
+    def __init__(self, source_query_template_path, source_table, date_range, labels):
+        self.source_query_template_path = source_query_template_path
         self.source_table = source_table
         self.start_date, self.end_date = date_range
         self.labels = labels
@@ -15,8 +21,9 @@ class ReadSource(beam.PTransform):
         )
 
     def read_source(self):
-        query =  self.source_query_template.format(
-            source_table=self.source_table,
+        query_template = templates.get_template(self.source_query_template_path)
+        query = query_template.render(
+            source=self.source_table,
             start_date=self.start_date.strftime("%Y-%m-%d"),
             end_date=self.end_date.strftime("%Y-%m-%d"),
         )
