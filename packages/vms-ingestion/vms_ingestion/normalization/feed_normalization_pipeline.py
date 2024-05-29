@@ -79,7 +79,8 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
         return self.__table_descriptor
 
     def ensure_table_exists(self):
-        return ensure_table_exists(self.table_descriptor)
+        self.__table_descriptor = ensure_table_exists(self.table_descriptor)
+        return self.__table_descriptor
 
     def clear_records(self):
         additional_conditions = [f'source_tenant = \'{self.feed}\'']
