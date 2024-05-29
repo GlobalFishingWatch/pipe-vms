@@ -116,7 +116,6 @@ def clear_records(table_id, date_field, date_from, date_to, additional_condition
             WHERE {date_field} BETWEEN '{date_from:%Y-%m-%d}' AND '{date_to:%Y-%m-%d}'
             AND {conditions}
     """
-    print(sql)
     query_job = client.query(sql,
                              bigquery.QueryJobConfig(
                                  use_legacy_sql=False,

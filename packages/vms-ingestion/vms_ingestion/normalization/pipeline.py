@@ -24,8 +24,6 @@ class NormalizationPipeline:
 
         start_date = parse_yyyy_mm_dd_param(params.start_date)
         end_date = parse_yyyy_mm_dd_param(params.end_date)
-        start_date_with_buffer = start_date - dt.timedelta(days=1)
-        date_range = (start_date_with_buffer, end_date)
         labels = list_to_dict(gCloudParams.labels)
 
         # Retrieve the feed pipeline for the given country
@@ -44,12 +42,6 @@ class NormalizationPipeline:
         (
             self.pipeline
             | feed_pipeline.read_source()
-            # | CalculateHourlyStats(slow_threshold=params.slow_threshold)
-            # | SlidingWindowByDay()
-            # | GroupLoiteringRanges(date_range=date_range)
-            # | CalculateLoiteringStats()
-            # | DiscardZeroLatLon()
-            # | DeduplicateMsgs()
             | feed_pipeline.normalize()
             | feed_pipeline.write_sink()
         )
