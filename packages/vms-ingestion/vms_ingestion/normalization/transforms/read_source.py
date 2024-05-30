@@ -1,11 +1,10 @@
 import apache_beam as beam
 from jinja2 import Environment, FileSystemLoader
 
-import datetime as dt
-
 templates = Environment(
     loader=FileSystemLoader(""),
 )
+
 
 class ReadSource(beam.PTransform):
     def __init__(self, source_query_template_path, source_table, date_range, labels):
@@ -27,8 +26,9 @@ class ReadSource(beam.PTransform):
             start_date=self.start_date.strftime("%Y-%m-%d"),
             end_date=self.end_date.strftime("%Y-%m-%d"),
         )
+        print(query)
         return beam.io.ReadFromBigQuery(
-            query = query,
+            query=query,
             use_standard_sql=True,
-            bigquery_job_labels = self.labels,
+            bigquery_job_labels=self.labels,
         )

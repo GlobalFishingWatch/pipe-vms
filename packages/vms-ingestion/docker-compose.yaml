@@ -17,6 +17,7 @@ services:
       dockerfile: ./vms-ingestion/scheduler.Dockerfile
     volumes:
       - ~/.config/gcloud:/root/.config/gcloud
+      - ./main.py:/app/builder/packages/vms-ingestion/main.py
       - ./assets:/app/builder/packages/vms-ingestion/assets
       - ./common:/app/builder/packages/vms-ingestion/common
       - ./vms_ingestion:/app/builder/packages/vms-ingestion/vms_ingestion

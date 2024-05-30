@@ -1,6 +1,7 @@
 from apache_beam.options.pipeline_options import PipelineOptions
 from common import validators
 
+
 class NormalizationOptions(PipelineOptions):
     @classmethod
     def _add_argparse_args(cls, parser):
@@ -44,5 +45,3 @@ class NormalizationOptions(PipelineOptions):
             action="store_true",
             help="Wait until the job finishes before returning.",
         )
-
-
