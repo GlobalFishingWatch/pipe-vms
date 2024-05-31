@@ -14,7 +14,11 @@ WORKDIR /app/builder/packages/vms-ingestion
 
 RUN pip3 install poetry && poetry install
 
-ENTRYPOINT ["poetry", "run", "python", "-u", "main.py"]
+# Set the entrypoint to the Apache Beam SDK launcher.
+ENTRYPOINT ["/opt/apache/beam/boot"]
+
+# Setup the entrypoint for quickly executing the pipelines
+# ENTRYPOINT ["poetry", "run", "python", "-u", "main.py"]
 
 
 
