@@ -101,7 +101,7 @@ gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:vms-ingestion-1.
 ### Add a new project
 
 ```
-npx nx generate @nxlv/python:poetry-project [project_name] \
+yarn nx generate @nxlv/python:poetry-project [project_name] \
 --projectType application \
 --description='Project description' \
 --packageName=[project-name] \
@@ -112,7 +112,7 @@ npx nx generate @nxlv/python:poetry-project [project_name] \
 Example:
 
 ```
-npx nx generate @nxlv/python:poetry-project vms_ingestion \
+yarn nx generate @nxlv/python:poetry-project vms_ingestion \
 --projectType application \
 --description='VMS Ingestion processes' \
 --packageName=vms-ingestion \
@@ -124,7 +124,7 @@ npx nx generate @nxlv/python:poetry-project vms_ingestion \
 ### Add a new library
 
 ```
-npx nx generate @nxlv/python:poetry-project [library_name] \
+yarn nx generate @nxlv/python:poetry-project [library_name] \
 --projectType library \
 --description='Library description' \
 --packageName=[library-name] \
@@ -135,7 +135,7 @@ npx nx generate @nxlv/python:poetry-project [library_name] \
 Example:
 
 ```
-npx nx generate @nxlv/python:poetry-project gfw-logger \
+yarn nx generate @nxlv/python:poetry-project gfw-logger \
 --projectType library \
 --description='Library to reuse the GFW Logger' \
 --packageName=gfw-logger \
@@ -150,13 +150,13 @@ In order to use a shared library in the projects, you need to link the library w
 the project.
 
 ```
-npx nx run [project-name]:add --name [lib-name] --local
+yarn nx run [project-name]:add --name [lib-name] --local
 
 ```
 
 Example:
 ```
-npx nx run publication-vms-ingestion:add --name libs-logger --local
+yarn nx run publication-vms-ingestion:add --name libs-logger --local
 
 ```
 
