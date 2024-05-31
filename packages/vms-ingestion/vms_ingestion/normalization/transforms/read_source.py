@@ -26,7 +26,6 @@ class ReadSource(beam.PTransform):
             start_date=self.start_date.strftime("%Y-%m-%d"),
             end_date=self.end_date.strftime("%Y-%m-%d"),
         )
-        print(query)
         return beam.io.ReadFromBigQuery(
             query=query,
             use_standard_sql=True,
