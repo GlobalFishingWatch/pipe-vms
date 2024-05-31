@@ -7,7 +7,7 @@ from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.config.chl_pipeline import CHLFeedPipeline
 
 
-class CHLFeedPipelineTest(unittest.TestCase):
+class TestCHLFeedPipeline(unittest.TestCase):
 
     options = build_pipeline_options_with_defaults(
         argv=['--country_code=chl',
@@ -64,16 +64,16 @@ class CHLFeedPipelineTest(unittest.TestCase):
     # Example test that tests the pipeline's transforms.
 
     def test_normalize(self):
-        with TestPipeline(options=CHLFeedPipelineTest.options) as p:
+        with TestPipeline(options=TestCHLFeedPipeline.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
-            input = p | beam.Create(CHLFeedPipelineTest.RECORDS)
+            input = p | beam.Create(TestCHLFeedPipeline.RECORDS)
 
             # Run ALL the pipeline's transforms (in this case, the CountWords Normalize transform).
             pipe = CHLFeedPipeline(source='', destination='', start_date='',
                                    end_date='', labels='')
             output = input | pipe.Normalize(pipe=pipe)
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, equal_to(CHLFeedPipelineTest.EXPECTED), label='CheckOutput')
+            assert_that(output, equal_to(TestCHLFeedPipeline.EXPECTED), label='CheckOutput')
 
         # The pipeline will run and verify the results.
