@@ -1,5 +1,6 @@
 from vms_ingestion.normalization import config
-from vms_ingestion.normalization.feed_normalization_pipeline import FeedNormalizationPipeline
+from vms_ingestion.normalization.feed_normalization_pipeline import \
+    FeedNormalizationPipeline
 
 
 class FeedPipelineFactory:

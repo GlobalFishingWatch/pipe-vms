@@ -16,7 +16,8 @@ class NormalizationOptions(PipelineOptions):
         required.add_argument(
             "--source",
             required=True,
-            help="Source table to read messages from, in the standard sql format PROJECT.DATASET.TABLE. Usually, this is the pre-thinned and filtered gfw_research.pipe_vXYZ table, such as gfw_research.pipe_v20201001.",
+            help="Source table to read messages from, in the standard sql format PROJECT.DATASET.TABLE. Usually, " +
+            "this is the pre-thinned and filtered gfw_research.pipe_vXYZ table, such as gfw_research.pipe_v20201001.",
         )
 
         required.add_argument(

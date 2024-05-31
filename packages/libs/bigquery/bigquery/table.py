@@ -1,5 +1,7 @@
 from typing import List
+
 from google.cloud import bigquery
+
 
 def create(
         query,
@@ -82,13 +84,13 @@ def get_default_table_description(
 ) -> str:
     description = f'''
 
-This table was generated using the next query: 
-{query_link}      
+This table was generated using the next query:
+{query_link}
 
 =============================================
 Sources:
 =============================================
-{sources} 
+{sources}
 
 =============================================
 More details or specifications (optional):
@@ -106,6 +108,7 @@ Research: {research_maintainer}
 
     return description
 
+
 def clear_records(table_id, date_field, date_from, date_to, additional_conditions: List[str] = []):
     print(f'Deleting records at table {table_id} between {date_from:%Y-%m-%d} and {date_to:%Y-%m-%d}')
     [project, dataset, table] = table_id.split('.')
@@ -120,10 +123,11 @@ def clear_records(table_id, date_field, date_from, date_to, additional_condition
                              bigquery.QueryJobConfig(
                                  use_legacy_sql=False,
                              )
-    )
+                             )
     result = query_job.result()
     print(f'Records at table {table_id} between {date_from:%Y-%m-%d} and {date_to:%Y-%m-%d} deleted')
     return result
+
 
 def ensure_table_exists(table):
     print(f'Ensuring table {table.table_id} exists')

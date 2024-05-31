@@ -1,5 +1,4 @@
 import apache_beam as beam
-import bigquery
 
 
 class WriteSink(beam.PTransform):

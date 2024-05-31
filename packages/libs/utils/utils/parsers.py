@@ -1,5 +1,6 @@
-import yaml
 import json
+
+import yaml
 
 
 def parse_yaml_from_string(yaml_string):
@@ -11,5 +12,3 @@ def parse_yaml_from_string(yaml_string):
 
 def parse_json_from_string(json_string):
     return json.loads(json_string)
-
-

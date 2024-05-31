@@ -49,5 +49,6 @@ def delete_if_exists(view_name):
 def get_default_view_description(table_name: str) -> str:
     return f'''
 This view points to the latest version of the {table_name} table.
-The table should be next to the view in the same dataset. If you want to get more information about the table schema or sources, please visit the table documentation.
+The table should be next to the view in the same dataset. If you want to get more information about the table schema
+or sources, please visit the table documentation.
     '''

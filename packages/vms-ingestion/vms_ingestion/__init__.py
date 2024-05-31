@@ -1,8 +1,8 @@
 """VMS Ingestion"""
 
-from typing import Any
 import importlib.metadata
 from pathlib import Path
+from typing import Any
 
 __package_version = "unknown"
 
