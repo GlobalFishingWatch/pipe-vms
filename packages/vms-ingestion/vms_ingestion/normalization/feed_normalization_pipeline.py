@@ -68,7 +68,7 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
                 schema=self.table_schema,
             )
             table.description = self.table_description
-            table.clustering_fields = ['timestamp_date']
+            table.clustering_fields = ['source_tenant', 'timestamp_date']
             table.time_partitioning = bigquery.table.TimePartitioning(
                 type_=bigquery.table.TimePartitioningType.MONTH,
                 field='timestamp',
@@ -137,7 +137,7 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
             "class_b_cs_flag": msg.get('class_b_cs_flag'),
             "received_at": msg.get('received_at'),
             "ingested_at": msg.get('ingested_at'),
-            "timestamp_date": msg["timestamp"][0:10],
+            "timestamp_date": datetime.date(msg["timestamp"]),
         }
 
     def get_unique_ssvid(self, ssvid):

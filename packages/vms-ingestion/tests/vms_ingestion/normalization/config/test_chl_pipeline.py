@@ -1,10 +1,11 @@
 import unittest
+from datetime import datetime
 
 import apache_beam as beam
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that, equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.config.chl_pipeline import CHLFeedPipeline
+from vms_ingestion.normalization.feeds.chl_pipeline import CHLFeedPipeline
 
 
 class TestCHLFeedPipeline(unittest.TestCase):
@@ -19,7 +20,7 @@ class TestCHLFeedPipeline(unittest.TestCase):
     # Our input data, which will make up the initial PCollection.
     RECORDS = [{"msgid": "863f7f163ce4fbd5ddfa4c86ec12eb8f",
                 "shipname": "AUSTRAL TRAVELER",
-                "timestamp": "2020-01-01 20:23:01+00:00",
+                "timestamp": datetime.fromisoformat("2020-01-01 20:23:01+00:00"),
                 "lat": -52.546,
                 "lon": -71.947,
                 "speed": 9.0,
@@ -40,7 +41,7 @@ class TestCHLFeedPipeline(unittest.TestCase):
                  'source_fleet': 'tanker',
                  'type': 'VMS',
                  'ssvid': 'chl|804dabc7243f9705d1903f8d30838d37',
-                 'timestamp': '2020-01-01 20:23:01+00:00',
+                 'timestamp': datetime.fromisoformat('2020-01-01 20:23:01+00:00'),
                  'lat': -52.546,
                  'lon': -71.947,
                  'speed': 9.0,
@@ -59,7 +60,7 @@ class TestCHLFeedPipeline(unittest.TestCase):
                  'class_b_cs_flag': None,
                  'received_at': None,
                  'ingested_at': None,
-                 'timestamp_date': '2020-01-01'}]
+                 'timestamp_date': datetime.date(datetime.fromisoformat('2020-01-01 20:23:01+00:00'))}]
 
     # Example test that tests the pipeline's transforms.
 
