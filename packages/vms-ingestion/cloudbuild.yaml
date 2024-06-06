@@ -8,17 +8,12 @@ steps:
         '--file',
         './packages/vms-ingestion/Dockerfile',
         '-t',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:$TAG_NAME',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion:$TAG_NAME',
         './packages',
       ]
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'push',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:$TAG_NAME',
-      ]
+
 
 images:
-  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:$TAG_NAME'
+  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion:$TAG_NAME'
 
 timeout: 900s
