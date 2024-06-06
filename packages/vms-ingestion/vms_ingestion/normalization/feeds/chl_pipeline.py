@@ -21,8 +21,7 @@ class CHLFeedPipeline(FeedNormalizationPipeline):
 
     def get_source_ssvid(self, msg):
         # Current ssvid TO_HEX(MD5(shipname)) as ssvid,
-        return msg['shipname']
-        # return md5(msg['shipname'].encode('utf-8')).hexdigest()
+        return md5(msg['shipname'].encode('utf-8')).hexdigest()
 
     def mapToNormalizedFeedSpecificMessage(self, msg):
         result = {
