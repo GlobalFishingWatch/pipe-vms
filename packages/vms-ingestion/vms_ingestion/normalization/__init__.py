@@ -1,9 +1,12 @@
-import logging
+from apache_beam.options.pipeline_options import (PipelineOptions,
+                                                  StandardOptions)
 from apache_beam.runners import PipelineState
-from apache_beam.options.pipeline_options import PipelineOptions
-from apache_beam.options.pipeline_options import StandardOptions
+from logger import logger
 from vms_ingestion.normalization.options import NormalizationOptions
 from vms_ingestion.normalization.pipeline import NormalizationPipeline
+
+logger.setup_logger(1)
+logging = logger.get_logger()
 
 
 def build_pipeline_options_with_defaults(argv):
