@@ -61,7 +61,7 @@
         "{workspaceRoot}/coverage/packages/vms-ingestion"
       ],
       "options": {
-        "command": "poetry run pytest tests/",
+        "command": "poetry run pytest -s tests/",
         "cwd": "packages/vms-ingestion"
       }
     }
