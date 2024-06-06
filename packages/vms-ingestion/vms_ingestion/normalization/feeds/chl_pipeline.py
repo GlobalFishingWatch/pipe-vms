@@ -1,4 +1,5 @@
-import apache_beam as beam
+from hashlib import md5
+
 from vms_ingestion.normalization.feed_normalization_pipeline import \
     FeedNormalizationPipeline
 
@@ -18,23 +19,17 @@ class CHLFeedPipeline(FeedNormalizationPipeline):
                          labels,
                          feed='chl')
 
+    def get_source_ssvid(self, msg):
+        # Current ssvid TO_HEX(MD5(shipname)) as ssvid,
+        return msg['shipname']
+        # return md5(msg['shipname'].encode('utf-8')).hexdigest()
+
     def mapToNormalizedFeedSpecificMessage(self, msg):
         result = {
             **msg,
             **{
+                "source": f"chile_vms_{msg['source_fleet']}",
                 "source_provider": 'SERNAPESCA',
             }
         }
         return result
-
-    class Normalize(beam.PTransform):
-        def __init__(self, pipe, label=None) -> None:
-            super().__init__(label)
-            self.pipe = pipe
-
-        def expand(self, pcoll):
-            return (
-                pcoll
-                | beam.Map(self.pipe.mapToNormalizedMessage)
-                | beam.Map(self.pipe.mapToNormalizedFeedSpecificMessage)
-            )

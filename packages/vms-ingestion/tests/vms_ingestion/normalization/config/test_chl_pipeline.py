@@ -2,8 +2,10 @@ import unittest
 from datetime import datetime
 
 import apache_beam as beam
+from apache_beam import pvalue
 from apache_beam.testing.test_pipeline import TestPipeline
-from apache_beam.testing.util import assert_that, equal_to
+from apache_beam.testing.util import assert_that
+from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.chl_pipeline import CHLFeedPipeline
 
@@ -18,29 +20,27 @@ class TestCHLFeedPipeline(unittest.TestCase):
               '--end_date=""'])
 
     # Our input data, which will make up the initial PCollection.
-    RECORDS = [{"msgid": "863f7f163ce4fbd5ddfa4c86ec12eb8f",
-                "shipname": "AUSTRAL TRAVELER",
-                "timestamp": datetime.fromisoformat("2020-01-01 20:23:01+00:00"),
-                "lat": -52.546,
-                "lon": -71.947,
-                "speed": 9.0,
-                "course": 37.0,
-                "ssvid": "804dabc7243f9705d1903f8d30838d37",
-                "callsign": "ABC123",
-                "source": "chile_vms_tanker",
-                "fleet": "tanker"}
-               ]
+    RECORDS = [{
+        "shipname": "AUSTRAL TRAVELER",
+        "timestamp": datetime.fromisoformat("2020-01-01 20:23:01+00:00"),
+        "lat": -52.546,
+        "lon": -71.947,
+        "speed": 9.0,
+        "course": 37.0,
+        "callsign": "ABC123",
+        "fleet": "some_fleet"},
+    ]
 
     # Our output data, which is the expected data that the final PCollection must match.
-    EXPECTED = [{'msgid': '863f7f163ce4fbd5ddfa4c86ec12eb8f',
-                 'source': 'chile_vms_tanker',
+    EXPECTED = [{'msgid': '509d71931fe052a70f8be6aef6a6bfaf',
+                 'source': 'chile_vms_some_fleet',
                  'source_type': 'VMS',
                  'source_tenant': 'CHL',
                  'source_provider': 'SERNAPESCA',
-                 'source_ssvid': '804dabc7243f9705d1903f8d30838d37',
-                 'source_fleet': 'tanker',
+                 'source_ssvid': 'b84fe9283540c8937a28aec73f255313',
+                 'source_fleet': 'some_fleet',
                  'type': 'VMS',
-                 'ssvid': 'chl|804dabc7243f9705d1903f8d30838d37',
+                 'ssvid': 'chl|b84fe9283540c8937a28aec73f255313',
                  'timestamp': datetime.fromisoformat('2020-01-01 20:23:01+00:00'),
                  'lat': -52.546,
                  'lon': -71.947,
@@ -70,11 +70,13 @@ class TestCHLFeedPipeline(unittest.TestCase):
             # Create a PCollection from the RECORDS static input data.
             input = p | beam.Create(TestCHLFeedPipeline.RECORDS)
 
-            # Run ALL the pipeline's transforms (in this case, the CountWords Normalize transform).
+            # Run ALL the pipeline's transforms (in this case, the Normalize transform).
             pipe = CHLFeedPipeline(source='', destination='', start_date='',
                                    end_date='', labels='')
-            output = input | pipe.Normalize(pipe=pipe)
-            # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, equal_to(TestCHLFeedPipeline.EXPECTED), label='CheckOutput')
+            output: pvalue.PCollection = (
+                input
+                | pipe.Normalize(pipe=pipe)
+            )
 
-        # The pipeline will run and verify the results.
+            # Assert that the output PCollection matches the EXPECTED data.
+            assert_that(output, pcol_equal_to(TestCHLFeedPipeline.EXPECTED), label='CheckOutput')

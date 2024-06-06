@@ -1,56 +1,15 @@
 #standardsql
-WITH
-
-###
-### Apply basic transformations to the Panama VMS positions.
-###
-raw_vms_positions_normalized AS (
-  SELECT
-    shipname,
-    timestamp as timestamp,
-    lat,
-    lon,
-    speed,
-    course,
-    TO_HEX(MD5(shipname)) as ssvid,
-    IF(callsign != "", callsign, NULL) callsign,
-    CONCAT("chile_vms_", fleet) as source,
-    fleet,
-  FROM
-    `{{ source }}`
-  WHERE
-    DATE(timestamp) BETWEEN '{{ start_date }}' and '{{ end_date }}'
-  GROUP BY 1,2,3,4,5,6,7,8,9,10
-),
-
-###
-### Generate a message id for every message of the VMS data.
-###
-raw_positionsn_normalized_with_msgid as(
-      SELECT
-      #collection_type, msg_type, timestamp, lat, lon, imo, name, callsign
-      TO_HEX( MD5 (
-        format("%s|%t|%f|%f|%s|%s",
-            source,
-            timestamp,
-            lat,
-            lon,
-            IFNULL(TRIM(TRIM(shipname)),""),
-            IFNULL(TRIM(TRIM(callsign)),"")
-      ))) as msgid,
-      *
-     FROM
-        raw_vms_positions_normalized
-     WHERE
-        ssvid IS NOT NULL
-   )
-
-
-
-###
-### Final Query with message IDs and the normalized values.
-###
 SELECT
-  *
+  shipname,
+  timestamp as timestamp,
+  lat,
+  lon,
+  speed,
+  course,
+  callsign,
+  fleet,
 FROM
-    raw_positionsn_normalized_with_msgid
+  `{{ source }}`
+WHERE
+  DATE(timestamp) BETWEEN '{{ start_date }}' and '{{ end_date }}'
+GROUP BY 1,2,3,4,5,6,7,8

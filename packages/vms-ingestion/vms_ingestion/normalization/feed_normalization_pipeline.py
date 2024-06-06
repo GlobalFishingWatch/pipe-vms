@@ -5,6 +5,8 @@ from bigquery import query
 from bigquery.table import clear_records, ensure_table_exists
 from google.cloud import bigquery
 from vms_ingestion import __getattr__
+from vms_ingestion.normalization.transforms.calculate_msgid import \
+    get_message_id
 from vms_ingestion.normalization.transforms.read_source import ReadSource
 from vms_ingestion.normalization.transforms.write_sink import WriteSink
 
@@ -109,15 +111,14 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
 
     def mapToNormalizedMessage(self, msg):
         return {
-            "msgid": msg["msgid"],
-            "source": msg["source"],
+            "source": msg.get("source"),
             "source_type": "VMS",
-            "source_tenant": f'{self.feed.upper()}',
+            "source_tenant": self.feed.upper(),
             "source_provider": msg.get("source_provider"),
-            "source_ssvid": msg["ssvid"],
+            "source_ssvid": self.get_source_ssvid(msg),
             "source_fleet": msg.get("fleet"),
             "type": msg.get("type", "VMS"),
-            "ssvid": self.get_unique_ssvid(msg["ssvid"]),
+            "ssvid": self.get_unique_ssvid(msg),
             "timestamp": msg["timestamp"],
             "lat": msg["lat"],
             "lon": msg["lon"],
@@ -125,7 +126,7 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
             "course": msg.get("course"),
             "heading": msg.get("heading"),
             "shipname": msg["shipname"],
-            "callsign": msg["callsign"],
+            "callsign": msg["callsign"] if msg["callsign"] else None,
             "destination": msg.get("destination"),
             "imo": msg.get("imo"),
             "shiptype": msg.get("shiptype"),
@@ -140,8 +141,27 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
             "timestamp_date": datetime.date(msg["timestamp"]),
         }
 
-    def get_unique_ssvid(self, ssvid):
-        return f'{self.feed}|{ssvid}'
+    def mapToNormalizedFeedSpecificMessage(self, msg):
+        return msg
+
+    def assignMessageId(self, msg):
+        result = {
+            **msg,
+            "msgid": get_message_id(msg["source"],
+                                    msg["timestamp"],
+                                    msg["lat"],
+                                    msg["lon"],
+                                    msg["shipname"],
+                                    msg["callsign"])
+
+        }
+        return result
+
+    def get_source_ssvid(self, msg):
+        return msg.get('ssvid')
+
+    def get_unique_ssvid(self, msg):
+        return f'{self.feed}|{self.get_source_ssvid(msg)}'
 
     class Normalize(beam.PTransform):
         def __init__(self, pipe, label=None) -> None:
@@ -152,6 +172,8 @@ Created by pipe-vms-normalization: {__getattr__('version')}.
             return (
                 pcoll
                 | beam.Map(self.pipe.mapToNormalizedMessage)
+                | beam.Map(self.pipe.mapToNormalizedFeedSpecificMessage)
+                | beam.Map(self.pipe.assignMessageId)
             )
 
     def normalize(self):
