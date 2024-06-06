@@ -54,3 +54,5 @@ nx-cloud.env
 commands
 
 __pycache__/
+
+.vscode/
