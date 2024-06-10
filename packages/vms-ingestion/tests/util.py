@@ -46,7 +46,7 @@ def diff_dicts(left, right):
         # avoid small diffs far apart by smooshing them up to the left
         smallest_left = pformat(left, indent=TABSIZE, width=1).splitlines()
         smallest_right = pformat(right, indent=TABSIZE, width=1).splitlines()
-        max_side = max(len(l) + 1 for l in smallest_left + smallest_right)
+        max_side = max(len(ln) + 1 for ln in smallest_left + smallest_right)
         if (max_side * 2 + MARGINS) < COLS:
             diff_cols = max_side * 2 + GUTTER
             pretty_left = pformat(left, indent=TABSIZE, width=max_side).splitlines()
