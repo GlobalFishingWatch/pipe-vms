@@ -1,0 +1,25 @@
+{
+  "name": "pipe-vms",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "affected:main": "npx nx print-affected --type=app --select=projects --base=origin/main~1 --plain > affected-projects.txt",
+    "test-all": "npx nx run-many --target=test",
+    "test-affected": "npx nx run-many --target=test --projects=$(cat affected-projects.txt)",
+    "test-utils": "npx nx test libs-utils",
+    "test-logger": "npx nx test libs-logger"
+  },
+  "private": true,
+  "devDependencies": {
+    "@nx/devkit": "^19.2.2",
+    "@nxlv/python": "^18.1.0",
+    "nx": "^19.2.2",
+    "nx-cloud": "^19.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "github-release-from-changelog": "^2.1.1"
+  }
+}

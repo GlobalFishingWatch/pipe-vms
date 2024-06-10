@@ -1,0 +1,19 @@
+steps:
+
+  # Push production image to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '--file',
+        './packages/vms-ingestion/Dockerfile',
+        '-t',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion:$TAG_NAME',
+        './packages',
+      ]
+
+
+images:
+  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion:$TAG_NAME'
+
+timeout: 900s

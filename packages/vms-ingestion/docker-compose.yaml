@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  vms_ingestion:
+    container_name: vms_ingestion
+    environment:
+      - GOOGLE_CLOUD_PROJECT=world-fishing-827
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: ./vms-ingestion/Dockerfile
+    entrypoint: "./scheduler.sh"
+    volumes:
+      - ~/.config/gcloud:/root/.config/gcloud
+      - ./scheduler.sh:/app/builder/packages/vms-ingestion/scheduler.sh
+      - ./main.py:/app/builder/packages/vms-ingestion/main.py
+      - ./assets:/app/builder/packages/vms-ingestion/assets
+      - ./common:/app/builder/packages/vms-ingestion/common
+      - ./vms_ingestion:/app/builder/packages/vms-ingestion/vms_ingestion
+      - ./tests:/app/builder/packages/vms-ingestion/tests
+      - ../libs:/app/builder/packages/libs
+
+volumes:
+  cloudsql-sockets:
