@@ -56,7 +56,7 @@ class TestCRIFeedPipeline(unittest.TestCase):
                  'lat': 9.9798,
                  'length': None,
                  'lon': -84.8221,
-                 'msgid': '7a3fdc33766f6548474c81ec59f17c31',
+                 'msgid': 'e1d1897dec6a51ccafbe71aac7a3272b',
                  'received_at': None,
                  'receiver': None,
                  'receiver_type': None,

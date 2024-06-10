@@ -43,7 +43,7 @@ class TestCHLFeedPipeline(unittest.TestCase):
     ]
 
     # Our output data, which is the expected data that the final PCollection must match.
-    EXPECTED = [{'msgid': '509d71931fe052a70f8be6aef6a6bfaf',
+    EXPECTED = [{'msgid': '93a2a54787fd1275f57d30bc22c4900d',
                  'source': 'chile_vms_some_fleet',
                  'source_type': 'VMS',
                  'source_tenant': 'CHL',

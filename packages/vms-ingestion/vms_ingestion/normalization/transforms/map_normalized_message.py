@@ -48,8 +48,8 @@ class MapNormalizedMessage(beam.PTransform):
         return (
             pcoll
             | self.map_normalized_message()
-            | self.calculate_message_id()
             | self.calculate_ssvid()
+            | self.calculate_message_id()
         )
 
     def map_normalized_message(self):
@@ -60,12 +60,14 @@ class MapNormalizedMessage(beam.PTransform):
                                                            ))
 
     def calculate_message_id(self):
-        return beam.Map(lambda msg: dict(**msg, msgid=get_message_id(msg["source"],
-                                                                     msg["timestamp"],
-                                                                     msg["lat"],
-                                                                     msg["lon"],
-                                                                     msg["shipname"],
-                                                                     msg["callsign"])))
+        return beam.Map(lambda msg: dict(**msg, msgid=get_message_id(timestamp=msg["timestamp"],
+                                                                     lat=msg["lat"],
+                                                                     lon=msg["lon"],
+                                                                     ssvid=msg["ssvid"],
+                                                                     fleet=msg.get("fleet"),
+                                                                     speed=msg.get("speed"),
+                                                                     course=msg.get("course"),
+                                                                     )))
 
     def calculate_ssvid(self):
         return beam.Map(lambda msg: dict(**msg, ssvid=encode_ssvid(country=msg["source_tenant"],
