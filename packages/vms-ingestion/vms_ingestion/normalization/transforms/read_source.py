@@ -1,14 +1,23 @@
 import apache_beam as beam
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import BaseLoader, Environment
 
 templates = Environment(
-    loader=FileSystemLoader(""),
+    loader=BaseLoader,
 )
+
+SOURCE_QUERY_TEMPLATE = """
+    SELECT
+      DISTINCT *
+    FROM
+      `{{source_table}}`
+    WHERE
+      DATE({{source_timestamp_field}}) BETWEEN '{{start_date}}' AND '{{end_date}}'
+"""
 
 
 class ReadSource(beam.PTransform):
-    def __init__(self, source_query_template_path, source_table, date_range, labels):
-        self.source_query_template_path = source_query_template_path
+    def __init__(self, source_table, source_timestamp_field, date_range, labels):
+        self.source_timestamp_field = source_timestamp_field
         self.source_table = source_table
         self.start_date, self.end_date = date_range
         self.labels = labels
@@ -20,9 +29,10 @@ class ReadSource(beam.PTransform):
         )
 
     def read_source(self):
-        query_template = templates.get_template(self.source_query_template_path)
+        query_template = templates.from_string(SOURCE_QUERY_TEMPLATE)
         query = query_template.render(
-            source=self.source_table,
+            source_table=self.source_table,
+            source_timestamp_field=self.source_timestamp_field,
             start_date=self.start_date.strftime("%Y-%m-%d"),
             end_date=self.end_date.strftime("%Y-%m-%d"),
         )
