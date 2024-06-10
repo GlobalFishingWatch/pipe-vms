@@ -1,2 +1,2 @@
 #!/bin/sh
-poetry run python -u main.py
+poetry run python -u main.py "$@"

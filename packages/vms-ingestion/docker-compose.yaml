@@ -11,6 +11,7 @@ services:
     entrypoint: "./scheduler.sh"
     volumes:
       - ~/.config/gcloud:/root/.config/gcloud
+      - ./scheduler.sh:/app/builder/packages/vms-ingestion/scheduler.sh
       - ./main.py:/app/builder/packages/vms-ingestion/main.py
       - ./assets:/app/builder/packages/vms-ingestion/assets
       - ./common:/app/builder/packages/vms-ingestion/common
