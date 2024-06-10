@@ -11,9 +11,9 @@
   },
   "private": true,
   "devDependencies": {
-    "@nx/devkit": "^19.1.1",
-    "@nxlv/python": "^16.3.1",
-    "nx": "16.9.1",
+    "@nx/devkit": "^19.2.2",
+    "@nxlv/python": "^18.1.0",
+    "nx": "^19.2.2",
     "nx-cloud": "^19.0.0"
   },
   "workspaces": [
