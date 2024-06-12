@@ -22,11 +22,11 @@ def table_schema():
     return query.get_schema('assets/feeds/normalized.schema.json')
 
 
-def table_descriptor(destination, labels):
+def table_descriptor(destination, labels, schema=table_schema()):
 
     table = bigquery.Table(
         destination,
-        schema=table_schema(),
+        schema=schema,
     )
     table.description = table_description()
     table.clustering_fields = ['source_tenant', 'timestamp_date']
