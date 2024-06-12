@@ -4,7 +4,8 @@ import apache_beam as beam
 from apache_beam.options.pipeline_options import GoogleCloudOptions
 from bigquery.table import clear_records, ensure_table_exists
 from vms_ingestion.normalization.options import NormalizationOptions
-from vms_ingestion.normalization.transforms.write_sink import table_descriptor
+from vms_ingestion.normalization.transforms.write_sink import (
+    table_descriptor, table_schema)
 
 
 def parse_yyyy_mm_dd_param(value):
@@ -30,10 +31,14 @@ class NormalizationPipeline:
         self.end_date = parse_yyyy_mm_dd_param(params.end_date)
         self.labels = list_to_dict(gCloudParams.labels)
 
+        self.table_schema = table_schema()
+        self.output_fields = [field['name'] for field in self.table_schema]
+
         if (self.destination):
             # Ensure output table exists
             ensure_table_exists(table=table_descriptor(destination=self.destination,
-                                                       labels=self.labels))
+                                                       labels=self.labels,
+                                                       schema=self.table_schema,))
 
             # Clear records on the given period and country (feed)
             clear_records(table_id=self.destination,

@@ -10,6 +10,8 @@ from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.chl_pipeline import CHLFeedPipeline
 from vms_ingestion.normalization.transforms.map_normalized_message import \
     MapNormalizedMessage
+from vms_ingestion.normalization.transforms.pick_output_fields import \
+    PickOutputFields
 
 
 class FakePTransform(beam.PTransform):
@@ -95,6 +97,8 @@ class TestCHLFeedPipeline(unittest.TestCase):
                 | MapNormalizedMessage(feed=pipe.feed,
                                        source_provider=pipe.source_provider,
                                        source_format=pipe.source_format)
+                | PickOutputFields(fields=[f'{field}' for field in pipe.output_fields])
+
             )
 
             # Assert that the output PCollection matches the EXPECTED data.

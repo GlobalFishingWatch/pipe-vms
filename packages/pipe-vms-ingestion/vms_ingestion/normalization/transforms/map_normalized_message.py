@@ -8,10 +8,12 @@ from vms_ingestion.normalization.transforms.calculate_ssvid import encode_ssvid
 
 def map_normalized_message(msg, feed, source_provider, source_format):
     result = {
+        **msg,
         "source_type": "VMS",
         "source_tenant": feed.upper(),
         "source_provider": source_provider,
         "source_fleet": msg.get("fleet"),
+        "source_ssvid": msg.get("internal_id"),
         "type": msg.get("type", "VMS"),
         "timestamp": msg["timestamp"],
         "lat": msg["lat"],
@@ -60,18 +62,20 @@ class MapNormalizedMessage(beam.PTransform):
                                                            ))
 
     def calculate_message_id(self):
-        return beam.Map(lambda msg: dict(**msg, msgid=get_message_id(timestamp=msg["timestamp"],
-                                                                     lat=msg["lat"],
-                                                                     lon=msg["lon"],
-                                                                     ssvid=msg["ssvid"],
-                                                                     fleet=msg.get("fleet"),
-                                                                     speed=msg.get("speed"),
-                                                                     course=msg.get("course"),
-                                                                     )))
+        return beam.Map(lambda msg: {**msg,
+                                     "msgid": get_message_id(timestamp=msg["timestamp"],
+                                                             lat=msg["lat"],
+                                                             lon=msg["lon"],
+                                                             ssvid=msg["ssvid"],
+                                                             fleet=msg.get("fleet"),
+                                                             speed=msg.get("speed"),
+                                                             course=msg.get("course"),
+                                                             )})
 
     def calculate_ssvid(self):
-        return beam.Map(lambda msg: dict(**msg, ssvid=encode_ssvid(country=msg["source_tenant"],
-                                                                   internal_id=msg.get("internal_id"),
-                                                                   shipname=msg.get("shipname"),
-                                                                   callsign=msg.get("callsign"),
-                                                                   licence=msg.get("licence"))))
+        return beam.Map(lambda msg: {**msg,
+                                     "ssvid": encode_ssvid(country=msg["source_tenant"],
+                                                           internal_id=msg.get("internal_id"),
+                                                           shipname=msg.get("shipname"),
+                                                           callsign=msg.get("callsign"),
+                                                           licence=msg.get("licence"))})

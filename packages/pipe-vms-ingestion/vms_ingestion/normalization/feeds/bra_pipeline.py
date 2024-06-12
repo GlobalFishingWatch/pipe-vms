@@ -5,6 +5,8 @@ from vms_ingestion.normalization.transforms.convert_speed import \
     ConvertSpeedKPHToKT
 from vms_ingestion.normalization.transforms.map_normalized_message import \
     MapNormalizedMessage
+from vms_ingestion.normalization.transforms.pick_output_fields import \
+    PickOutputFields
 from vms_ingestion.normalization.transforms.read_source import ReadSource
 from vms_ingestion.normalization.transforms.write_sink import WriteSink
 
@@ -30,6 +32,7 @@ class BRAFeedPipeline(NormalizationPipeline):
             | MapNormalizedMessage(feed=self.feed,
                                    source_provider=self.source_provider,
                                    source_format=self.source_format)
+            | PickOutputFields(fields=[f'{field}' for field in self.output_fields])
             | "Write Sink" >> write_sink(destination=self.destination,
                                          labels=self.labels,)
         )

@@ -7,7 +7,11 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.feeds.cri_pipeline import CRIFeedPipeline
+from vms_ingestion.normalization.feeds.bra_pipeline import BRAFeedPipeline
+from vms_ingestion.normalization.transforms.bra_map_source_message import \
+    BRAMapSourceMessage
+from vms_ingestion.normalization.transforms.convert_speed import \
+    ConvertSpeedKPHToKT
 from vms_ingestion.normalization.transforms.map_normalized_message import \
     MapNormalizedMessage
 from vms_ingestion.normalization.transforms.pick_output_fields import \
@@ -23,68 +27,67 @@ class FakePTransform(beam.PTransform):
         return (pcoll)
 
 
-class TestCRIFeedPipeline(unittest.TestCase):
+class TestBRAFeedPipeline(unittest.TestCase):
 
     options = build_pipeline_options_with_defaults(
-        argv=['--country_code=cri',
+        argv=['--country_code=bra',
               '--source=""',
               '--destination=""',
               '--start_date=""',
               '--end_date=""'])
 
     # Our input data, which will make up the initial PCollection.
-    RECORDS = [{"timestamp": datetime.fromisoformat("2024-05-01 12:15:01+00:00"),
-                "callsign": None,
-                "shipname": "K\u0027IN",
-                "internal_id": None,
-                "external_id": "P-10371",
-                "registry_number": None,
-                "lat": 9.9798,
-                "lon": -84.8221,
-                "speed": 0.0,
-                "course": 0.0,
-                "flag": None,
-                "fleet": "sardineros"
-                }]
+    RECORDS = [{
+        "datahora": datetime.fromisoformat("2024-05-01 05:35:45+00:00"),
+        "ID": "4961089",
+        "mID": "181473822",
+        "codMarinha": "210180889PA",
+        "lat": "-1,21861112117767",
+        "lon": "-48,4911117553711",
+        "curso": "192",
+        "nome": "Cibradep X",
+        "speed": "17"
+    },
+    ]
 
     # Our output data, which is the expected data that the final PCollection must match.
-    EXPECTED = [{'callsign': None,
-                 'class_b_cs_flag': None,
-                 'course': 0.0,
-                 'destination': None,
-                 'heading': None,
-                 'imo': None,
-                 'ingested_at': None,
-                 'lat': 9.9798,
-                 'length': None,
-                 'lon': -84.8221,
-                 'msgid': 'e1d1897dec6a51ccafbe71aac7a3272b',
-                 'received_at': None,
-                 'receiver': None,
-                 'receiver_type': None,
-                 'shipname': "K'IN",
-                 'shiptype': None,
-                 'source': 'costarica_vms_sardineros',
-                 'source_fleet': 'sardineros',
-                 'source_provider': 'INCOPESCA',
-                 'source_tenant': 'CRI',
+    EXPECTED = [{'msgid': '181473822',
+                 'source': 'ONYXSAT_BRAZIL_VMS',
                  'source_type': 'VMS',
-                 'speed': 0.0,
-                 'ssvid': "CRI|s:K'IN",
-                 'status': None,
-                 'timestamp': datetime.fromisoformat("2024-05-01 12:15:01+00:00"),
-                 'timestamp_date': datetime.date(datetime.fromisoformat("2024-05-01 12:15:01+00:00")),
+                 'source_tenant': 'BRA',
+                 'source_provider': 'ONYXSAT',
+                 'source_fleet': 'some_fleet',
+                 'source_ssvid': '4961089',
                  'type': 'VMS',
+                 'ssvid': 'BRA|i:4961089',
+                 'timestamp': datetime.fromisoformat('2024-05-01 05:35:45+00:00'),
+                 'lat': -1.21861112117767,
+                 'lon': -48.4911117553711,
+                 'speed': 9.1792656587473,
+                 'course': 192.0,
+                 'heading': None,
+                 'shipname': 'Cibradep X',
+                 'callsign': '',
+                 'destination': None,
+                 'imo': None,
+                 'shiptype': 'fishing',
+                 'receiver_type': None,
+                 'receiver': None,
+                 'length': None,
                  'width': None,
-                 },]
+                 'status': None,
+                 'class_b_cs_flag': None,
+                 'received_at': None,
+                 'ingested_at': None,
+                 'timestamp_date': datetime.date(datetime.fromisoformat('2024-05-01 05:35:45+00:00'))}]
 
     # Example test that tests the pipeline's transforms.
     def test_normalize(self):
-        with TestPipeline(options=TestCRIFeedPipeline.options) as p:
+        with TestPipeline(options=TestBRAFeedPipeline.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
-            input = p | beam.Create(TestCRIFeedPipeline.RECORDS)
-            ops = TestCRIFeedPipeline.options.from_dictionary(dict(country_code='cri',
+            input = p | beam.Create(TestBRAFeedPipeline.RECORDS)
+            ops = TestBRAFeedPipeline.options.from_dictionary(dict(country_code='bra',
                                                                    source='',
                                                                    destination='',
                                                                    start_date='2021-01-01',
@@ -92,18 +95,20 @@ class TestCRIFeedPipeline(unittest.TestCase):
                                                                    labels='foo=bar,fobar=foobar'))
 
             # Run ALL the pipeline's transforms (in this case, the Normalize transform).
-            pipe = CRIFeedPipeline(ops,
+            pipe = BRAFeedPipeline(ops,
                                    read_source=FakePTransform,
                                    write_sink=FakePTransform,
                                    )
+
             output: pvalue.PCollection = (
                 input
+                | BRAMapSourceMessage()
+                | ConvertSpeedKPHToKT()
                 | MapNormalizedMessage(feed=pipe.feed,
                                        source_provider=pipe.source_provider,
                                        source_format=pipe.source_format)
                 | PickOutputFields(fields=[f'{field}' for field in pipe.output_fields])
-
             )
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, pcol_equal_to(TestCRIFeedPipeline.EXPECTED), label='CheckOutput')
+            assert_that(output, pcol_equal_to(TestBRAFeedPipeline.EXPECTED), label='CheckOutput')
