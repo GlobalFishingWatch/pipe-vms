@@ -45,12 +45,13 @@ class TestCHLFeedPipeline(unittest.TestCase):
     ]
 
     # Our output data, which is the expected data that the final PCollection must match.
-    EXPECTED = [{'msgid': '93a2a54787fd1275f57d30bc22c4900d',
+    EXPECTED = [{'msgid': '1d4e4dde1f0178df0f396c14587feb04',
                  'source': 'chile_vms_some_fleet',
                  'source_type': 'VMS',
                  'source_tenant': 'CHL',
                  'source_provider': 'SERNAPESCA',
                  'source_fleet': 'some_fleet',
+                 'source_ssvid': None,
                  'type': 'VMS',
                  'ssvid': 'CHL|s:AUSTRAL TRAVELER|c:ABC123',
                  'timestamp': datetime.fromisoformat('2020-01-01 20:23:01+00:00'),
