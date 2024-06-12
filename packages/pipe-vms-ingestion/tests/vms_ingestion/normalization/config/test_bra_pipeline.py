@@ -39,14 +39,14 @@ class TestBRAFeedPipeline(unittest.TestCase):
     # Our input data, which will make up the initial PCollection.
     RECORDS = [{
         "datahora": datetime.fromisoformat("2024-05-01 05:35:45+00:00"),
-        "ID": "4961089",
+        "ID": 4961089,
         "mID": "181473822",
         "codMarinha": "210180889PA",
         "lat": "-1,21861112117767",
         "lon": "-48,4911117553711",
-        "curso": "192",
+        "curso": 192,
         "nome": "Cibradep X",
-        "speed": "17"
+        "speed": 17
     },
     ]
 
