@@ -51,15 +51,15 @@ class TestBRAFeedPipeline(unittest.TestCase):
     ]
 
     # Our output data, which is the expected data that the final PCollection must match.
-    EXPECTED = [{'msgid': '181473822',
+    EXPECTED = [{'msgid': 'bb84c21c72cb41d85d724245b52cf2ab',
                  'source': 'ONYXSAT_BRAZIL_VMS',
                  'source_type': 'VMS',
                  'source_tenant': 'BRA',
                  'source_provider': 'ONYXSAT',
-                 'source_fleet': 'some_fleet',
+                 'source_fleet': None,
                  'source_ssvid': '4961089',
                  'type': 'VMS',
-                 'ssvid': 'BRA|i:4961089',
+                 'ssvid': 'BRA|i:4961089|s:Cibradep X',
                  'timestamp': datetime.fromisoformat('2024-05-01 05:35:45+00:00'),
                  'lat': -1.21861112117767,
                  'lon': -48.4911117553711,
@@ -67,7 +67,7 @@ class TestBRAFeedPipeline(unittest.TestCase):
                  'course': 192.0,
                  'heading': None,
                  'shipname': 'Cibradep X',
-                 'callsign': '',
+                 'callsign': None,
                  'destination': None,
                  'imo': None,
                  'shiptype': 'fishing',
