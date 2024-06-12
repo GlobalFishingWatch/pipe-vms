@@ -4,7 +4,10 @@ import apache_beam as beam
 
 
 def convert_speed_kph_to_kt(speed_kph):
-    return float(speed_kph)/1.852
+    try:
+        return float(speed_kph)/1.852
+    except TypeError:
+        return None
 
 
 class ConvertSpeedKPHToKT(beam.PTransform):
