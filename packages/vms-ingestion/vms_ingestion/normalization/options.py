@@ -21,6 +21,13 @@ class NormalizationOptions(PipelineOptions):
         )
 
         required.add_argument(
+            "--source_timestamp_field",
+            required=False,
+            default="timestamp",
+            help="Field name in source table that contains the timestamp of the position record.",
+        )
+
+        required.add_argument(
             "--destination",
             required=True,
             help="Destination table prefix to write messages to, in the standard sql format PROJECT.DATASET.TABLE.",

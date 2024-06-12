@@ -2,8 +2,9 @@ from apache_beam.options.pipeline_options import (PipelineOptions,
                                                   StandardOptions)
 from apache_beam.runners import PipelineState
 from logger import logger
+from vms_ingestion.normalization.feed_pipeline_factory import \
+    FeedPipelineFactory
 from vms_ingestion.normalization.options import NormalizationOptions
-from vms_ingestion.normalization.pipeline import NormalizationPipeline
 
 logger.setup_logger(1)
 logging = logger.get_logger()
@@ -41,10 +42,11 @@ def run_normalization(argv):
     logging.info("Running normalization dataflow pipeline with args %s", argv)
 
     logging.info("Building pipeline options")
-    options = build_pipeline_options_with_defaults(argv)
+    options = build_pipeline_options_with_defaults(argv).view_as(NormalizationOptions)
 
     logging.info("Launching pipeline")
-    pipeline = NormalizationPipeline(options)
+    pipe_constructor = FeedPipelineFactory.get_pipeline(feed=options.country_code)
+    pipeline = pipe_constructor(options=options)
     result = pipeline.run()
 
     if is_blocking_run(options):

@@ -8,6 +8,17 @@ from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.chl_pipeline import CHLFeedPipeline
+from vms_ingestion.normalization.transforms.map_normalized_message import \
+    MapNormalizedMessage
+
+
+class FakePTransform(beam.PTransform):
+
+    def __init__(self, **_) -> None:
+        return
+
+    def expand(self, pcoll):
+        return (pcoll)
 
 
 class TestCHLFeedPipeline(unittest.TestCase):
@@ -37,10 +48,9 @@ class TestCHLFeedPipeline(unittest.TestCase):
                  'source_type': 'VMS',
                  'source_tenant': 'CHL',
                  'source_provider': 'SERNAPESCA',
-                 'source_ssvid': 'b84fe9283540c8937a28aec73f255313',
                  'source_fleet': 'some_fleet',
                  'type': 'VMS',
-                 'ssvid': 'chl|b84fe9283540c8937a28aec73f255313',
+                 'ssvid': 'CHL|s:AUSTRAL TRAVELER|c:ABC123',
                  'timestamp': datetime.fromisoformat('2020-01-01 20:23:01+00:00'),
                  'lat': -52.546,
                  'lon': -71.947,
@@ -63,19 +73,28 @@ class TestCHLFeedPipeline(unittest.TestCase):
                  'timestamp_date': datetime.date(datetime.fromisoformat('2020-01-01 20:23:01+00:00'))}]
 
     # Example test that tests the pipeline's transforms.
-
     def test_normalize(self):
         with TestPipeline(options=TestCHLFeedPipeline.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
             input = p | beam.Create(TestCHLFeedPipeline.RECORDS)
+            ops = TestCHLFeedPipeline.options.from_dictionary(dict(country_code='chl',
+                                                                   source='',
+                                                                   destination='',
+                                                                   start_date='2021-01-01',
+                                                                   end_date='2021-01-01',
+                                                                   labels='foo=bar,fobar=foobar'))
 
             # Run ALL the pipeline's transforms (in this case, the Normalize transform).
-            pipe = CHLFeedPipeline(source='', destination='', start_date='',
-                                   end_date='', labels='')
+            pipe = CHLFeedPipeline(ops,
+                                   read_source=FakePTransform,
+                                   write_sink=FakePTransform,
+                                   )
             output: pvalue.PCollection = (
                 input
-                | pipe.Normalize(pipe=pipe)
+                | MapNormalizedMessage(feed=pipe.feed,
+                                       source_provider=pipe.source_provider,
+                                       source_format=pipe.source_format)
             )
 
             # Assert that the output PCollection matches the EXPECTED data.
