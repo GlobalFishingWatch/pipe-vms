@@ -6,7 +6,7 @@ steps:
       [
         'build',
         '--file',
-        './packages/vms-ingestion/Dockerfile',
+        './packages/pipe-vms-ingestion/Dockerfile',
         '-t',
         'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion:$TAG_NAME',
         './packages',

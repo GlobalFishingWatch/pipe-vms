@@ -18,10 +18,10 @@ from setuptools import find_packages, setup
 #      'utils @ ../libs/utils']
 
 setup_kwargs = {
-    'name': 'vms-ingestion',
+    'name': 'pipe-vms-ingestion',
     'version': '1.0.0',
     'description': 'VMS Ingestion',
-    'long_description': '# vms-ingestion\n\nProject description here.\n',
+    'long_description': '# pipe-vms-ingestion\n\nProject description here.\n',
     'author': 'None',
     'author_email': 'None',
     'maintainer': 'None',
