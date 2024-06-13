@@ -10,14 +10,18 @@ services:
       dockerfile: ./vms-ingestion/Dockerfile
     entrypoint: "./scheduler.sh"
     volumes:
-      - ~/.config/gcloud:/root/.config/gcloud
-      - ./scheduler.sh:/app/builder/packages/vms-ingestion/scheduler.sh
-      - ./main.py:/app/builder/packages/vms-ingestion/main.py
-      - ./assets:/app/builder/packages/vms-ingestion/assets
-      - ./common:/app/builder/packages/vms-ingestion/common
-      - ./vms_ingestion:/app/builder/packages/vms-ingestion/vms_ingestion
-      - ./tests:/app/builder/packages/vms-ingestion/tests
-      - ../libs:/app/builder/packages/libs
+      - "gcp:/root/.config/"    
+      - ../libs:/app/libs
+      - ./assets:/app/vms-ingestion/assets
+      - ./common:/app/vms-ingestion/common
+      - ./main.py:/app/vms-ingestion/main.py
+      - ./scheduler.sh:/app/vms-ingestion/scheduler.sh
+      - ./tests:/app/vms-ingestion/tests
+      - ./vms_ingestion:/app/vms-ingestion/vms_ingestion
 
+# Use an external named volume so that we can share gcp auth across containers
+# Before first use, this volume must be manually created with
+#   docker volume create --name=gcp
 volumes:
-  cloudsql-sockets:
+  gcp:
+    external: true
