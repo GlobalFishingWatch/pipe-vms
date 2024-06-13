@@ -1,19 +1,28 @@
 steps:
 
-  # Push production image to GCR
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'build',
-        '--file',
-        './packages/pipe-vms-ingestion/Dockerfile',
-        '-t',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion:$TAG_NAME',
-        './packages',
-      ]
+  - name: 'gcr.io/kaniko-project/executor:debug'
+    id: 'build-image'
+    entrypoint: ''
+    env:
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
+    script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "${_PACKAGE_NAME}@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$SHORT_SHA \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$image_version \
+        --cache=true \
+        -f \
+          ./packages/${_PACKAGE_NAME}/Dockerfile \
+        -c \
+          ./packages
 
-
+substitutions:
+    _PACKAGE_NAME: pipe-vms-ingestion
+options:
+    automapSubstitutions: true
+    substitutionOption: 'ALLOW_LOOSE'
 images:
-  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion:$TAG_NAME'
+  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:latest'
 
 timeout: 900s
