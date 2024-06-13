@@ -11,7 +11,7 @@ def table_description():
 Created by pipe-vms-ingestion: {__getattr__('version')}.
 
 * Normalized positions for all vms providers. Daily produced.
-* https://github.com/GlobalFishingWatch/pipe-vms/packages/vms-ingestion
+* https://github.com/GlobalFishingWatch/pipe-vms/packages/pipe-vms-ingestion
 
 * Source: Multiple sources from the different countries feeds.
 * Last Updated: {datetime.isoformat(datetime.now(tz=timezone.utc))}

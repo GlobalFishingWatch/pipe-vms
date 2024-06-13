@@ -36,12 +36,12 @@ COPY --from=poetry-base ${POETRY_VENV} ${POETRY_VENV}
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 # Set curdir to the app dir
-WORKDIR /app/vms-ingestion/
+WORKDIR /app/pipe-vms-ingestion/
 
 # Copy Dependencies
-COPY ./vms-ingestion/poetry.lock \
-  ./vms-ingestion/pyproject.toml \
-  ./vms-ingestion/README.md \
+COPY ./pipe-vms-ingestion/poetry.lock \
+  ./pipe-vms-ingestion/pyproject.toml \
+  ./pipe-vms-ingestion/README.md \
   ./
 
 # Copy local libs dependencies
@@ -55,7 +55,7 @@ RUN poetry check
 RUN poetry install --only main --no-root --no-directory
 
 # Copy Application
-COPY ./vms-ingestion ./
+COPY ./pipe-vms-ingestion ./
 
 # Install the app source code
 RUN poetry install --only main

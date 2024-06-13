@@ -19,7 +19,7 @@ The project contains the next structure
 ├── package.json
 └── packages
     ├── libs
-    ├── vms-ingestion
+    ├── pipe-vms-ingestion
     └── ...
 ```
 
@@ -59,7 +59,7 @@ docker compose up [service-name] [--build]
 ```
 Example:
 ```
-docker compose up vms-ingestion --build
+docker compose up pipe-vms-ingestion --build
 ```
 Note: you can omit --build flag if you do not need to rebuild the docker image
 
@@ -82,7 +82,7 @@ Once the NX dependencies were installed, then you can execute the `create-releas
 
 For example:
 ```
-./create-release vms-ingestion 1.0.0
+./create-release pipe-vms-ingestion 1.0.0
 ```
 
 This script will open an editor, and you can add release notes to there. Also, you can add release
@@ -94,7 +94,7 @@ create a new tag + create new release.
 One trigger will be launching via CloudBuild and generate a docker image like this:
 
 ```
-gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:vms-ingestion-1.0.0
+gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:pipe-vms-ingestion-1.0.0
 ```
 
 ---
@@ -115,7 +115,7 @@ Example:
 yarn nx generate @nxlv/python:poetry-project vms_ingestion \
 --projectType application \
 --description='VMS Ingestion processes' \
---packageName=vms-ingestion \
+--packageName=pipe-vms-ingestion \
 --moduleName=vms_ingestion
 ```
 
