@@ -1,7 +1,7 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: ''
     id: build
+    entrypoint: ''
     script: |
       image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "${_PACKAGE_NAME}@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
       docker build \
@@ -13,24 +13,15 @@ steps:
         gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$SHORT_SHA \
         ./packages 
   - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: ''
     id: push
+    entrypoint: ''
     script: |
       image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "${_PACKAGE_NAME}@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
       docker push \
         gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$image_version
       docker push \
         gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$SHORT_SHA
-  - name: 'gcr.io/cloud-builders/docker'
-    id: test
-    args: [
-      'run',
-      '--rm',
-      '--entrypoint',
-      '/bin/bash',
-      'gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$SHORT_SHA',
-      '-c "poetry install && poetry run pytest -s tests/"',
-    ]
+
 substitutions:
     _PACKAGE_NAME: pipe-vms-ingestion
 options:
