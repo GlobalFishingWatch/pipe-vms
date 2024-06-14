@@ -47,18 +47,30 @@ COPY ./pipe-vms-ingestion/poetry.lock \
 # Copy local libs dependencies
 COPY ./libs ../libs
 
-# [OPTIONAL] Validate the project is properly configured
-RUN poetry check
-
-# Install Dependencies and then the main app as advised 
-# https://python-poetry.org/docs/faq#poetry-busts-my-docker-cache-because-it-requires-me-to-copy-my-source-files-in-before-installing-3rd-party-dependencies
-RUN poetry install --only main --no-root --no-directory
+# Create a virtual environment to copy to the final stage
+RUN python -m venv /venv
 
 # Copy Application
 COPY ./pipe-vms-ingestion ./
 
-# Install the app source code
-RUN poetry install --only main
+# Build the app and install it in the venv
+RUN poetry build && /venv/bin/pip install dist/*.whl
+
+# Create a new stage from the base python image
+FROM python:3.9-slim as final
+
+# Copy files from official SDK image, including script/dependencies.
+COPY --from=builder /opt/apache/beam /opt/apache/beam
+
+# Copy venv
+COPY --from=builder /venv /venv
+COPY --from=builder /app /app
+
+WORKDIR /app/pipe-vms-ingestion
+
+# Copy default entrypoint
+COPY ./pipe-vms-ingestion/worker-entrypoint.sh ./
+COPY ./pipe-vms-ingestion/scheduler-entrypoint.sh ./
 
 # Set the entrypoint to the Apache Beam SDK launcher.
-ENTRYPOINT ["/opt/apache/beam/boot"]
+ENTRYPOINT ["./worker-entrypoint.sh"]
