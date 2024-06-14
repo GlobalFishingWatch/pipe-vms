@@ -8,14 +8,14 @@ services:
     build:
       context: ..
       dockerfile: ./pipe-vms-ingestion/Dockerfile
-    entrypoint: "./scheduler.sh"
+    entrypoint: "./scheduler-entrypoint.sh"
     volumes:
       - "gcp:/root/.config/"    
       - ../libs:/app/libs
       - ./assets:/app/pipe-vms-ingestion/assets
       - ./common:/app/pipe-vms-ingestion/common
       - ./main.py:/app/pipe-vms-ingestion/main.py
-      - ./scheduler.sh:/app/pipe-vms-ingestion/scheduler.sh
+      - ./scheduler-entrypoint.sh:/app/pipe-vms-ingestion/scheduler-entrypoint.sh
       - ./tests:/app/pipe-vms-ingestion/tests
       - ./vms_ingestion:/app/pipe-vms-ingestion/vms_ingestion
 
