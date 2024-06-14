@@ -1,0 +1,8 @@
+node_modules
+dist
+tmp
+.vscode
+.idea
+docker-compose.yaml
+cloudbuild.yaml
+.coverage
