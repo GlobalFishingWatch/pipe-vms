@@ -11,6 +11,8 @@ steps:
         gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$image_version \
         -t \
         gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$SHORT_SHA \
+        -t \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:latest \
         ./packages 
   - name: 'gcr.io/cloud-builders/docker'
     id: push
@@ -21,13 +23,13 @@ steps:
         gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$image_version
       docker push \
         gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:$SHORT_SHA
+      docker push \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:latest
 
 substitutions:
     _PACKAGE_NAME: pipe-vms-ingestion
 options:
     automapSubstitutions: true
     substitutionOption: 'ALLOW_LOOSE'
-images:
-  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/${_PACKAGE_NAME}:latest'
 
 timeout: 900s
