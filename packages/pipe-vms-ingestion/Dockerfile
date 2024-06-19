@@ -36,19 +36,16 @@ COPY --from=poetry-base ${POETRY_VENV} ${POETRY_VENV}
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 # Set curdir to the app dir
-WORKDIR /app/pipe-vms-ingestion/
+WORKDIR /app/
 
-# Copy Dependencies
-COPY ./pipe-vms-ingestion/poetry.lock \
-  ./pipe-vms-ingestion/pyproject.toml \
-  ./pipe-vms-ingestion/README.md \
-  ./
-
-# Copy local libs dependencies
-COPY ./libs ../libs
-
-# Copy Application
+# Copy local libs dependencies and app inside the project folder
+COPY ./libs ./libs
 COPY ./pipe-vms-ingestion ./
+
+# IMPORTANT: Update libs references with path inside project folder
+# needed by dataflow to cuild properly the workflow.tar.gz package
+# when deploying it on the workers
+RUN mv pyproject-build.toml pyproject.toml
 
 # Build the app
 RUN poetry build
@@ -62,7 +59,7 @@ COPY --from=builder /opt/apache/beam /opt/apache/beam
 # Copy app
 COPY --from=builder /app /app
 
-WORKDIR /app/pipe-vms-ingestion
+WORKDIR /app
 
 # Install the app & deps in the python runtime
 RUN pip install dist/*.whl
