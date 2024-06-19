@@ -8,16 +8,16 @@ services:
     build:
       context: ..
       dockerfile: ./pipe-vms-ingestion/Dockerfile
-    entrypoint: "./scheduler-entrypoint.sh"
+    entrypoint: "./scheduler.sh"
     volumes:
-      - "gcp:/root/.config/"    
+      - "gcp:/root/.config/"   
       - ../libs:/app/libs
-      - ./assets:/app/pipe-vms-ingestion/assets
-      - ./common:/app/pipe-vms-ingestion/common
-      - ./main.py:/app/pipe-vms-ingestion/main.py
-      - ./scheduler-entrypoint.sh:/app/pipe-vms-ingestion/scheduler-entrypoint.sh
-      - ./tests:/app/pipe-vms-ingestion/tests
-      - ./vms_ingestion:/app/pipe-vms-ingestion/vms_ingestion
+      - ./assets:/app/assets
+      - ./common:/app/common
+      - ./main.py:/app/main.py
+      - ./scheduler.sh:/app/scheduler.sh
+      - ./tests:/app/tests
+      - ./vms_ingestion:/app/vms_ingestion
 
 # Use an external named volume so that we can share gcp auth across containers
 # Before first use, this volume must be manually created with
