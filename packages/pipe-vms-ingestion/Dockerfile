@@ -2,8 +2,8 @@ FROM python:3.9-slim as python-base
 
 LABEL maintainer="rodrigo.fuentes@globalfishingwatch.org"
 
-#ENV DEPS=" "
-#RUN apt-get -qqy update && apt-get -qqy upgrade && apt-get install -y $DEPS
+# Fix vulns
+RUN  apt-get update -y --allow-unauthenticated && apt-get upgrade -y
 
 # https://python-poetry.org/docs#ci-recommendations
 ENV POETRY_VERSION=1.8.3
@@ -36,7 +36,7 @@ COPY --from=poetry-base ${POETRY_VENV} ${POETRY_VENV}
 ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 # Set curdir to the app dir
-WORKDIR /app/
+WORKDIR /app
 
 # Copy local libs dependencies and app inside the project folder
 COPY ./libs ./libs
@@ -51,7 +51,7 @@ RUN mv pyproject-build.toml pyproject.toml
 RUN poetry build
 
 # Create a new stage from the base python image
-FROM python:3.9-slim as final
+FROM python-base as final
 
 # Copy files from official SDK image, including script/dependencies.
 COPY --from=builder /opt/apache/beam /opt/apache/beam
