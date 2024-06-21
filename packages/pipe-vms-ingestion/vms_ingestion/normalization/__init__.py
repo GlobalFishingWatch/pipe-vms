@@ -13,7 +13,6 @@ logging = logger.get_logger()
 def build_pipeline_options_with_defaults(argv):
     return PipelineOptions(
         flags=argv,
-        setup_file="./setup.py",
     )
 
 
