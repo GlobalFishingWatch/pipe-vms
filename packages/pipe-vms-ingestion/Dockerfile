@@ -3,7 +3,10 @@ FROM python:3.9-slim as python-base
 LABEL maintainer="rodrigo.fuentes@globalfishingwatch.org"
 
 # Fix vulns
-RUN  apt-get update -y --allow-unauthenticated && apt-get upgrade -y
+RUN apt-get update -y && apt-get upgrade -y
+
+# Upgrade pip
+RUN pip install --upgrade pip
 
 # https://python-poetry.org/docs#ci-recommendations
 ENV POETRY_VERSION=1.8.3
