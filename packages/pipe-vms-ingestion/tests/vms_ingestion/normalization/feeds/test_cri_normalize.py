@@ -7,23 +7,10 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.feeds.cri_pipeline import CRIFeedPipeline
-from vms_ingestion.normalization.transforms.map_normalized_message import \
-    MapNormalizedMessage
-from vms_ingestion.normalization.transforms.pick_output_fields import \
-    PickOutputFields
+from vms_ingestion.normalization.feeds.cri_normalize import CRINormalize
 
 
-class FakePTransform(beam.PTransform):
-
-    def __init__(self, **_) -> None:
-        return
-
-    def expand(self, pcoll):
-        return (pcoll)
-
-
-class TestCRIFeedPipeline(unittest.TestCase):
+class TestCRINormalize(unittest.TestCase):
 
     options = build_pipeline_options_with_defaults(
         argv=['--country_code=cri',
@@ -52,9 +39,13 @@ class TestCRIFeedPipeline(unittest.TestCase):
                  'class_b_cs_flag': None,
                  'course': 0.0,
                  'destination': None,
+                 'external_id': 'P-10371',                                                               
+                 'flag': None,
+                 'fleet': 'sardineros',
                  'heading': None,
                  'imo': None,
                  'ingested_at': None,
+                 'internal_id': None,
                  'lat': 9.9798,
                  'length': None,
                  'lon': -84.8221,
@@ -62,6 +53,7 @@ class TestCRIFeedPipeline(unittest.TestCase):
                  'received_at': None,
                  'receiver': None,
                  'receiver_type': None,
+                 'registry_number': None,
                  'shipname': "K'IN",
                  'shiptype': None,
                  'source': 'costarica_vms_sardineros',
@@ -81,30 +73,16 @@ class TestCRIFeedPipeline(unittest.TestCase):
 
     # Example test that tests the pipeline's transforms.
     def test_normalize(self):
-        with TestPipeline(options=TestCRIFeedPipeline.options) as p:
+        with TestPipeline(options=TestCRINormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
-            input = p | beam.Create(TestCRIFeedPipeline.RECORDS)
-            ops = TestCRIFeedPipeline.options.from_dictionary(dict(country_code='cri',
-                                                                   source='',
-                                                                   destination='',
-                                                                   start_date='2021-01-01',
-                                                                   end_date='2021-01-01',
-                                                                   labels='foo=bar,fobar=foobar'))
+            input = p | beam.Create(TestCRINormalize.RECORDS)
 
             # Run ALL the pipeline's transforms (in this case, the Normalize transform).
-            pipe = CRIFeedPipeline(ops,
-                                   read_source=FakePTransform,
-                                   write_sink=FakePTransform,
-                                   )
             output: pvalue.PCollection = (
                 input
-                | MapNormalizedMessage(feed=pipe.feed,
-                                       source_provider=pipe.source_provider,
-                                       source_format=pipe.source_format)
-                | PickOutputFields(fields=[f'{field}' for field in pipe.output_fields])
-
+                | CRINormalize(feed='cri')
             )
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, pcol_equal_to(TestCRIFeedPipeline.EXPECTED), label='CheckOutput')
+            assert_that(output, pcol_equal_to(TestCRINormalize.EXPECTED), label='CheckOutput')
