@@ -11,13 +11,20 @@ services:
     entrypoint: "./scheduler.sh"
     volumes:
       - "gcp:/root/.config/"   
+
+  dev:
+    container_name: vms_ingestion
+    environment:
+      - GOOGLE_CLOUD_PROJECT=world-fishing-827
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: ./pipe-vms-ingestion/Dockerfile
+      target: dev
+    volumes:
+      - "gcp:/root/.config/"   
       - ../libs:/app/libs
-      - ./assets:/app/assets
-      - ./common:/app/common
-      - ./main.py:/app/main.py
-      - ./scheduler.sh:/app/scheduler.sh
-      - ./tests:/app/tests
-      - ./vms_ingestion:/app/vms_ingestion
+      - ./:/app/pipe-vms-ingestion
 
 # Use an external named volume so that we can share gcp auth across containers
 # Before first use, this volume must be manually created with
