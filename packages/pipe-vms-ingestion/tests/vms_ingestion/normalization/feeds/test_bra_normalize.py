@@ -7,27 +7,10 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.feeds.bra_pipeline import BRAFeedPipeline
-from vms_ingestion.normalization.transforms.bra_map_source_message import \
-    BRAMapSourceMessage
-from vms_ingestion.normalization.transforms.convert_speed import \
-    ConvertSpeedKPHToKT
-from vms_ingestion.normalization.transforms.map_normalized_message import \
-    MapNormalizedMessage
-from vms_ingestion.normalization.transforms.pick_output_fields import \
-    PickOutputFields
+from vms_ingestion.normalization.feeds.bra_normalize import BRANormalize
 
 
-class FakePTransform(beam.PTransform):
-
-    def __init__(self, **_) -> None:
-        return
-
-    def expand(self, pcoll):
-        return (pcoll)
-
-
-class TestBRAFeedPipeline(unittest.TestCase):
+class TestBRANormalize(unittest.TestCase):
 
     options = build_pipeline_options_with_defaults(
         argv=['--country_code=bra',
@@ -59,6 +42,7 @@ class TestBRAFeedPipeline(unittest.TestCase):
                  'source_fleet': None,
                  'source_ssvid': '4961089',
                  'type': 'VMS',
+                 'internal_id': '4961089',
                  'ssvid': 'BRA|i:4961089|s:Cibradep X',
                  'timestamp': datetime.fromisoformat('2024-05-01 05:35:45+00:00'),
                  'lat': -1.21861112117767,
@@ -83,32 +67,16 @@ class TestBRAFeedPipeline(unittest.TestCase):
 
     # Example test that tests the pipeline's transforms.
     def test_normalize(self):
-        with TestPipeline(options=TestBRAFeedPipeline.options) as p:
+        with TestPipeline(options=TestBRANormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
-            input = p | beam.Create(TestBRAFeedPipeline.RECORDS)
-            ops = TestBRAFeedPipeline.options.from_dictionary(dict(country_code='bra',
-                                                                   source='',
-                                                                   destination='',
-                                                                   start_date='2021-01-01',
-                                                                   end_date='2021-01-01',
-                                                                   labels='foo=bar,fobar=foobar'))
+            input = p | beam.Create(TestBRANormalize.RECORDS)
 
             # Run ALL the pipeline's transforms (in this case, the Normalize transform).
-            pipe = BRAFeedPipeline(ops,
-                                   read_source=FakePTransform,
-                                   write_sink=FakePTransform,
-                                   )
-
             output: pvalue.PCollection = (
                 input
-                | BRAMapSourceMessage()
-                | ConvertSpeedKPHToKT()
-                | MapNormalizedMessage(feed=pipe.feed,
-                                       source_provider=pipe.source_provider,
-                                       source_format=pipe.source_format)
-                | PickOutputFields(fields=[f'{field}' for field in pipe.output_fields])
+                | BRANormalize(feed='bra')
             )
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, pcol_equal_to(TestBRAFeedPipeline.EXPECTED), label='CheckOutput')
+            assert_that(output, pcol_equal_to(TestBRANormalize.EXPECTED), label='CheckOutput')

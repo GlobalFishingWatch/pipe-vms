@@ -3,9 +3,14 @@ import datetime as dt
 import apache_beam as beam
 from apache_beam.options.pipeline_options import GoogleCloudOptions
 from bigquery.table import clear_records, ensure_table_exists
+from vms_ingestion.normalization.feed_normalization_factory import \
+    FeedNormalizationFactory
 from vms_ingestion.normalization.options import NormalizationOptions
+from vms_ingestion.normalization.transforms.pick_output_fields import \
+    PickOutputFields
+from vms_ingestion.normalization.transforms.read_source import ReadSource
 from vms_ingestion.normalization.transforms.write_sink import (
-    table_descriptor, table_schema)
+    WriteSink, table_descriptor, table_schema)
 
 
 def parse_yyyy_mm_dd_param(value):
@@ -47,6 +52,19 @@ class NormalizationPipeline:
                           date_to=self.end_date,
                           additional_conditions=[f'source_tenant = \'{self.feed}\''],
                           )
+
+        (
+            self.pipeline
+            | "Read source" >> ReadSource(source_table=self.source,
+                                          source_timestamp_field=self.source_timestamp_field,
+                                          date_range=(self.start_date, self.end_date),
+                                          labels=self.labels)
+            | "Normalize" >> FeedNormalizationFactory.get_normalization(feed=self.feed)
+
+            | PickOutputFields(fields=[f'{field}' for field in self.output_fields])
+            | "Write Sink" >> WriteSink(destination=self.destination,
+                                        labels=self.labels,)
+        )
 
     def run(self):
         return self.pipeline.run()
