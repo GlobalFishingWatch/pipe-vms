@@ -8,7 +8,10 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.transforms.bra_map_source_message import BRAMapSourceMessage, bra_infer_shiptype
+from vms_ingestion.normalization.transforms.bra_map_source_message import (
+    BRAMapSourceMessage,
+    bra_infer_shiptype,
+)
 
 
 class TestBRAMapSourceMessage(unittest.TestCase):

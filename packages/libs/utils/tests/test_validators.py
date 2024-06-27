@@ -1,6 +1,10 @@
-import unittest
 import argparse
-from utils.validators import check_if_a_key_exists_in_a_dic, check_if_it_is_a_valid_YYYYMMDD
+import unittest
+
+from utils.validators import (
+    check_if_a_key_exists_in_a_dic,
+    check_if_it_is_a_valid_YYYYMMDD,
+)
 
 
 class TestValidators(unittest.TestCase):
