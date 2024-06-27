@@ -1,8 +1,7 @@
 from datetime import datetime
 
 import apache_beam as beam
-from vms_ingestion.normalization.transforms.calculate_msgid import \
-    get_message_id
+from vms_ingestion.normalization.transforms.calculate_msgid import get_message_id
 from vms_ingestion.normalization.transforms.calculate_ssvid import encode_ssvid
 
 
@@ -31,9 +30,9 @@ def map_normalized_message(msg, feed, source_provider, source_format):
         "length": msg.get("length"),
         "width": msg.get("width"),
         "status": msg.get("status"),
-        "class_b_cs_flag": msg.get('class_b_cs_flag'),
-        "received_at": msg.get('received_at'),
-        "ingested_at": msg.get('ingested_at'),
+        "class_b_cs_flag": msg.get("class_b_cs_flag"),
+        "received_at": msg.get("received_at"),
+        "ingested_at": msg.get("ingested_at"),
         "timestamp_date": datetime.date(msg["timestamp"]),
     }
     return {**result, "source": source_format.format(**result)}
@@ -47,35 +46,44 @@ class MapNormalizedMessage(beam.PTransform):
         self.source_format = source_format
 
     def expand(self, pcoll):
-        return (
-            pcoll
-            | self.map_normalized_message()
-            | self.calculate_ssvid()
-            | self.calculate_message_id()
-        )
+        return pcoll | self.map_normalized_message() | self.calculate_ssvid() | self.calculate_message_id()
 
     def map_normalized_message(self):
-        return beam.Map(lambda msg: map_normalized_message(msg=msg,
-                                                           feed=self.feed,
-                                                           source_provider=self.source_provider,
-                                                           source_format=self.source_format,
-                                                           ))
+        return beam.Map(
+            lambda msg: map_normalized_message(
+                msg=msg,
+                feed=self.feed,
+                source_provider=self.source_provider,
+                source_format=self.source_format,
+            )
+        )
 
     def calculate_message_id(self):
-        return beam.Map(lambda msg: {**msg,
-                                     "msgid": get_message_id(timestamp=msg["timestamp"],
-                                                             lat=msg["lat"],
-                                                             lon=msg["lon"],
-                                                             ssvid=msg["ssvid"],
-                                                             fleet=msg.get("fleet"),
-                                                             speed=msg.get("speed"),
-                                                             course=msg.get("course"),
-                                                             )})
+        return beam.Map(
+            lambda msg: {
+                **msg,
+                "msgid": get_message_id(
+                    timestamp=msg["timestamp"],
+                    lat=msg["lat"],
+                    lon=msg["lon"],
+                    ssvid=msg["ssvid"],
+                    fleet=msg.get("fleet"),
+                    speed=msg.get("speed"),
+                    course=msg.get("course"),
+                ),
+            }
+        )
 
     def calculate_ssvid(self):
-        return beam.Map(lambda msg: {**msg,
-                                     "ssvid": encode_ssvid(country=msg["source_tenant"],
-                                                           internal_id=msg.get("internal_id"),
-                                                           shipname=msg.get("shipname"),
-                                                           callsign=msg.get("callsign"),
-                                                           licence=msg.get("licence"))})
+        return beam.Map(
+            lambda msg: {
+                **msg,
+                "ssvid": encode_ssvid(
+                    country=msg["source_tenant"],
+                    internal_id=msg.get("internal_id"),
+                    shipname=msg.get("shipname"),
+                    callsign=msg.get("callsign"),
+                    licence=msg.get("licence"),
+                ),
+            }
+        )

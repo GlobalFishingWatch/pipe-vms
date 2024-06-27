@@ -1,16 +1,16 @@
 import unittest
 
 import pytest
-from vms_ingestion.normalization.transforms.calculate_ssvid import (
-    decode_ssvid, encode_ssvid)
+from vms_ingestion.normalization.transforms.calculate_ssvid import decode_ssvid, encode_ssvid
 
 
-@pytest.mark.parametrize("decoded,encoded",
-                         [({"country": "arg", "internal_id": "30832745"},
-                           "arg|i:30832745"),
-                          ({"country": "arg", "shipname": "SANTA MARIA DEL MAR"},
-                           "arg|s:SANTA MARIA DEL MAR"),
-                          ])
+@pytest.mark.parametrize(
+    "decoded,encoded",
+    [
+        ({"country": "arg", "internal_id": "30832745"}, "arg|i:30832745"),
+        ({"country": "arg", "shipname": "SANTA MARIA DEL MAR"}, "arg|s:SANTA MARIA DEL MAR"),
+    ],
+)
 class TestCalculateSSVID:
 
     def test_encode_ssvid(self, decoded, encoded):

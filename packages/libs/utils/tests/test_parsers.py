@@ -22,5 +22,5 @@ class TestParsers(unittest.TestCase):
             parse_json_from_string("incorrect json")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -9,11 +9,11 @@ class FeedNormalizationFactory:
     @staticmethod
     def get_normalization(feed) -> beam.PTransform:
         feed_id = (feed or "").lower()
-        if feed_id == 'bra':
+        if feed_id == "bra":
             return BRANormalize(feed=feed_id)
-        elif feed_id == 'chl':
+        elif feed_id == "chl":
             return CHLNormalize(feed=feed_id)
-        elif feed_id == 'cri':
+        elif feed_id == "cri":
             return CRINormalize(feed=feed_id)
         else:
             raise ValueError(feed)

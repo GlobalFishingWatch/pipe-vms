@@ -13,5 +13,5 @@ class TestDecoders(unittest.TestCase):
             decode_base64_string("wrong_input")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
