@@ -2,12 +2,19 @@ import datetime as dt
 
 import apache_beam as beam
 from apache_beam.options.pipeline_options import GoogleCloudOptions
-from bigquery.table import clear_records, ensure_table_exists
-from vms_ingestion.normalization.feed_normalization_factory import FeedNormalizationFactory
+from vms_ingestion.normalization.feed_normalization_factory import (
+    FeedNormalizationFactory,
+)
 from vms_ingestion.normalization.options import NormalizationOptions
 from vms_ingestion.normalization.transforms.pick_output_fields import PickOutputFields
 from vms_ingestion.normalization.transforms.read_source import ReadSource
-from vms_ingestion.normalization.transforms.write_sink import WriteSink, table_descriptor, table_schema
+from vms_ingestion.normalization.transforms.write_sink import (
+    WriteSink,
+    table_descriptor,
+    table_schema,
+)
+
+from bigquery.table import clear_records, ensure_table_exists
 
 
 def parse_yyyy_mm_dd_param(value):

@@ -1,9 +1,10 @@
 from datetime import datetime, timezone
 
 import apache_beam as beam
-from bigquery import query
 from google.cloud import bigquery
 from vms_ingestion import __getattr__
+
+from bigquery import query
 
 
 def table_description():

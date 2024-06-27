@@ -1,7 +1,10 @@
 import unittest
 from datetime import datetime
 
-from vms_ingestion.normalization.transforms.calculate_msgid import get_message_id, get_raw_message_id
+from vms_ingestion.normalization.transforms.calculate_msgid import (
+    get_message_id,
+    get_raw_message_id,
+)
 
 
 class TestCalculateMsgId(unittest.TestCase):

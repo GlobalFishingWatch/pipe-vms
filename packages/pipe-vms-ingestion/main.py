@@ -1,7 +1,8 @@
 import sys
 
-from logger import logger
 from vms_ingestion.normalization import run_normalization
+
+from logger import logger
 
 logger.setup_logger(1)
 logging = logger.get_logger()
