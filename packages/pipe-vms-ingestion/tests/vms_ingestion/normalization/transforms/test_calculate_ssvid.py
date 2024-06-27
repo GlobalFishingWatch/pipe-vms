@@ -1,7 +1,10 @@
 import unittest
 
 import pytest
-from vms_ingestion.normalization.transforms.calculate_ssvid import decode_ssvid, encode_ssvid
+from vms_ingestion.normalization.transforms.calculate_ssvid import (
+    decode_ssvid,
+    encode_ssvid,
+)
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,7 @@
 import apache_beam as beam
-from vms_ingestion.normalization.transforms.map_normalized_message import MapNormalizedMessage
+from vms_ingestion.normalization.transforms.map_normalized_message import (
+    MapNormalizedMessage,
+)
 
 
 class CHLNormalize(beam.PTransform):

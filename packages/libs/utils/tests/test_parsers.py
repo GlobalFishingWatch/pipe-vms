@@ -1,5 +1,6 @@
 import unittest
-from utils.parsers import parse_yaml_from_string, parse_json_from_string
+
+from utils.parsers import parse_json_from_string, parse_yaml_from_string
 
 
 class TestParsers(unittest.TestCase):
