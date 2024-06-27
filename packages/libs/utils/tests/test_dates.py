@@ -13,5 +13,5 @@ class TestDates(unittest.TestCase):
             prev_month_from_YYYYMMDD("wrong_date")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

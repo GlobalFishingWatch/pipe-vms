@@ -12,11 +12,7 @@ class PickOutputFields(beam.PTransform):
         self.fields = fields
 
     def expand(self, pcoll):
-        return (
-            pcoll
-            | self.pick_output_fields()
-        )
+        return pcoll | self.pick_output_fields()
 
     def pick_output_fields(self):
-        return beam.Map(lambda msg: pick_output_fields(fields=self.fields,
-                                                       msg=msg))
+        return beam.Map(lambda msg: pick_output_fields(fields=self.fields, msg=msg))

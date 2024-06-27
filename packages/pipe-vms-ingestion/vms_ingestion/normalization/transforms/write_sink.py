@@ -19,7 +19,7 @@ Created by pipe-vms-ingestion: {__getattr__('version')}.
 
 
 def table_schema():
-    return query.get_schema('assets/feeds/normalized.schema.json')
+    return query.get_schema("assets/feeds/normalized.schema.json")
 
 
 def table_descriptor(destination, labels, schema=table_schema()):
@@ -29,33 +29,31 @@ def table_descriptor(destination, labels, schema=table_schema()):
         schema=schema,
     )
     table.description = table_description()
-    table.clustering_fields = ['source_tenant', 'timestamp_date']
+    table.clustering_fields = ["source_tenant", "timestamp_date"]
     table.time_partitioning = bigquery.table.TimePartitioning(
         type_=bigquery.table.TimePartitioningType.MONTH,
-        field='timestamp',
+        field="timestamp",
     )
     table.labels = labels
     return table
 
 
 class WriteSink(beam.PTransform):
-    def __init__(self,
-                 destination,
-                 labels,
-                 ):
+    def __init__(
+        self,
+        destination,
+        labels,
+    ):
         self.table = table_descriptor(destination, labels)
         self.labels = labels
 
     def expand(self, pcoll):
-        return (
-            pcoll
-            | self.write_sink()
-        )
+        return pcoll | self.write_sink()
 
     def write_sink(self):
-        print(f'Writing Sink to {self.table.project}.{self.table.dataset_id}.{self.table.table_id}')
+        print(f"Writing Sink to {self.table.project}.{self.table.dataset_id}.{self.table.table_id}")
         return beam.io.WriteToBigQuery(
-            table=f'{self.table.project}.{self.table.dataset_id}.{self.table.table_id}',
+            table=f"{self.table.project}.{self.table.dataset_id}.{self.table.table_id}",
             create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
         )
