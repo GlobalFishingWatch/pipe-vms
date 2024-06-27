@@ -5,7 +5,7 @@ from datetime import datetime
 def check_if_a_key_exists_in_a_dic(keys, dictionary):
     for key in keys:
         if key not in dictionary:
-            print(f'{key} is required')
+            print(f"{key} is required")
             exit()
 
 

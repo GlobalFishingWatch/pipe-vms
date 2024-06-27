@@ -84,6 +84,7 @@ class CustomBeamAssertException(Exception):
 
     pass
 
+
 # This is a customization of apache_beam.testing.util.equal_to that improves assert
 # failure output by printing a diff of the two objects
 
@@ -97,7 +98,10 @@ def pcol_equal_to(expected, equals_fn=None):
         # collection. It can also raise false negatives for types that don't have
         # a deterministic sort order, like pyarrow Tables as of 0.14.1
         if not equals_fn:
-            def equals_fn(e, a): return e == a
+
+            def equals_fn(e, a):
+                return e == a
+
             try:
                 sorted_expected = sorted(expected)
                 sorted_actual = sorted(actual)
@@ -131,4 +135,5 @@ def pcol_equal_to(expected, equals_fn=None):
             msg = "\n".join(diff_lines)
             # msg = msg + f'\n os.get_terminal_size().columns = {AUTO_COLS}'
             raise CustomBeamAssertException(msg)
+
     return _equal

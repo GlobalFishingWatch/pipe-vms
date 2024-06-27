@@ -25,5 +25,5 @@ class TestValidators(unittest.TestCase):
             check_if_it_is_a_valid_YYYYMMDD("wrong_date")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

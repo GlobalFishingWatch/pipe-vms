@@ -1,5 +1,4 @@
-from apache_beam.options.pipeline_options import (PipelineOptions,
-                                                  StandardOptions)
+from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions
 from apache_beam.runners import PipelineState
 from logger import logger
 from vms_ingestion.normalization.options import NormalizationOptions
@@ -17,16 +16,14 @@ def build_pipeline_options_with_defaults(argv):
 
 def is_blocking_run(pipeline_options):
     return (
-        pipeline_options.view_as(NormalizationOptions).wait_for_job or
-        pipeline_options.view_as(StandardOptions).runner == "DirectRunner"
+        pipeline_options.view_as(NormalizationOptions).wait_for_job
+        or pipeline_options.view_as(StandardOptions).runner == "DirectRunner"
     )
 
 
 def success_states(pipeline_options):
     if is_blocking_run(pipeline_options):
-        return {
-            PipelineState.DONE
-        }
+        return {PipelineState.DONE}
     else:
         return {
             PipelineState.DONE,

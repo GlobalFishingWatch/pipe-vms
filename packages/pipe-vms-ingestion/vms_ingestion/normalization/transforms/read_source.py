@@ -23,10 +23,7 @@ class ReadSource(beam.PTransform):
         self.labels = labels
 
     def expand(self, pcoll):
-        return (
-            pcoll
-            | self.read_source()
-        )
+        return pcoll | self.read_source()
 
     def read_source(self):
         query_template = templates.from_string(SOURCE_QUERY_TEMPLATE)
