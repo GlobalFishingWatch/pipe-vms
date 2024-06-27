@@ -10,3 +10,5 @@ exclude =
 	.pytest_cache,
 	node_modules
 max-line-length = 120
+# required for compatibility with Black:
+extend-ignore = E203
