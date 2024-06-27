@@ -50,6 +50,10 @@ affected-projects.txt
 nx-cloud.env
 .nx
 
+# Virtual environments
+.venv/*
+venv/*
+
 # Files for local use
 commands
 
