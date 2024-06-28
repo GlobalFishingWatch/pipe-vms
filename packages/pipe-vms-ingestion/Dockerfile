@@ -1,4 +1,4 @@
-FROM python:3.9-slim as python-base
+FROM python:3.10-slim as python-base
 
 LABEL maintainer="rodrigo.fuentes@globalfishingwatch.org"
 
@@ -62,7 +62,7 @@ RUN poetry build
 FROM python-base as final
 
 # Copy files from official SDK image, including script/dependencies.
-COPY --from=apache/beam_python3.9_sdk:2.56.0 /opt/apache/beam /opt/apache/beam
+COPY --from=apache/beam_python3.10_sdk:2.56.0 /opt/apache/beam /opt/apache/beam
 
 # Copy app
 COPY --from=builder /app /app
