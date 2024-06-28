@@ -24,7 +24,6 @@ The project contains the next structure
 
 ```
 ├── README.md
-├── create-release.sh
 ├── docker-compose.yaml
 ├── nx.json
 ├── package-lock.json
@@ -38,7 +37,6 @@ The project contains the next structure
 At the root level, the repository contains common config files or dependencies like NX
 
 - README.MD: Project basic documentation
-- create-release.sh: Script to generate a tag/release for each project
 - docker-compose.yaml: Docker configuration to run the projects locally.
 - nx.json: Configuration related to NX library
 - package.json and package-lock.json: NodeJS dependencies
@@ -104,16 +102,15 @@ For example:
 ./create-release pipe-vms-ingestion 1.0.0
 ```
 
-This script will open an editor, and you can add release notes to there. Also, you can add release
-notes in the Github page that will be launched after close this editor.
-
-You must remove the `v` prefix that NX adds by default (it is an issue that their team needs to fix) and
-create a new tag + create new release.
+This script will open an editor, and you can add release notes to there. Once the tag is created
+you have to create the release in https://github.com/GlobalFishingWatch/pipe-vms/releases/new selecting
+the tag that was just created. We recommend using the `Generate releease notes` button in the `New Release`
+page to generate the release notes.
 
 One trigger will be launching via CloudBuild and generate a docker image like this:
 
 ```
-gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:pipe-vms-ingestion-1.0.0
+gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms-ingestion@1.0.0
 ```
 
 ---
@@ -121,7 +118,7 @@ gcr.io/world-fishing-827/github.com/globalfishingwatch/pipe-vms:pipe-vms-ingesti
 ### Add a new project
 
 ```
-yarn nx generate @nxlv/python:poetry-project [project_name] \
+npx nx generate @nxlv/python:poetry-project [project_name] \
 --projectType application \
 --description='Project description' \
 --packageName=[project-name] \
@@ -131,7 +128,7 @@ yarn nx generate @nxlv/python:poetry-project [project_name] \
 Example:
 
 ```
-yarn nx generate @nxlv/python:poetry-project vms_ingestion \
+npx nx generate @nxlv/python:poetry-project vms_ingestion \
 --projectType application \
 --description='VMS Ingestion processes' \
 --packageName=pipe-vms-ingestion \
@@ -143,7 +140,7 @@ yarn nx generate @nxlv/python:poetry-project vms_ingestion \
 ### Add a new library
 
 ```
-yarn nx generate @nxlv/python:poetry-project [library_name] \
+npx nx generate @nxlv/python:poetry-project [library_name] \
 --projectType library \
 --description='Library description' \
 --packageName=[library-name] \
@@ -154,7 +151,7 @@ yarn nx generate @nxlv/python:poetry-project [library_name] \
 Example:
 
 ```
-yarn nx generate @nxlv/python:poetry-project gfw-logger \
+npx nx generate @nxlv/python:poetry-project gfw-logger \
 --projectType library \
 --description='Library to reuse the GFW Logger' \
 --packageName=gfw-logger \
@@ -170,14 +167,14 @@ In order to use a shared library in the projects, you need to link the library w
 the project.
 
 ```
-yarn nx run [project-name]:add --name [lib-name] --local
+npx nx run [project-name]:add --name [lib-name] --local
 
 ```
 
 Example:
 
 ```
-yarn nx run publication-vms-ingestion:add --name libs-logger --local
+npx nx run publication-vms-ingestion:add --name libs-logger --local
 
 ```
 
