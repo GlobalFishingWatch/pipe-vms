@@ -34,27 +34,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install monorepo packages
-        uses: pnpm/action-setup@v2
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          version: 8
-      - run: pnpm install --frozen-lockfile
+          node-version: 21
+      - name: Install monorepo packages
+        run: npm install
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           # cache: 'pip' # fails if you don´t have requirements.txt on root.
-  
-      - name: Install dependencies
+      - name: Install poetry
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-pip.txt
-          pip install -r requirements-dev.txt
-      - run: pnpm nx run-many --target=install
-
+          python3 -m pip install --upgrade pip
+          python3 -m venv $GITHUB_WORKSPACE/venv \
+            && $GITHUB_WORKSPACE/venv/bin/pip install -U pip setuptools \
+            && $GITHUB_WORKSPACE/venv/bin/pip install poetry==1.8.3
+          echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
+      - name: Install libs and packages
+        run: npx nx run-many --target=install
       - name: Test all projects
-        run: pnpm nx run-many --target=test
-    
+        run: npx nx run-many --target=test
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
