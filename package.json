@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "affected:main": "npx nx print-affected --type=app --select=projects --base=origin/main~1 --plain > affected-projects.txt",
-    "test-all": "npx nx run-many --target=test",
-    "test-affected": "npx nx run-many --target=test --projects=$(cat affected-projects.txt)",
-    "test-utils": "npx nx test libs-utils",
-    "test-logger": "npx nx test libs-logger"
+    "install": "npx nx run-many --target=install",
+    "lint": "npx nx run-many --target=lint --exclude=libs-bigquery,libs-logger",
+    "lint-affected": "npx nx affected -t lint --base=develop --exclude=libs-bigquery,libs-logger",
+    "test": "npx nx run-many --target=test --exclude=libs-bigquery,libs-logger",
+    "test-affected": "npx nx affected -t test --base=develop --exclude=libs-bigquery,libs-logger"
   },
   "private": true,
   "devDependencies": {
