@@ -36,17 +36,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
+
       - name: Install monorepo packages
         run: npm i
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           # cache: 'pip' # fails if you don´t have requirements.txt on root.
+
       - name: Install poetry
         run: |
           python3 -m pip install --upgrade pip
@@ -54,11 +58,15 @@ jobs:
             && $GITHUB_WORKSPACE/venv/bin/pip install -U pip setuptools \
             && $GITHUB_WORKSPACE/venv/bin/pip install poetry==1.8.3
           echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
+
       - name: Install libs and packages
         run: npm run install-all
+
       - name: Test all projects
         run: npm run test
+
       - name: Upload coverage reports to Codecov
+        if: ${{ matrix.python-version == '3.12' }}
         uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
