@@ -1,0 +1,62 @@
+name: main
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4.1.0
+        with:
+          python-version: 3.9
+
+      - name: Install flake8
+        run: pip --disable-pip-version-check install flake8
+
+      - name: Lint with flake8
+        run: flake8 --count
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install monorepo packages
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - run: pnpm install --frozen-lockfile
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          # cache: 'pip' # fails if you don´t have requirements.txt on root.
+  
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-pip.txt
+          pip install -r requirements-dev.txt
+      - run: pnpm nx run-many --target=install
+
+      - name: Test all projects
+        run: pnpm nx run-many --target=test
+    
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: coverage/
