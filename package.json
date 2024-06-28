@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "install": "npx nx run-many --target=install",
+    "install-all": "npx nx run-many --target=install",
     "lint": "npx nx run-many --target=lint --exclude=libs-bigquery,libs-logger",
     "lint-affected": "npx nx affected -t lint --base=develop --exclude=libs-bigquery,libs-logger",
     "test": "npx nx run-many --target=test --exclude=libs-bigquery,libs-logger",
