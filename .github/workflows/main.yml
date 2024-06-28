@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: 18
       - name: Install monorepo packages
-        run: npm install
+        run: npm i
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -56,7 +56,7 @@ jobs:
             && $GITHUB_WORKSPACE/venv/bin/pip install poetry==1.8.3
           echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
       - name: Install libs and packages
-        run: npx nx run-many --target=install
+        run: npm run install-all
       - name: Test all projects
         run: npm run test
       - name: Upload coverage reports to Codecov
