@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 services:
   vms_ingestion:
     container_name: vms_ingestion
@@ -6,26 +6,30 @@ services:
       - GOOGLE_CLOUD_PROJECT=world-fishing-827
     platform: linux/amd64
     build:
-      context: ..
+      context: packages/
       dockerfile: ./pipe-vms-ingestion/Dockerfile
     entrypoint: "./scheduler.sh"
     volumes:
-      - "gcp:/root/.config/"   
+      - "gcp:/root/.config/"
 
-  dev:
+  vms_ingestion_dev:
     container_name: vms_ingestion
     environment:
       - GOOGLE_CLOUD_PROJECT=world-fishing-827
     platform: linux/amd64
+    entrypoint: bash
     build:
-      context: ..
+      context: packages/
       dockerfile: ./pipe-vms-ingestion/Dockerfile
       target: dev
     volumes:
-      - "gcp:/root/.config/"   
-      - ../libs:/app/libs
-      - ./:/app/pipe-vms-ingestion
-
+      - "gcp:/root/.config/"
+      - ./packages/libs:/app/libs
+      - ./packages/pipe-vms-ingestion/assets:/app/pipe-vms-ingestion/assets
+      - ./packages/pipe-vms-ingestion/common:/app/pipe-vms-ingestion/common
+      - ./packages/pipe-vms-ingestion/main.py:/app/pipe-vms-ingestion/main.py
+      - ./packages/pipe-vms-ingestion/tests:/app/pipe-vms-ingestion/tests
+      - ./packages/pipe-vms-ingestion/vms_ingestion:/app/pipe-vms-ingestion/vms_ingestion
 # Use an external named volume so that we can share gcp auth across containers
 # Before first use, this volume must be manually created with
 #   docker volume create --name=gcp
