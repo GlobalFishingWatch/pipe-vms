@@ -45,4 +45,8 @@ fi
 
 echo "Creating release of $APP for version $VERSION"
 echo $VERSION $APP
-npx nx release changelog --create-release=github -i ${VERSION} -p $APP --tagVersionPrefix=${APP}- --file false --from main
+npx nx release changelog \
+  -i "all" \
+  -p $APP \
+  --from develop \
+  ${VERSION} 
