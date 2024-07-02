@@ -11,7 +11,8 @@ SOURCE_QUERY_TEMPLATE = """
     FROM
       `{{source_table}}`
     WHERE
-      DATE({{source_timestamp_field}}) BETWEEN '{{start_date}}' AND '{{end_date}}'
+      DATE({{source_timestamp_field}}) >= '{{start_date}}'
+      AND DATE({{source_timestamp_field}}) < '{{end_date}}'
 """
 
 
