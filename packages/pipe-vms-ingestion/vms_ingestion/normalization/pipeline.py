@@ -62,7 +62,7 @@ class NormalizationPipeline:
                 date_field="timestamp",
                 date_from=self.start_date,
                 date_to=self.end_date,
-                additional_conditions=[f"source_tenant = '{self.feed}'"],
+                additional_conditions=[f"upper(source_tenant) = upper('{self.feed}')"],
             )
 
         (
