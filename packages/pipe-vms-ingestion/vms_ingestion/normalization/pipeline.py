@@ -8,6 +8,9 @@ from vms_ingestion.normalization.feed_normalization_factory import (
 )
 from vms_ingestion.normalization.options import NormalizationOptions
 from vms_ingestion.normalization.transforms.deduplicate_msgs import DeduplicateMsgs
+from vms_ingestion.normalization.transforms.discard_zero_lat_lon import (
+    DiscardZeroLatLon,
+)
 from vms_ingestion.normalization.transforms.pick_output_fields import PickOutputFields
 from vms_ingestion.normalization.transforms.read_source import ReadSource
 from vms_ingestion.normalization.transforms.write_sink import (
@@ -71,6 +74,7 @@ class NormalizationPipeline:
                 date_range=(self.start_date, self.end_date),
                 labels=self.labels,
             )
+            | "Discard Zero Lat and Lon" >> DiscardZeroLatLon()
             | "Normalize" >> FeedNormalizationFactory.get_normalization(feed=self.feed)
             | "Deduplicate" >> DeduplicateMsgs()
             | PickOutputFields(fields=[f"{field}" for field in self.output_fields])
