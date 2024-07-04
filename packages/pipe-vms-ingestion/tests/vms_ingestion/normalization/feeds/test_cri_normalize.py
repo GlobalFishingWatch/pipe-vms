@@ -57,7 +57,7 @@ class TestCRINormalize(unittest.TestCase):
             "lat": 9.9798,
             "length": None,
             "lon": -84.8221,
-            "msgid": "758d0202a1b6b7166ddb9851e6731091",
+            "msgid": "0df1eb16d80e0b61fb9639177b3c71fb",
             "received_at": None,
             "receiver": None,
             "receiver_type": None,
@@ -71,7 +71,7 @@ class TestCRINormalize(unittest.TestCase):
             "source_ssvid": None,
             "source_type": "VMS",
             "speed": 0.0,
-            "ssvid": "CRI|s:K'IN",
+            "ssvid": "CRI|s:KIN",
             "status": None,
             "timestamp": datetime.fromisoformat("2024-05-01 12:15:01+00:00"),
             "timestamp_date": datetime.date(

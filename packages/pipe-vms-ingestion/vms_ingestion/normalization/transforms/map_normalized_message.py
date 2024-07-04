@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import apache_beam as beam
+from shipdataprocess.normalize import normalize_callsign, normalize_shipname
 from shipdataprocess.standardize import (
     standardize_imo,
     standardize_int_str,
@@ -91,8 +92,8 @@ class MapNormalizedMessage(beam.PTransform):
                 "ssvid": encode_ssvid(
                     country=msg["source_tenant"],
                     internal_id=msg.get("internal_id"),
-                    shipname=msg.get("shipname"),
-                    callsign=msg.get("callsign"),
+                    shipname=normalize_shipname(msg.get("shipname")),
+                    callsign=normalize_callsign(msg.get("callsign")),
                     licence=msg.get("licence"),
                 ),
             }

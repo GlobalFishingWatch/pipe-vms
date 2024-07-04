@@ -39,7 +39,7 @@ class TestCHLNormalize(unittest.TestCase):
     # Our output data, which is the expected data that the final PCollection must match.
     EXPECTED = [
         {
-            "msgid": "1d4e4dde1f0178df0f396c14587feb04",
+            "msgid": "c8de2f410ae274c94fbd6583f722fc6b",
             "source": "CHILE_VMS_SOME_FLEET",
             "source_type": "VMS",
             "source_tenant": "CHL",
@@ -47,7 +47,7 @@ class TestCHLNormalize(unittest.TestCase):
             "source_fleet": "SOME_FLEET",
             "source_ssvid": None,
             "type": "VMS",
-            "ssvid": "CHL|s:AUSTRAL TRAVELER|c:ABC123",
+            "ssvid": "CHL|s:AUSTRALTRAVELER|c:ABC123",
             "timestamp": datetime.fromisoformat("2020-01-01 20:23:01+00:00"),
             "lat": -52.546,
             "lon": -71.947,
