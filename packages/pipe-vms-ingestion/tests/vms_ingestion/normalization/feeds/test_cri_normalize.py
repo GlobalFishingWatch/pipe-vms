@@ -13,7 +13,13 @@ from vms_ingestion.normalization.feeds.cri_normalize import CRINormalize
 class TestCRINormalize(unittest.TestCase):
 
     options = build_pipeline_options_with_defaults(
-        argv=["--country_code=cri", '--source=""', '--destination=""', '--start_date=""', '--end_date=""']
+        argv=[
+            "--country_code=cri",
+            '--source=""',
+            '--destination=""',
+            '--start_date=""',
+            '--end_date=""',
+        ]
     )
 
     # Our input data, which will make up the initial PCollection.
@@ -58,8 +64,8 @@ class TestCRINormalize(unittest.TestCase):
             "registry_number": None,
             "shipname": "K'IN",
             "shiptype": None,
-            "source": "costarica_vms_sardineros",
-            "source_fleet": "sardineros",
+            "source": "COSTARICA_VMS_SARDINEROS",
+            "source_fleet": "SARDINEROS",
             "source_provider": "INCOPESCA",
             "source_tenant": "CRI",
             "source_ssvid": None,
@@ -68,7 +74,9 @@ class TestCRINormalize(unittest.TestCase):
             "ssvid": "CRI|s:K'IN",
             "status": None,
             "timestamp": datetime.fromisoformat("2024-05-01 12:15:01+00:00"),
-            "timestamp_date": datetime.date(datetime.fromisoformat("2024-05-01 12:15:01+00:00")),
+            "timestamp_date": datetime.date(
+                datetime.fromisoformat("2024-05-01 12:15:01+00:00")
+            ),
             "type": "VMS",
             "width": None,
         },
@@ -85,4 +93,6 @@ class TestCRINormalize(unittest.TestCase):
             output: pvalue.PCollection = input | CRINormalize(feed="cri")
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, pcol_equal_to(TestCRINormalize.EXPECTED), label="CheckOutput")
+            assert_that(
+                output, pcol_equal_to(TestCRINormalize.EXPECTED), label="CheckOutput"
+            )

@@ -1,6 +1,11 @@
 from datetime import datetime
 
 import apache_beam as beam
+from shipdataprocess.standardize import (
+    standardize_imo,
+    standardize_int_str,
+    standardize_str,
+)
 from vms_ingestion.normalization.transforms.calculate_msgid import get_message_id
 from vms_ingestion.normalization.transforms.calculate_ssvid import encode_ssvid
 
@@ -9,33 +14,33 @@ def map_normalized_message(msg, feed, source_provider, source_format):
     result = {
         **msg,
         "source_type": "VMS",
-        "source_tenant": feed.upper(),
-        "source_provider": source_provider,
-        "source_fleet": msg.get("fleet"),
+        "source_tenant": standardize_str(feed),
+        "source_provider": standardize_str(source_provider),
+        "source_fleet": standardize_str(msg.get("fleet")),
         "source_ssvid": msg.get("internal_id"),
-        "type": msg.get("type", "VMS"),
+        "type": standardize_str(msg.get("type", "VMS")),
         "timestamp": msg["timestamp"],
         "lat": msg["lat"],
         "lon": msg["lon"],
         "speed": msg.get("speed"),
         "course": msg.get("course"),
         "heading": msg.get("heading"),
-        "shipname": msg["shipname"],
-        "callsign": msg["callsign"] if msg["callsign"] else None,
+        "shipname": standardize_str(msg["shipname"]),
+        "callsign": standardize_str(msg["callsign"]) if msg["callsign"] else None,
         "destination": msg.get("destination"),
-        "imo": msg.get("imo"),
-        "shiptype": msg.get("shiptype"),
+        "imo": standardize_imo(msg.get("imo")),
+        "shiptype": standardize_str(msg.get("shiptype")),
         "receiver_type": msg.get("receiver_type"),
         "receiver": msg.get("receiver"),
         "length": msg.get("length"),
         "width": msg.get("width"),
-        "status": msg.get("status"),
-        "class_b_cs_flag": msg.get("class_b_cs_flag"),
+        "status": standardize_int_str(msg.get("status")),
+        "class_b_cs_flag": standardize_int_str(msg.get("class_b_cs_flag")),
         "received_at": msg.get("received_at"),
         "ingested_at": msg.get("ingested_at"),
         "timestamp_date": datetime.date(msg["timestamp"]),
     }
-    return {**result, "source": source_format.format(**result)}
+    return {**result, "source": standardize_str(source_format.format(**result))}
 
 
 class MapNormalizedMessage(beam.PTransform):
@@ -46,7 +51,12 @@ class MapNormalizedMessage(beam.PTransform):
         self.source_format = source_format
 
     def expand(self, pcoll):
-        return pcoll | self.map_normalized_message() | self.calculate_ssvid() | self.calculate_message_id()
+        return (
+            pcoll
+            | self.map_normalized_message()
+            | self.calculate_ssvid()
+            | self.calculate_message_id()
+        )
 
     def map_normalized_message(self):
         return beam.Map(

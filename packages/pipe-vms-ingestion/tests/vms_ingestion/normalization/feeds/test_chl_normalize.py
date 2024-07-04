@@ -13,7 +13,13 @@ from vms_ingestion.normalization.feeds.chl_normalize import CHLNormalize
 class TestCHLNormalize(unittest.TestCase):
 
     options = build_pipeline_options_with_defaults(
-        argv=["--country_code=chl", '--source=""', '--destination=""', '--start_date=""', '--end_date=""']
+        argv=[
+            "--country_code=chl",
+            '--source=""',
+            '--destination=""',
+            '--start_date=""',
+            '--end_date=""',
+        ]
     )
 
     # Our input data, which will make up the initial PCollection.
@@ -34,11 +40,11 @@ class TestCHLNormalize(unittest.TestCase):
     EXPECTED = [
         {
             "msgid": "1d4e4dde1f0178df0f396c14587feb04",
-            "source": "chile_vms_some_fleet",
+            "source": "CHILE_VMS_SOME_FLEET",
             "source_type": "VMS",
             "source_tenant": "CHL",
             "source_provider": "SERNAPESCA",
-            "source_fleet": "some_fleet",
+            "source_fleet": "SOME_FLEET",
             "source_ssvid": None,
             "type": "VMS",
             "ssvid": "CHL|s:AUSTRAL TRAVELER|c:ABC123",
@@ -62,7 +68,9 @@ class TestCHLNormalize(unittest.TestCase):
             "class_b_cs_flag": None,
             "received_at": None,
             "ingested_at": None,
-            "timestamp_date": datetime.date(datetime.fromisoformat("2020-01-01 20:23:01+00:00")),
+            "timestamp_date": datetime.date(
+                datetime.fromisoformat("2020-01-01 20:23:01+00:00")
+            ),
         }
     ]
 
@@ -77,4 +85,6 @@ class TestCHLNormalize(unittest.TestCase):
             output: pvalue.PCollection = input | CHLNormalize(feed="chl")
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, pcol_equal_to(TestCHLNormalize.EXPECTED), label="CheckOutput")
+            assert_that(
+                output, pcol_equal_to(TestCHLNormalize.EXPECTED), label="CheckOutput"
+            )

@@ -27,6 +27,7 @@ packages = [
   python = ">=3.9,<3.11"
   apache-beam = {extras = ["gcp"], version = "2.56.0"}
   jinja2 = "^3.0.3"
+  shipdataprocess = "^0.8.6"
 
   [tool.poetry.group.dev.dependencies]
   autopep8 = "2.0.2"

@@ -13,7 +13,13 @@ from vms_ingestion.normalization.feeds.bra_normalize import BRANormalize
 class TestBRANormalize(unittest.TestCase):
 
     options = build_pipeline_options_with_defaults(
-        argv=["--country_code=bra", '--source=""', '--destination=""', '--start_date=""', '--end_date=""']
+        argv=[
+            "--country_code=bra",
+            '--source=""',
+            '--destination=""',
+            '--start_date=""',
+            '--end_date=""',
+        ]
     )
 
     # Our input data, which will make up the initial PCollection.
@@ -34,7 +40,7 @@ class TestBRANormalize(unittest.TestCase):
     # Our output data, which is the expected data that the final PCollection must match.
     EXPECTED = [
         {
-            "msgid": "bb84c21c72cb41d85d724245b52cf2ab",
+            "msgid": "35ce9e221627ed4344e679cd1f95d801",
             "source": "ONYXSAT_BRAZIL_VMS",
             "source_type": "VMS",
             "source_tenant": "BRA",
@@ -43,18 +49,18 @@ class TestBRANormalize(unittest.TestCase):
             "source_ssvid": "4961089",
             "type": "VMS",
             "internal_id": "4961089",
-            "ssvid": "BRA|i:4961089|s:Cibradep X",
+            "ssvid": "BRA|i:4961089|s:CIBRADEP X",
             "timestamp": datetime.fromisoformat("2024-05-01 05:35:45+00:00"),
             "lat": -1.21861112117767,
             "lon": -48.4911117553711,
             "speed": 9.1792656587473,
             "course": 192.0,
             "heading": None,
-            "shipname": "Cibradep X",
+            "shipname": "CIBRADEP X",
             "callsign": None,
             "destination": None,
             "imo": None,
-            "shiptype": "fishing",
+            "shiptype": "FISHING",
             "receiver_type": None,
             "receiver": None,
             "length": None,
@@ -63,7 +69,9 @@ class TestBRANormalize(unittest.TestCase):
             "class_b_cs_flag": None,
             "received_at": None,
             "ingested_at": None,
-            "timestamp_date": datetime.date(datetime.fromisoformat("2024-05-01 05:35:45+00:00")),
+            "timestamp_date": datetime.date(
+                datetime.fromisoformat("2024-05-01 05:35:45+00:00")
+            ),
         }
     ]
 
@@ -78,4 +86,6 @@ class TestBRANormalize(unittest.TestCase):
             output: pvalue.PCollection = input | BRANormalize(feed="bra")
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, pcol_equal_to(TestBRANormalize.EXPECTED), label="CheckOutput")
+            assert_that(
+                output, pcol_equal_to(TestBRANormalize.EXPECTED), label="CheckOutput"
+            )
