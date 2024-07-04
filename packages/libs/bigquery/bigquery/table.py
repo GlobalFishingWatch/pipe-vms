@@ -109,14 +109,19 @@ Research: {research_maintainer}
     return description
 
 
-def clear_records(table_id, date_field, date_from, date_to, additional_conditions: List[str] = []):
-    print(f"Deleting records at table {table_id} between {date_from:%Y-%m-%d} and {date_to:%Y-%m-%d}")
+def clear_records(
+    table_id, date_field, date_from, date_to, additional_conditions: List[str] = []
+):
+    print(
+        f"Deleting records at table {table_id} where {date_field} >= '{date_from:%Y-%m-%d} "
+        + f"AND {date_field} < '{date_to:%Y-%m-%d}'"
+    )
     [project, dataset, table] = table_id.split(".")
     client = bigquery.Client(project=project)
     conditions = " AND ".join(["TRUE"] + additional_conditions)
     sql = f"""
             DELETE FROM `{table_id}`
-            WHERE {date_field} BETWEEN '{date_from:%Y-%m-%d}' AND '{date_to:%Y-%m-%d}'
+            WHERE {date_field} >= '{date_from:%Y-%m-%d}' AND {date_field} < '{date_to:%Y-%m-%d}'
             AND {conditions}
     """
     query_job = client.query(
@@ -126,7 +131,10 @@ def clear_records(table_id, date_field, date_from, date_to, additional_condition
         ),
     )
     result = query_job.result()
-    print(f"Records at table {table_id} between {date_from:%Y-%m-%d} and {date_to:%Y-%m-%d} deleted")
+    print(
+        f"Records at table {table_id} where {date_field} >= '{date_from:%Y-%m-%d} "
+        + f"AND {date_field} < '{date_to:%Y-%m-%d}' deleted"
+    )
     return result
 
 
