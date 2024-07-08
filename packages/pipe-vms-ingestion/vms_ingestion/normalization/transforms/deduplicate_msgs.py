@@ -34,6 +34,7 @@ class DeduplicateMsgs(PTransform):
         return GroupBy(
             id=lambda message: message["ssvid"],
             timestamp=lambda message: message["timestamp"].isoformat(),
+            source=lambda message: message["source"],
         )
 
     def prioritize_msg_with_shipname(self):
