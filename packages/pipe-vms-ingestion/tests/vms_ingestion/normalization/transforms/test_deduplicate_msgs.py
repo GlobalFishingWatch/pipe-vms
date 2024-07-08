@@ -36,6 +36,7 @@ class TestDeduplicateMsgs(unittest.TestCase):
                         "lon": 10,
                         "shipname": "",
                         "received_at": None,
+                        "source": "country_fleet_1",
                         "ssvid": "1",
                     },
                     {
@@ -46,6 +47,7 @@ class TestDeduplicateMsgs(unittest.TestCase):
                         "lon": 10,
                         "shipname": "SANTA MARIA",
                         "received_at": None,
+                        "source": "country_fleet_1",
                         "ssvid": "1",
                     },
                     {
@@ -58,6 +60,7 @@ class TestDeduplicateMsgs(unittest.TestCase):
                         "received_at": datetime.strptime(
                             "2024-01-01T00:00:01", "%Y-%m-%dT%H:%M:%S"
                         ),
+                        "source": "country_fleet_1",
                         "ssvid": "1",
                     },
                     {
@@ -70,6 +73,20 @@ class TestDeduplicateMsgs(unittest.TestCase):
                         "received_at": datetime.strptime(
                             "2024-01-01T00:10:00", "%Y-%m-%dT%H:%M:%S"
                         ),
+                        "source": "country_fleet_1",
+                        "ssvid": "1",
+                    },
+                    {
+                        "timestamp": datetime.strptime(
+                            "2024-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S"
+                        ),
+                        "lat": 10,
+                        "lon": 10,
+                        "shipname": "SANTA MARIA",
+                        "received_at": datetime.strptime(
+                            "2024-01-01T00:10:00", "%Y-%m-%dT%H:%M:%S"
+                        ),
+                        "source": "country_fleet_2",
                         "ssvid": "1",
                     },
                 ]
@@ -84,17 +101,23 @@ class TestDeduplicateMsgs(unittest.TestCase):
                 pcol_equal_to(
                     [
                         {
-                            "timestamp": datetime.strptime(
-                                "2024-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S"
-                            ),
                             "lat": 10,
                             "lon": 10,
+                            "received_at": datetime(2024, 1, 1, 0, 10),
                             "shipname": "SANTA MARIA",
-                            "received_at": datetime.strptime(
-                                "2024-01-01T00:10:00", "%Y-%m-%dT%H:%M:%S"
-                            ),
+                            "source": "country_fleet_1",
                             "ssvid": "1",
-                        }
+                            "timestamp": datetime(2024, 1, 1, 0, 0),
+                        },
+                        {
+                            "lat": 10,
+                            "lon": 10,
+                            "received_at": datetime(2024, 1, 1, 0, 10),
+                            "shipname": "SANTA MARIA",
+                            "source": "country_fleet_2",
+                            "ssvid": "1",
+                            "timestamp": datetime(2024, 1, 1, 0, 0),
+                        },
                     ]
                 ),
                 label="CheckOutput",
