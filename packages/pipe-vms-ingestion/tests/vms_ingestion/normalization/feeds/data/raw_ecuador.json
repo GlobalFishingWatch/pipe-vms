@@ -1,0 +1,40 @@
+[
+  {
+    "timestamp": "2024-04-20 08:14:00+00:00",
+    "shipname": "NAUTILUS XXX",
+    "ssvid": "98765",
+    "imo": null,
+    "mmsi": null,
+    "callsign": "TN-00-01234",
+    "utc_time": "2024-04-20 08:14:00+00:00",
+    "fechaqth": "2024-04-20 03:14:00+00:00",
+    "idnave": "98765",
+    "idqth": "202211234",
+    "lat": -2.19445,
+    "lon": -80.0178,
+    "matriculanave": "TN-00-01234",
+    "mmsi_1": null,
+    "nombrenave": "NAUTILUS XXX",
+    "rumbo": 117,
+    "velocidad": 5
+  },
+  {
+    "timestamp": "2024-04-20 08:00:00+00:00",
+    "shipname": "GUAYATUNA DOS",
+    "ssvid": "12345",
+    "imo": null,
+    "mmsi": "735012345",
+    "callsign": "P -00-00123",
+    "utc_time": "2024-04-20 08:00:00+00:00",
+    "fechaqth": "2024-04-20 03:00:00+00:00",
+    "idnave": "12345",
+    "idqth": "202203405",
+    "lat": -7.611016,
+    "lon": -101.358451,
+    "matriculanave": "P -00-00123",
+    "mmsi_1": "735012345",
+    "nombrenave": "SANTA MARTA DOS",
+    "rumbo": 72,
+    "velocidad": 13
+  }
+]
