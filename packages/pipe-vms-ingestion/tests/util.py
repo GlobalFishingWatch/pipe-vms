@@ -1,3 +1,5 @@
+import csv
+import json
 import shutil
 
 import icdiff
@@ -17,6 +19,21 @@ ICDIFF_STRIP_TRAILING_CR = False
 
 # Based on https://github.com/hjwp/pytest-icdiff/blob/main/pytest_icdiff.py
 # but adapted to use with apache beam assertions
+
+
+def read_csv_to_list(file_path):
+    data_list = []
+    with open(file_path, mode="r", newline="") as file:
+        csv_reader = csv.reader(file)
+        for row in csv_reader:
+            data_list.append(row)
+    return data_list
+
+
+def read_json(file_path):
+    with open(file_path, "r") as file:
+        data = json.load(file)
+    return data
 
 
 def diff_dicts(left, right):
