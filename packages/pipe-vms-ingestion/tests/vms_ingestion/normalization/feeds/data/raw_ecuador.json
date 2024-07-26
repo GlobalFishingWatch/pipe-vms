@@ -13,7 +13,6 @@
     "lat": -2.19445,
     "lon": -80.0178,
     "matriculanave": "TN-00-01234",
-    "mmsi_1": null,
     "nombrenave": "NAUTILUS XXX",
     "rumbo": 117,
     "velocidad": 5
@@ -32,7 +31,6 @@
     "lat": -7.611016,
     "lon": -101.358451,
     "matriculanave": "P -00-00123",
-    "mmsi_1": "735012345",
     "nombrenave": "SANTA MARTA DOS",
     "rumbo": 72,
     "velocidad": 13
