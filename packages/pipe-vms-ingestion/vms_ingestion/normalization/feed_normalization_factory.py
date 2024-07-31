@@ -3,6 +3,7 @@ from vms_ingestion.normalization.feeds.bra_normalize import BRANormalize
 from vms_ingestion.normalization.feeds.chl_normalize import CHLNormalize
 from vms_ingestion.normalization.feeds.cri_normalize import CRINormalize
 from vms_ingestion.normalization.feeds.ecu_normalize import ECUNormalize
+from vms_ingestion.normalization.feeds.nor_normalize import NORNormalize
 
 
 class FeedNormalizationFactory:
@@ -18,5 +19,7 @@ class FeedNormalizationFactory:
             return CRINormalize(feed=feed_id)
         elif feed_id == "ecu":
             return ECUNormalize(feed=feed_id)
+        elif feed_id == "nor":
+            return NORNormalize(feed=feed_id)
         else:
             raise ValueError(feed)

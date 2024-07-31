@@ -1,0 +1,36 @@
+[
+  {
+    "message_id": "229526703",
+    "message_type_code": "POS",
+    "message_type": "Posisjonsrapport",
+    "timestamp_utc": "2024-07-02 20:18:00+00:00",
+    "lat": "68.6139",
+    "lon": "14.253",
+    "course": "150",
+    "speed": "1.9",
+    "callsign": "LLQX",
+    "registration_mark": "Ø 0300H",
+    "vessel_name": "SPJÆRINGEN",
+    "length": "27.91",
+    "gross_tonnage": "272",
+    "power_engine": "900",
+    "vessel_type": "Fiskefartøy"
+  },
+  {
+    "message_id": "229306743",
+    "message_type_code": "POS",
+    "message_type": "Posisjonsrapport",
+    "timestamp_utc": "2024-07-02 07:35:00+00:00",
+    "lat": "71.1836",
+    "lon": "23.8391",
+    "course": "268",
+    "speed": "7.7",
+    "callsign": "3YCU",
+    "registration_mark": "N 0220Ø",
+    "vessel_name": "LEANDER",
+    "length": "36.5",
+    "gross_tonnage": "490",
+    "power_engine": "1507",
+    "vessel_type": "Fiskefartøy"
+  }
+]
