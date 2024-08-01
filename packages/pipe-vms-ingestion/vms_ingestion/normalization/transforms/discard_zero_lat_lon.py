@@ -6,4 +6,8 @@ class DiscardZeroLatLon(PTransform):
         return pcoll | self.discard_zero_lat_lon()
 
     def discard_zero_lat_lon(self):
-        return Filter(lambda x: not (x["lat"] == 0 and x["lon"] == 0))
+        return Filter(
+            lambda x: not (
+                x["lat"] == 0 and x["lon"] == 0 or x["lat"] is None or x["lon"] is None
+            )
+        )
