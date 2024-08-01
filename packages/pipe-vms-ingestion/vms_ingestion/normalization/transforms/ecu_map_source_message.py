@@ -3,6 +3,7 @@
 import re
 
 import apache_beam as beam
+from utils.convert import to_float
 
 SHIPTYPE_BY_MATRICULA = {
     "TI": "international traffic",
@@ -18,10 +19,10 @@ def ecu_map_source_message(msg):
     return {
         "shipname": f'{msg["nombrenave"]}'.strip(),
         "timestamp": msg["utc_time"],
-        "lat": float(msg["lat"]),
-        "lon": float(msg["lon"]),
-        "speed": float(msg["velocidad"]) if msg.get("velocidad") is not None else None,
-        "course": float(msg["rumbo"]) if msg.get("rumbo") is not None else None,
+        "lat": to_float(msg["lat"]),
+        "lon": to_float(msg["lon"]),
+        "speed": to_float(msg["velocidad"]),
+        "course": to_float(msg["rumbo"]),
         "internal_id": f'{msg["idnave"]}' if msg.get("idnave") else None,
         "shiptype": ecu_infer_shiptype(msg["matriculanave"]),
         "callsign": f'{msg["matriculanave"]}',

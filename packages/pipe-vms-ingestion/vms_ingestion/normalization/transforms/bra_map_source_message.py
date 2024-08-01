@@ -3,16 +3,17 @@
 import re
 
 import apache_beam as beam
+from utils.convert import to_float
 
 
 def bra_map_source_message(msg):
     return {
         "shipname": f'{msg["nome"]}'.strip(),
         "timestamp": msg["datahora"],
-        "lat": float(msg["lat"].replace(",", ".")),
-        "lon": float(msg["lon"].replace(",", ".")),
-        "speed_kph": float(msg["speed"]) if msg.get("speed") is not None else None,
-        "course": float(msg["curso"]) if msg.get("curso") is not None else None,
+        "lat": to_float(msg["lat"].replace(",", ".")),
+        "lon": to_float(msg["lon"].replace(",", ".")),
+        "speed_kph": to_float(msg["speed"]),
+        "course": to_float(msg["curso"]),
         "internal_id": f'{msg["ID"]}' if msg.get("ID") else None,
         "msgid": f'{msg["mID"]}' if msg.get("mID") else None,
         "shiptype": bra_infer_shiptype(msg["codMarinha"]),
@@ -37,4 +38,6 @@ def bra_infer_shiptype(cod_marinha):
 class BRAMapSourceMessage(beam.PTransform):
 
     def expand(self, pcoll):
-        return pcoll | "Preliminary source fields mapping" >> beam.Map(bra_map_source_message)
+        return pcoll | "Preliminary source fields mapping" >> beam.Map(
+            bra_map_source_message
+        )
