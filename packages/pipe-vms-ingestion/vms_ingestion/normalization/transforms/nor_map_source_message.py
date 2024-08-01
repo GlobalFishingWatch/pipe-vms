@@ -1,4 +1,5 @@
 import apache_beam as beam
+from utils.convert import to_float
 
 SHIPTYPE_BY_VESSEL_TYPE = {
     "FISKEFARTØY": "fishing",
@@ -13,11 +14,11 @@ def nor_map_source_message(msg):
         "shipname": f'{msg["vessel_name"]}'.strip(),
         "msgid": f'{msg["message_id"]}'.strip(),
         "timestamp": msg["timestamp_utc"],
-        "lat": float(msg["lat"]),
-        "length": float(msg["length"]),
-        "lon": float(msg["lon"]),
-        "speed": float(msg["speed"]) if msg.get("speed") is not None else None,
-        "course": float(msg["course"]) if msg.get("course") is not None else None,
+        "lat": to_float(msg["lat"]),
+        "length": to_float(msg["length"]),
+        "lon": to_float(msg["lon"]),
+        "speed": to_float(msg["speed"]),
+        "course": to_float(msg["course"]),
         "shiptype": nor_infer_shiptype(msg["vessel_type"]),
         "callsign": f'{msg["callsign"]}',
     }
