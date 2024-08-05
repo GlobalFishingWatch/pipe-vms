@@ -74,8 +74,8 @@ class NormalizationPipeline:
                 date_range=(self.start_date, self.end_date),
                 labels=self.labels,
             )
-            | "Discard Zero Lat and Lon" >> DiscardZeroLatLon()
             | "Normalize" >> FeedNormalizationFactory.get_normalization(feed=self.feed)
+            | "Discard Zero Lat and Lon" >> DiscardZeroLatLon()
             | "Deduplicate" >> DeduplicateMsgs()
             | PickOutputFields(fields=[f"{field}" for field in self.output_fields])
             | "Write Sink"
