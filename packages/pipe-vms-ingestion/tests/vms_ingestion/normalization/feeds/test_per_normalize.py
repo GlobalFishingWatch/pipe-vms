@@ -1,6 +1,6 @@
 import os
 import unittest
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 
 import apache_beam as beam
 from apache_beam import pvalue
