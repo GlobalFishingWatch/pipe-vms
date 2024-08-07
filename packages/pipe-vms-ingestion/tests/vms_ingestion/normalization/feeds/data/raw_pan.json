@@ -1,0 +1,54 @@
+[
+  {
+    "shipname": "NAUTILUS I",
+    "timestamp": "2024-07-03 00:00:00+00:00",
+    "lat": 5.0,
+    "lon": -135.16,
+    "speed": 10.5,
+    "course": 36.0,
+    "imo": "72919192",
+    "mmsi": null,
+    "callsign": "HP8989",
+    "shiptype": "200",
+    "registry_number": "51132-PEXT-1"
+  },
+  {
+    "shipname": "ZAIRA DEL MAR",
+    "timestamp": "2024-07-03 00:00:00+00:00",
+    "lat": 37.086,
+    "lon": -9.649,
+    "speed": 10.5,
+    "course": 168.0,
+    "imo": "98121314",
+    "mmsi": "352080000",
+    "callsign": "3EDY0",
+    "shiptype": "887",
+    "registry_number": "12345-TJ"
+  },
+  {
+    "shipname": "MICHELE",
+    "timestamp": "2024-07-03 00:00:00+00:00",
+    "lat": 35.042,
+    "lon": 138.511,
+    "speed": 0.0,
+    "course": 194.0,
+    "imo": "91111212",
+    "mmsi": null,
+    "callsign": "4EGV2",
+    "shiptype": null,
+    "registry_number": "92649-TJ"
+  },
+  {
+    "shipname": "ENRIQUE NAZARENO",
+    "timestamp": "2024-07-03 00:00:00+00:00",
+    "lat": 8.842,
+    "lon": -79.662,
+    "speed": 0.0,
+    "course": 185.0,
+    "imo": "8989999",
+    "mmsi": "371123456",
+    "callsign": "HO9842",
+    "shiptype": "458",
+    "registry_number": "65432-53"
+  }
+]
