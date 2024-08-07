@@ -90,6 +90,14 @@ class TestDiscardZeroLatLon(unittest.TestCase):
                         "received_at": None,
                         "ssvid": "1",
                     },
+                    {
+                        "timestamp": datetime.strptime(
+                            "2024-01-01T00:05:00", "%Y-%m-%dT%H:%M:%S"
+                        ),
+                        "shipname": "SANTA MARIA",
+                        "received_at": None,
+                        "ssvid": "1",
+                    },
                 ]
             )
 

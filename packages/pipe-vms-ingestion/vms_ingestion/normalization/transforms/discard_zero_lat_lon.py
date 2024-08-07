@@ -8,21 +8,13 @@ class DiscardZeroLatLon(PTransform):
     def discard_zero_lat_lon(self):
         return Filter(
             lambda x: not (
-                (
-                    "lat" in x
-                    and "lon" in x
-                    and x.get("lat") == 0
-                    and x.get("lon") == 0
-                    or x.get("lat") is None
-                    or x.get("lon") is None
-                )
-                or (
-                    "LATITUDE" in x
-                    and "LONGITUDE" in x
-                    and x.get("LATITUDE") == 0
-                    and x.get("LONGITUDE") == 0
-                    or x.get("LATITUDE") is None
-                    or x.get("LONGITUDE") is None
-                )
+                # exclude when lat, lon is  0, 0
+                x.get("lat") == 0
+                and x.get("lon") == 0
+                #  exclude also if lat or lon is missing
+                or x.get("lat") is None
+                or x.get("lon") is None
             )
+            # include only records that have lat and lon fields
+            and ("lat" in x and "lon" in x)
         )
