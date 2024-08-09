@@ -1,8 +1,8 @@
 import sys
 
-from vms_ingestion.normalization import run_normalization
-
 from logger import logger
+from vms_ingestion.ingestion import run_ingestion
+from vms_ingestion.normalization import run_normalization
 
 logger.setup_logger(1)
 logging = logger.get_logger()
@@ -10,6 +10,7 @@ logging = logger.get_logger()
 
 SUBCOMMANDS = {
     "normalize": run_normalization,
+    "ingestion": run_ingestion,
 }
 
 if __name__ == "__main__":
@@ -17,7 +18,9 @@ if __name__ == "__main__":
 
     if len(sys.argv) < 2:
         logging.info(
-            "No subcommand specified. Run pipeline [SUBCOMMAND], " + "where subcommand is one of %s", SUBCOMMANDS.keys()
+            "No subcommand specified. Run pipeline [SUBCOMMAND], "
+            + "where subcommand is one of %s",
+            SUBCOMMANDS.keys(),
         )
         exit(1)
 
