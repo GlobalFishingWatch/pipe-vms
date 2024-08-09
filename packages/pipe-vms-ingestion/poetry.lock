@@ -508,6 +508,17 @@ files = [
 ]
 
 [[package]]
+name = "et-xmlfile"
+version = "1.1.0"
+description = "An implementation of lxml.xmlfile for the standard library"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "et_xmlfile-1.1.0-py3-none-any.whl", hash = "sha256:a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"},
+    {file = "et_xmlfile-1.1.0.tar.gz", hash = "sha256:8eb9e2bc2f8c97e37a2dc85a09ecdcdec9d8a396530a6d5a33b30b9a92da0c5c"},
+]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.1"
 description = "Backport of PEP 654 (exception groups)"
@@ -1251,6 +1262,17 @@ grpcio = ">=1.62.2"
 protobuf = ">=4.21.6"
 
 [[package]]
+name = "haversine"
+version = "2.8.1"
+description = "Calculate the distance between 2 points on Earth."
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "haversine-2.8.1-py2.py3-none-any.whl", hash = "sha256:1acdd7e35115e00346898984acd55b0827d289df434efef98376f0bed37c8fa7"},
+    {file = "haversine-2.8.1.tar.gz", hash = "sha256:ab750caa0c8f2168bd7b00a429757a83a8393be1aa30f91c2becf6b523189e2a"},
+]
+
+[[package]]
 name = "hdfs"
 version = "2.7.3"
 description = "HdfsCLI: API and command line interface for HDFS."
@@ -1571,6 +1593,20 @@ files = [
 [package.extras]
 dev = ["black", "bumpver", "coveralls", "flake8", "isort", "mypy", "pip-tools", "pylint", "pytest", "pytest-cov", "pyyaml"]
 docs = ["myst-parser", "sphinx", "sphinx-markdown-builder (>=0.6.0)", "sphinx-rtd-dark-mode", "sphinx-rtd-theme"]
+
+[[package]]
+name = "openpyxl"
+version = "3.1.5"
+description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "openpyxl-3.1.5-py2.py3-none-any.whl", hash = "sha256:5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2"},
+    {file = "openpyxl-3.1.5.tar.gz", hash = "sha256:cf0e3cf56142039133628b5acffe8ef0c12bc902d2aadd3e0fe5878dc08d1050"},
+]
+
+[package.dependencies]
+et-xmlfile = "*"
 
 [[package]]
 name = "orjson"
@@ -2871,4 +2907,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "04d7b07df6edeb18a22cc9889f19e4b0e7a368db37849a6edfb9a7c6148ae59a"
+content-hash = "339bed81388c171f4c4f77da1321b2756a06ede0d0b9eacdfba2ae0df331a04f"
