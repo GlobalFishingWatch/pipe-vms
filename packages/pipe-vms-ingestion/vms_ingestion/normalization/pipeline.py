@@ -3,6 +3,7 @@ import datetime as dt
 import apache_beam as beam
 from apache_beam.options.pipeline_options import GoogleCloudOptions
 from bigquery.table import clear_records, ensure_table_exists
+from common.transforms.pick_output_fields import PickOutputFields
 from vms_ingestion.normalization.feed_normalization_factory import (
     FeedNormalizationFactory,
 )
@@ -12,7 +13,6 @@ from vms_ingestion.normalization.transforms.discard_zero_lat_lon import (
     DiscardZeroLatLon,
 )
 from vms_ingestion.normalization.transforms.map_latlon import MapLatLon
-from vms_ingestion.normalization.transforms.pick_output_fields import PickOutputFields
 from vms_ingestion.normalization.transforms.read_source import ReadSource
 from vms_ingestion.normalization.transforms.write_sink import (
     WriteSink,

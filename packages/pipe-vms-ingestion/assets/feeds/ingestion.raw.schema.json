@@ -1,0 +1,98 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "raw_msg_id",
+    "type": "STRING",
+    "description": "Unique identifier for this message generated during ingestion"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "raw_vessel_id",
+    "type": "STRING",
+    "description": "Unique identifier for the vessel generated during ingestion"
+  },
+  {
+    "name": "beacon_number",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "shipname",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Shipname"
+  },
+  {
+    "name": "timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "This is the unix timestamp for the time the message was received by the original receiver.  You should use this as the effective timestamp for the message"
+  },
+  {
+    "name": "callsign",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "imo",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "registry_number",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "lat",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "lon",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "speed",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "heading",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "mmsi",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "fishing_zone",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "fishing_gear",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "ingested_at",
+    "type": "TIMESTAMP",
+    "description": "The exact moment this record was ingested by us (GFW) this is when the raw record is stored in our raw BQ tables"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "timestamp_date",
+    "type": "DATE",
+    "description": "This is the day when the message was received by the original receiver in UTC"
+  }
+]

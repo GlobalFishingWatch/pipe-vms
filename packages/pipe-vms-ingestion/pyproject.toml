@@ -26,6 +26,8 @@ readme = 'README.md'
   jinja2 = "^3.0.3"
   shipdataprocess = "0.8.6"
   pandas = "^2.2.2"
+  haversine = "^2.8.1"
+  openpyxl = "^3.1.5"
 
     [tool.poetry.dependencies.bigquery]
     path = "../libs/bigquery"
