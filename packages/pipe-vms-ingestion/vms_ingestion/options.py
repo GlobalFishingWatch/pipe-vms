@@ -2,7 +2,7 @@ from apache_beam.options.pipeline_options import PipelineOptions
 from common import validators
 
 
-class NormalizationOptions(PipelineOptions):
+class CommonPipelineOptions(PipelineOptions):
     @classmethod
     def _add_argparse_args(cls, parser):
         required = parser.add_argument_group("Required")
@@ -21,13 +21,6 @@ class NormalizationOptions(PipelineOptions):
         )
 
         required.add_argument(
-            "--source_timestamp_field",
-            required=False,
-            default="timestamp",
-            help="Field name in source table that contains the timestamp of the position record.",
-        )
-
-        required.add_argument(
             "--destination",
             required=True,
             help="Destination table prefix to write messages to, in the standard sql format PROJECT.DATASET.TABLE.",
@@ -40,11 +33,18 @@ class NormalizationOptions(PipelineOptions):
         )
 
         required.add_argument(
-            "--end_date", required=True, help="Read the source table for messages before end date in format YYYY-MM-DD"
+            "--end_date",
+            required=True,
+            help="Read the source table for messages before end date in format YYYY-MM-DD",
         )
 
         optional = parser.add_argument_group("Optional")
-
+        optional.add_argument(
+            "--source_timestamp_field",
+            required=False,
+            default="timestamp",
+            help="Field name in source table that contains the timestamp of the position record.",
+        )
         optional.add_argument(
             "--wait_for_job",
             default=False,
