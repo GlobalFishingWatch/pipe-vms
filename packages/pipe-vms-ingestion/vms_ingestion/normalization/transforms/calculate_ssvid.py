@@ -1,3 +1,4 @@
+import hashlib
 import re
 
 
@@ -24,3 +25,10 @@ def decode_ssvid(ssvid):
     )
     m = p.match(ssvid)
     return m.groupdict()
+
+
+def get_ssvid(country, internal_id="", shipname="", callsign="", licence="", **_):
+    ssvid = encode_ssvid(country, internal_id, shipname, callsign, licence, **_)
+    h = hashlib.blake2b(digest_size=32)
+    h.update(str.encode(ssvid))
+    return h.hexdigest()
