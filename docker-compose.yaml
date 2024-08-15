@@ -30,9 +30,15 @@ services:
       - ./packages/pipe-vms-ingestion/main.py:/app/pipe-vms-ingestion/main.py
       - ./packages/pipe-vms-ingestion/tests:/app/pipe-vms-ingestion/tests
       - ./packages/pipe-vms-ingestion/vms_ingestion:/app/pipe-vms-ingestion/vms_ingestion
-# Use an external named volume so that we can share gcp auth across containers
-# Before first use, this volume must be manually created with
-#   docker volume create --name=gcp
+
+  # Use an external named volume so that we can share gcp auth across containers
+  # Before first use, this volume must be manually created with
+  #   docker volume create --name=gcp
+  gcloud:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:stable
+    entrypoint: gcloud
+    volumes:
+      - "gcp:/root/.config/"
 volumes:
   gcp:
     external: true
