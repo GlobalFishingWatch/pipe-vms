@@ -2,7 +2,7 @@ import apache_beam as beam
 
 
 def pick_output_fields(fields, msg):
-    return {key: msg[key] for key in fields}
+    return {key: msg[key] for key in fields if key in msg}
 
 
 class PickOutputFields(beam.PTransform):
