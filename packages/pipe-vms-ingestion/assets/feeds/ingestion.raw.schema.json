@@ -1,17 +1,5 @@
 [
   {
-    "mode": "NULLABLE",
-    "name": "raw_msg_id",
-    "type": "STRING",
-    "description": "Unique identifier for this message generated during ingestion"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "raw_vessel_id",
-    "type": "STRING",
-    "description": "Unique identifier for the vessel generated during ingestion"
-  },
-  {
     "name": "beacon_number",
     "type": "INTEGER",
     "mode": "NULLABLE"
@@ -44,11 +32,6 @@
     "mode": "NULLABLE"
   },
   {
-    "name": "registry_number",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
     "name": "lat",
     "type": "FLOAT",
     "mode": "NULLABLE"
@@ -74,6 +57,12 @@
     "mode": "NULLABLE"
   },
   {
+    "name": "internal_id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Internal Vessel ID. this is the record id provided by the source (registry number, matricula, plate, etc...)"
+  },
+  {
     "name": "fishing_zone",
     "type": "STRING",
     "mode": "NULLABLE"
@@ -85,9 +74,33 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "msgid",
+    "type": "STRING",
+    "description": "[GFW] Unique identifier for this message generated during ingestion"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "ssvid",
+    "type": "STRING",
+    "description": "[GFW] Unique identifier for the vessel generated during ingestion"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "source_tenant",
+    "type": "STRING",
+    "description": "[GFW] The proprietary of the data (Eg: country)"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "source_fleet",
+    "type": "STRING",
+    "description": "[GFW] Fleet of the vessel"
+  },
+  {
+    "mode": "NULLABLE",
     "name": "ingested_at",
     "type": "TIMESTAMP",
-    "description": "The exact moment this record was ingested by us (GFW) this is when the raw record is stored in our raw BQ tables"
+    "description": "[GFW] The exact moment this record was ingested by us (GFW) this is when the raw record is stored in our raw BQ tables"
   },
   {
     "mode": "NULLABLE",

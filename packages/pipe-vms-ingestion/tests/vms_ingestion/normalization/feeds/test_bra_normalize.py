@@ -40,7 +40,7 @@ class TestBRANormalize(unittest.TestCase):
     # Our output data, which is the expected data that the final PCollection must match.
     EXPECTED = [
         {
-            "msgid": "5411260da7a997217b865007b51e7295",
+            "msgid": "098ef82aa243cac252588eef983574ae63abb7a9a7af665eed86b24b8d1975b6",
             "source": "ONYXSAT_BRAZIL_VMS",
             "source_type": "VMS",
             "source_tenant": "BRA",
@@ -49,7 +49,7 @@ class TestBRANormalize(unittest.TestCase):
             "source_ssvid": "4961089",
             "type": "VMS",
             "internal_id": "4961089",
-            "ssvid": "BRA|i:4961089|s:CIBRADEP10",
+            "ssvid": "9e1ae4e10b44d54cf3622a25abb61e341b5be92a65c7b2f419f1079366444480",
             "timestamp": datetime.fromisoformat("2024-05-01 05:35:45+00:00"),
             "lat": -1.21861112117767,
             "lon": -48.4911117553711,
