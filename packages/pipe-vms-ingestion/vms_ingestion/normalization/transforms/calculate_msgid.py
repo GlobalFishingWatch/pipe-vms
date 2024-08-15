@@ -1,4 +1,4 @@
-from hashlib import md5
+import hashlib
 
 
 def get_raw_message_id(timestamp, lat, lon, ssvid, fleet, speed=None, course=None):
@@ -17,9 +17,8 @@ def get_raw_message_id(timestamp, lat, lon, ssvid, fleet, speed=None, course=Non
     return "|".join(parts)
 
 
-def get_md5_message_id(timestamp, lat, lon, ssvid, fleet, speed=None, course=None):
-    return md5(get_raw_message_id(timestamp, lat, lon, ssvid, fleet, speed, course).encode("utf-8"))
-
-
 def get_message_id(timestamp, lat, lon, ssvid, fleet, speed=None, course=None):
-    return get_md5_message_id(timestamp, lat, lon, ssvid, fleet, speed, course).hexdigest()
+    raw_id = get_raw_message_id(timestamp, lat, lon, ssvid, fleet, speed, course)
+    h = hashlib.blake2b(digest_size=32)
+    h.update(str.encode(raw_id))
+    return h.hexdigest()

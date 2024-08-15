@@ -10,7 +10,7 @@ def table_description():
     return f"""
 Created by pipe-vms-ingestion: {__getattr__('version')}.
 
-* Normalized positions for all vms providers. Daily produced.
+* Ingested positions for all vms providers. Daily produced.
 * https://github.com/GlobalFishingWatch/pipe-vms/packages/pipe-vms-ingestion
 
 * Source: Multiple sources from the different countries feeds.
@@ -29,7 +29,7 @@ def table_descriptor(destination, labels, schema=table_schema()):
         schema=schema,
     )
     table.description = table_description()
-    table.clustering_fields = ["raw_vessel_id", "timestamp_date"]
+    table.clustering_fields = ["ssvid", "timestamp_date"]
     table.time_partitioning = bigquery.table.TimePartitioning(
         type_=bigquery.table.TimePartitioningType.MONTH,
         field="timestamp",
