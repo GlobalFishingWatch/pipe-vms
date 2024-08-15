@@ -8,7 +8,7 @@ from shipdataprocess.standardize import (
     standardize_str,
 )
 from vms_ingestion.normalization.transforms.calculate_msgid import get_message_id
-from vms_ingestion.normalization.transforms.calculate_ssvid import encode_ssvid
+from vms_ingestion.normalization.transforms.calculate_ssvid import get_ssvid
 
 
 def map_normalized_message(msg, feed, source_provider, source_format):
@@ -89,7 +89,7 @@ class MapNormalizedMessage(beam.PTransform):
         return beam.Map(
             lambda msg: {
                 **msg,
-                "ssvid": encode_ssvid(
+                "ssvid": get_ssvid(
                     country=msg["source_tenant"],
                     internal_id=msg.get("internal_id"),
                     shipname=normalize_shipname(msg.get("shipname")),
