@@ -17,7 +17,6 @@ from vms_ingestion.ingestion.excel_to_bq.transforms.read_excel_to_dict import (
     read_excel_to_dict,
 )
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.options import CommonPipelineOptions
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 
