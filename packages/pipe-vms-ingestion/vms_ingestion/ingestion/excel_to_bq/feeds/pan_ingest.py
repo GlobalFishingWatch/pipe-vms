@@ -3,9 +3,6 @@ from datetime import timezone
 
 import apache_beam as beam
 from shipdataprocess.standardize import standardize_str
-from vms_ingestion.ingestion.excel_to_bq.transforms.map_ingested_message import (
-    MapIngestedMessage,
-)
 
 
 # Function to convert DMS to decimal
@@ -60,15 +57,9 @@ def get_ingested_at():
 
 class PANIngest(beam.PTransform):
 
-    def __init__(self, feed, fleet=None) -> None:
+    def __init__(self, feed) -> None:
         self.feed = feed
-        self.fleet = fleet
 
     def expand(self, pcoll):
 
-        return (
-            pcoll
-            | "map position fields" >> beam.Map(lambda x: map_pan_fields(x))
-            | "Map ingested message"
-            >> MapIngestedMessage(feed=self.feed, fleet=self.fleet)
-        )
+        return pcoll | "Map position fields" >> beam.Map(lambda x: map_pan_fields(x))
