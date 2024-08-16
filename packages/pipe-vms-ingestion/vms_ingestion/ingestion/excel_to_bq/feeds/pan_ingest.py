@@ -3,21 +3,7 @@ from datetime import timezone
 
 import apache_beam as beam
 from shipdataprocess.standardize import standardize_str
-
-
-# Function to convert DMS to decimal
-def dms_to_decimal(dms_str):
-    dms_str = dms_str.strip()
-    degrees, rest = dms_str.split("°")
-    minutes, rest = rest.split("'")
-    seconds, direction = rest.split('" ')
-    degrees = float(degrees)
-    minutes = float(minutes)
-    seconds = float(seconds)
-    decimal = degrees + minutes / 60 + seconds / 3600
-    if direction in ["S", "W"]:
-        decimal = -decimal
-    return decimal
+from utils.convert import dms_to_float
 
 
 def extract_float(df_val):
@@ -39,8 +25,8 @@ def extract_int(df_val):
 def map_pan_fields(msg):
     return {
         "shipname": standardize_str(msg.get("Nombre de la nave")),
-        "lat": dms_to_decimal(msg.get("Latitud")),
-        "lon": dms_to_decimal(msg.get("Longitud")),
+        "lat": dms_to_float(msg.get("Latitud")),
+        "lon": dms_to_float(msg.get("Longitud")),
         "speed": extract_float(msg.get("Velocidad")),
         "heading": extract_int(msg.get("Rumbo")),
         "timestamp": dt.datetime.strptime(
