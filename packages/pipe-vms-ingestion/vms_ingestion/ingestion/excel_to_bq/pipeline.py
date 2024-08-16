@@ -8,6 +8,9 @@ from vms_ingestion.ingestion.excel_to_bq.feed_ingestion_factory import (
     FeedIngestionFactory,
 )
 from vms_ingestion.ingestion.excel_to_bq.options import IngestionExcelToBQOptions
+from vms_ingestion.ingestion.excel_to_bq.transforms.map_ingested_message import (
+    MapIngestedMessage,
+)
 from vms_ingestion.ingestion.excel_to_bq.transforms.read_excel_to_dict import (
     read_excel_to_dict,
 )
@@ -77,8 +80,14 @@ class IngestionExcelToBQPipeline:
             self.pipeline
             | "Read source" >> ReadSource(source=self.source)
             | "Read Excel Files" >> beam.FlatMap(lambda x: read_excel_to_dict(x.read()))
-            | "Ingest data"
-            >> FeedIngestionFactory.get_ingestion(feed=self.feed, fleet=self.fleet)
+            | "Ingest data" >> FeedIngestionFactory.get_ingestion(feed=self.feed)
+            | "Filter messages inside date range"
+            >> beam.Filter(
+                lambda x: x["timestamp"] >= self.start_date
+                and x["timestamp"] < self.end_date
+            )
+            | "Map ingested message"
+            >> MapIngestedMessage(feed=self.feed, fleet=self.fleet)
             | PickOutputFields(fields=[f"{field}" for field in self.output_fields])
             # | "Print" >> beam.Map(print)
             | "Write Sink"
