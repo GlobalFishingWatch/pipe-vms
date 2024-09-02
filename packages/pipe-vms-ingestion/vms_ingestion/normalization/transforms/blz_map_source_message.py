@@ -113,14 +113,15 @@ def blz_map_source_message(msg):
     return {
         "shipname": f'{msg["shipname"]}'.strip(),
         "timestamp": msg["timestamp"],
+        "received_at": msg["receiveDate"],
         "lat": to_float(msg["lat"]),
         "lon": to_float(msg["lon"]),
         "speed": to_float(msg["speed"]),
         "course": to_float(msg["course"]),
-        "ssvid": f'{msg["id"]}',
-        "callsign": f'{msg["callsign"]}',
-        "shiptype": f'{msg["shiptype"]}',
-        "imo": f'{msg["imo"]}',
+        "ssvid": f'{msg["id"]}' if msg["id"] else None,
+        "callsign": f'{msg["callsign"]}' if msg["callsign"] else None,
+        "shiptype": f'{msg["shiptype"]}' if msg["shiptype"] else None,
+        "imo": f'{msg["imo"]}' if msg["imo"] else None,
     }
 
 
