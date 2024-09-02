@@ -7,6 +7,7 @@ from shipdataprocess.standardize import (
     standardize_int_str,
     standardize_str,
 )
+from utils.convert import to_string
 from vms_ingestion.normalization.transforms.calculate_msgid import get_message_id
 from vms_ingestion.normalization.transforms.calculate_ssvid import get_ssvid
 
@@ -27,7 +28,7 @@ def map_normalized_message(msg, feed, source_provider, source_format):
         "course": msg.get("course"),
         "heading": msg.get("heading"),
         "shipname": standardize_str(msg["shipname"]),
-        "callsign": standardize_str(msg["callsign"]) if msg["callsign"] else None,
+        "callsign": to_string(standardize_str(msg["callsign"])),
         "destination": msg.get("destination"),
         "imo": standardize_imo(msg.get("imo")),
         "shiptype": standardize_str(msg.get("shiptype")),

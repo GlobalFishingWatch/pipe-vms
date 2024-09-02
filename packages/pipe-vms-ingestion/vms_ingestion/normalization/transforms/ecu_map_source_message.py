@@ -3,7 +3,7 @@
 import re
 
 import apache_beam as beam
-from utils.convert import to_float
+from utils.convert import to_float, to_string
 
 SHIPTYPE_BY_MATRICULA = {
     "TI": "international traffic",
@@ -17,15 +17,15 @@ SHIPTYPE_BY_MATRICULA = {
 
 def ecu_map_source_message(msg):
     return {
-        "shipname": f'{msg["nombrenave"]}'.strip(),
+        "shipname": to_string(msg["nombrenave"]),
         "timestamp": msg["utc_time"],
         "lat": to_float(msg["lat"]),
         "lon": to_float(msg["lon"]),
         "speed": to_float(msg["velocidad"]),
         "course": to_float(msg["rumbo"]),
-        "internal_id": f'{msg["idnave"]}' if msg.get("idnave") else None,
+        "internal_id": to_string(msg["idnave"]),
         "shiptype": ecu_infer_shiptype(msg["matriculanave"]),
-        "callsign": f'{msg["matriculanave"]}',
+        "callsign": to_string(msg["matriculanave"]),
     }
 
 
@@ -34,7 +34,7 @@ def ecu_infer_shiptype(matriculanave):
     # set of specific strings
     prefixes = "|".join(list(SHIPTYPE_BY_MATRICULA.keys()))
     p = re.compile(f"^({prefixes}).*$")
-    code = f"{matriculanave}".upper().strip()
+    code = f"{matriculanave or ''}".upper().strip()
 
     m = p.match(code)
     if m:
