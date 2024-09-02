@@ -2,6 +2,10 @@ def to_float(value):
     return float(value) if value is not None else None
 
 
+def to_string(value):
+    return f"{value}".strip() if value is not None else None
+
+
 def dms_to_float(dms_value: str):
     """
     Convert Degrees, Minutes, Seconds coordinate to float value
