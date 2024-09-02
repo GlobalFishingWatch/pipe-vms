@@ -4,7 +4,7 @@ import re
 import apache_beam as beam
 from common.transforms.calculate_implied_course import calculate_implied_course
 from common.transforms.calculate_implied_speed import calculate_implied_speed_kt
-from utils.convert import to_float
+from utils.convert import to_float, to_string
 
 
 def extract_shipname_from_name(name: str) -> str:
@@ -111,17 +111,17 @@ def blz_map_source_message(msg):
             msg["shiptype"] = msg["short_shiptype"]
 
     return {
-        "shipname": f'{msg["shipname"]}'.strip(),
+        "shipname": to_string(msg["shipname"]),
         "timestamp": msg["timestamp"],
         "received_at": msg["receiveDate"],
         "lat": to_float(msg["lat"]),
         "lon": to_float(msg["lon"]),
         "speed": to_float(msg["speed"]),
         "course": to_float(msg["course"]),
-        "ssvid": f'{msg["id"]}' if msg["id"] else None,
-        "callsign": f'{msg["callsign"]}' if msg["callsign"] else None,
-        "shiptype": f'{msg["shiptype"]}' if msg["shiptype"] else None,
-        "imo": f'{msg["imo"]}' if msg["imo"] else None,
+        "ssvid": to_string(msg["id"]),
+        "callsign": to_string(msg["callsign"]),
+        "shiptype": to_string(msg["shiptype"]),
+        "imo": to_string(msg["imo"]),
     }
 
 

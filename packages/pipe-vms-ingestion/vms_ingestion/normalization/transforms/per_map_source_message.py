@@ -1,7 +1,7 @@
 import datetime as dt
 
 import apache_beam as beam
-from utils.convert import to_float
+from utils.convert import to_float, to_string
 
 FLEET_BY_REGIMEN_DESCRIPTION = {
     "ARTESANAL": "artisanal",
@@ -27,15 +27,15 @@ FLEET_BY_REGIMEN_DESCRIPTION = {
 
 def per_map_source_message(msg):
     return {
-        "shipname": f'{msg["nickname"]}'.strip(),
-        "timestamp": msg["DATETRANSMISSION"]
-        + dt.timedelta(hours=5),  # convert timestamp from peru timezone to utc
+        "shipname": to_string(msg["nickname"]),
+        # convert timestamp from peru timezone to utc
+        "timestamp": msg["DATETRANSMISSION"] + dt.timedelta(hours=5),
         "fleet": per_infer_fleet(msg["DESC_REGIMEN"]),
         "lat": to_float(msg["LATITUDE"]),
         "lon": to_float(msg["LONGITUDE"]),
         "speed": to_float(msg["SPEED"]),
         "course": to_float(msg["COURSE"]),
-        "ssvid": f'{msg["PLATE"]}'.strip(),
+        "ssvid": to_string(msg["PLATE"]),
         "callsign": None,
     }
 
