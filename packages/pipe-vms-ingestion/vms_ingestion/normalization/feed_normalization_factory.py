@@ -1,4 +1,5 @@
 import apache_beam as beam
+from vms_ingestion.normalization.feeds.blz_normalize import BLZNormalize
 from vms_ingestion.normalization.feeds.bra_normalize import BRANormalize
 from vms_ingestion.normalization.feeds.chl_normalize import CHLNormalize
 from vms_ingestion.normalization.feeds.cri_normalize import CRINormalize
@@ -8,6 +9,7 @@ from vms_ingestion.normalization.feeds.pan_normalize import PANNormalize
 from vms_ingestion.normalization.feeds.per_normalize import PERNormalize
 
 NORMALIZER_BY_FEED = {
+    "blz": BLZNormalize,
     "bra": BRANormalize,
     "chl": CHLNormalize,
     "cri": CRINormalize,
