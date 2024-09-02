@@ -1,0 +1,54 @@
+[
+  {
+    "receiveDate": "2024-01-01 22:15:19+00:00",
+    "course": null,
+    "speed": null,
+    "id": "1082",
+    "imo": "789123456",
+    "callsign": null,
+    "name": "ERTYUIO",
+    "mmsi": null,
+    "lon": 1.840367,
+    "timestamp": "2024-01-01 21:50:21+00:00",
+    "lat": -35.561983
+  },
+  {
+    "receiveDate": "2024-01-01 13:15:22+00:00",
+    "course": null,
+    "speed": null,
+    "id": "2222",
+    "imo": null,
+    "callsign": null,
+    "name": "ZAIRA",
+    "mmsi": null,
+    "lon": -47.32655,
+    "timestamp": "2024-01-01 12:08:35+00:00",
+    "lat": 6.4383
+  },
+  {
+    "receiveDate": "2024-01-01 13:15:21+00:00",
+    "course": null,
+    "speed": null,
+    "id": "2222",
+    "imo": null,
+    "callsign": null,
+    "name": "ZAIRA",
+    "mmsi": null,
+    "lon": -47.3742,
+    "timestamp": "2024-01-01 12:31:00+00:00",
+    "lat": 6.451333
+  },
+  {
+    "receiveDate": "2024-01-01 18:15:22+00:00",
+    "course": null,
+    "speed": null,
+    "id": "402",
+    "imo": "9876543",
+    "callsign": null,
+    "name": "EUGENIA",
+    "mmsi": "31231231",
+    "lon": -21.080833,
+    "timestamp": "2024-01-01 17:45:54+00:00",
+    "lat": 13.857133
+  }
+]

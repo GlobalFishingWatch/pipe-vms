@@ -2,7 +2,6 @@ import apache_beam as beam
 from vms_ingestion.normalization.transforms.blz_map_source_message import (
     BLZMapSourceMessage,
 )
-from vms_ingestion.normalization.transforms.convert_speed import ConvertSpeedKPHToKT
 from vms_ingestion.normalization.transforms.map_normalized_message import (
     MapNormalizedMessage,
 )
