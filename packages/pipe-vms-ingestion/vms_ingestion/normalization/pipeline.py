@@ -11,6 +11,7 @@ from vms_ingestion.normalization.transforms.deduplicate_msgs import DeduplicateM
 from vms_ingestion.normalization.transforms.discard_zero_lat_lon import (
     DiscardZeroLatLon,
 )
+from vms_ingestion.normalization.transforms.filter_date_range import FilterDateRange
 from vms_ingestion.normalization.transforms.map_latlon import MapLatLon
 from vms_ingestion.normalization.transforms.read_source import ReadSource
 from vms_ingestion.normalization.transforms.write_sink import (
@@ -40,8 +41,12 @@ class NormalizationPipeline:
         self.source = params.source
         self.source_timestamp_field = params.source_timestamp_field
         self.destination = params.destination
-        self.start_date = parse_yyyy_mm_dd_param(params.start_date)
-        self.end_date = parse_yyyy_mm_dd_param(params.end_date)
+        self.start_date = parse_yyyy_mm_dd_param(params.start_date).replace(
+            tzinfo=dt.timezone.utc
+        )
+        self.end_date = parse_yyyy_mm_dd_param(params.end_date).replace(
+            tzinfo=dt.timezone.utc
+        )
         self.labels = list_to_dict(gCloudParams.labels)
 
         self.table_schema = table_schema()
@@ -79,6 +84,8 @@ class NormalizationPipeline:
             | "Discard Zero Lat and Lon" >> DiscardZeroLatLon()
             | "Normalize" >> FeedNormalizationFactory.get_normalization(feed=self.feed)
             | "Deduplicate" >> DeduplicateMsgs()
+            | "Filter date range"
+            >> FilterDateRange(date_range=(self.start_date, self.end_date))
             | PickOutputFields(fields=[f"{field}" for field in self.output_fields])
             | "Write Sink"
             >> WriteSink(
