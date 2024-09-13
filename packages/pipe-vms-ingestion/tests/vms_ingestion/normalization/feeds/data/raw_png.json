@@ -1,0 +1,80 @@
+[
+  {
+    "timestamp": "2020-01-01 21:51:00.000000 UTC",
+    "callsign": "2ABC-9",
+    "shipname": "DIANA L.T",
+    "registry_number": null,
+    "internal_id": null,
+    "external_id": null,
+    "lat": 6.0341,
+    "lon": 125.1536,
+    "speed": null,
+    "course": null,
+    "flag": "PH"
+  },
+  {
+    "timestamp": "2020-01-01 22:21:00.000000 UTC",
+    "callsign": "2ABC-9",
+    "shipname": "DIANA L.T",
+    "registry_number": null,
+    "internal_id": null,
+    "external_id": null,
+    "lat": 6.0309,
+    "lon": 125.1559,
+    "speed": null,
+    "course": null,
+    "flag": "PH"
+  },
+  {
+    "timestamp": "2020-01-01 23:51:00.000000 UTC",
+    "callsign": "2ABC-9",
+    "shipname": "DIANA L.T",
+    "registry_number": null,
+    "internal_id": null,
+    "external_id": null,
+    "lat": 5.7718,
+    "lon": 125.0671,
+    "speed": null,
+    "course": null,
+    "flag": "PH"
+  },
+  {
+    "timestamp": "2020-01-01 09:46:00.000000 UTC",
+    "callsign": "P1V1234",
+    "shipname": "TIBURCIA 777",
+    "registry_number": null,
+    "internal_id": null,
+    "external_id": null,
+    "lat": -4.2012,
+    "lon": 152.1693,
+    "speed": null,
+    "course": null,
+    "flag": "PG"
+  },
+  {
+    "timestamp": "2020-01-01 11:46:00.000000 UTC",
+    "callsign": "P1V1234",
+    "shipname": "TIBURCIA 777",
+    "registry_number": null,
+    "internal_id": null,
+    "external_id": null,
+    "lat": -4.2012,
+    "lon": 152.1693,
+    "speed": null,
+    "course": null,
+    "flag": "PG"
+  },
+  {
+    "timestamp": "2020-01-01 20:16:00.000000 UTC",
+    "callsign": "P1V1234",
+    "shipname": "TIBURCIA 777",
+    "registry_number": null,
+    "internal_id": null,
+    "external_id": null,
+    "lat": -4.2012,
+    "lon": 152.1693,
+    "speed": null,
+    "course": null,
+    "flag": "PG"
+  }
+]

@@ -31,6 +31,7 @@ packages = [
   pandas = "^2.2.2"
   haversine = "^2.8.1"
   openpyxl = "^3.1.5"
+  pycountry = "^24.6.1"
 
   [tool.poetry.group.dev.dependencies]
   autopep8 = "2.0.2"
