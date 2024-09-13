@@ -11,7 +11,7 @@ SOURCE_QUERY_TEMPLATE = """
     FROM
       `{{source_table}}`
     WHERE
-      DATE({{source_timestamp_field}}) >= '{{start_date}}'
+      DATE(TIMESTAMP_ADD({{source_timestamp_field}}, INTERVAL 2 HOUR)) >= '{{start_date}}'
       AND DATE({{source_timestamp_field}}) < '{{end_date}}'
 """
 
