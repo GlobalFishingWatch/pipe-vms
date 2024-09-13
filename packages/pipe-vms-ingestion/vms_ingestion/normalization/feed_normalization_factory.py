@@ -7,6 +7,7 @@ from vms_ingestion.normalization.feeds.ecu_normalize import ECUNormalize
 from vms_ingestion.normalization.feeds.nor_normalize import NORNormalize
 from vms_ingestion.normalization.feeds.pan_normalize import PANNormalize
 from vms_ingestion.normalization.feeds.per_normalize import PERNormalize
+from vms_ingestion.normalization.feeds.png_normalize import PNGNormalize
 
 NORMALIZER_BY_FEED = {
     "blz": BLZNormalize,
@@ -17,6 +18,7 @@ NORMALIZER_BY_FEED = {
     "nor": NORNormalize,
     "pan": PANNormalize,
     "per": PERNormalize,
+    "png": PNGNormalize,
 }
 
 
