@@ -1,3 +1,7 @@
+def list_to_dict(labels):
+    return {x.split("=")[0]: x.split("=")[1] for x in labels}
+
+
 def to_float(value):
     return float(value) if value is not None else None
 

@@ -1,9 +1,9 @@
-import datetime as dt
-
 import apache_beam as beam
 from apache_beam.options.pipeline_options import GoogleCloudOptions
 from bigquery.table import clear_records, ensure_table_exists
 from common.transforms.pick_output_fields import PickOutputFields
+from utils.convert import list_to_dict
+from utils.dates import parse_yyyy_mm_dd_param
 from vms_ingestion.normalization.feed_normalization_factory import (
     FeedNormalizationFactory,
 )
@@ -22,14 +22,6 @@ from vms_ingestion.normalization.transforms.write_sink import (
 from vms_ingestion.options import CommonPipelineOptions
 
 
-def parse_yyyy_mm_dd_param(value):
-    return dt.datetime.strptime(value, "%Y-%m-%d")
-
-
-def list_to_dict(labels):
-    return {x.split("=")[0]: x.split("=")[1] for x in labels}
-
-
 class NormalizationPipeline:
     def __init__(self, options):
         self.pipeline = beam.Pipeline(options=options)
@@ -41,12 +33,8 @@ class NormalizationPipeline:
         self.source = params.source
         self.source_timestamp_field = params.source_timestamp_field
         self.destination = params.destination
-        self.start_date = parse_yyyy_mm_dd_param(params.start_date).replace(
-            tzinfo=dt.timezone.utc
-        )
-        self.end_date = parse_yyyy_mm_dd_param(params.end_date).replace(
-            tzinfo=dt.timezone.utc
-        )
+        self.start_date = parse_yyyy_mm_dd_param(params.start_date)
+        self.end_date = parse_yyyy_mm_dd_param(params.end_date)
         self.labels = list_to_dict(gCloudParams.labels)
 
         self.table_schema = table_schema()

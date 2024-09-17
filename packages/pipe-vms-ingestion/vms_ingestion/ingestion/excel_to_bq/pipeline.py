@@ -1,9 +1,9 @@
-import datetime as dt
-
 import apache_beam as beam
 from apache_beam.options.pipeline_options import GoogleCloudOptions
 from bigquery.table import clear_records, ensure_table_exists
 from common.transforms.pick_output_fields import PickOutputFields
+from utils.convert import list_to_dict
+from utils.dates import parse_yyyy_mm_dd_param
 from vms_ingestion.ingestion.excel_to_bq.feed_ingestion_factory import (
     FeedIngestionFactory,
 )
@@ -20,14 +20,6 @@ from vms_ingestion.ingestion.excel_to_bq.transforms.write_sink import (
     table_descriptor,
     table_schema,
 )
-
-
-def parse_yyyy_mm_dd_param(value):
-    return dt.datetime.strptime(value, "%Y-%m-%d")
-
-
-def list_to_dict(labels):
-    return {x.split("=")[0]: x.split("=")[1] for x in labels}
 
 
 class IngestionExcelToBQPipeline:

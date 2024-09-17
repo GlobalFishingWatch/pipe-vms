@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 def prev_month_from_YYYYMMDD(dt_str):
@@ -12,3 +12,7 @@ def prev_month_from_YYYYMMDD(dt_str):
     dt = datetime.strptime(dt_str, "%Y%m%d")
     dt = dt - timedelta(days=1)
     return datetime.strftime(dt.replace(day=1), "%Y%m%d")
+
+
+def parse_yyyy_mm_dd_param(value, tzinfo=timezone.utc):
+    return datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=tzinfo)
