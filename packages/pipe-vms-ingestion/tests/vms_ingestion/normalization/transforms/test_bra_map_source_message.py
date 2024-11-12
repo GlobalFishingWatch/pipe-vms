@@ -16,7 +16,13 @@ from vms_ingestion.normalization.transforms.bra_map_source_message import (
 
 class TestBRAMapSourceMessage(unittest.TestCase):
     options = build_pipeline_options_with_defaults(
-        argv=["--country_code=bra", '--source=""', '--destination=""', '--start_date=""', '--end_date=""']
+        argv=[
+            "--country_code=bra",
+            '--source=""',
+            '--destination=""',
+            '--start_date=""',
+            '--end_date=""',
+        ]
     )
     # Our input data, which will make up the initial PCollection.
     RECORDS = [
@@ -42,6 +48,7 @@ class TestBRAMapSourceMessage(unittest.TestCase):
             "lat": -1.21861112117767,
             "lon": -48.4911117553711,
             "msgid": "181473822",
+            "registry_number": "210180889PA",
             "shipname": "Cibradep X",
             "shiptype": "fishing",
             "speed_kph": 17.0,
@@ -60,7 +67,11 @@ class TestBRAMapSourceMessage(unittest.TestCase):
             output: pvalue.PCollection = input | BRAMapSourceMessage()
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(output, pcol_equal_to(TestBRAMapSourceMessage.EXPECTED), label="CheckOutput")
+            assert_that(
+                output,
+                pcol_equal_to(TestBRAMapSourceMessage.EXPECTED),
+                label="CheckOutput",
+            )
 
 
 @pytest.mark.parametrize(

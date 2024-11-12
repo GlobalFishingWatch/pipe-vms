@@ -1,6 +1,7 @@
 import os
 import unittest
 from datetime import date, datetime, timezone
+from unittest.mock import patch
 
 import apache_beam as beam
 from apache_beam import pvalue
@@ -11,6 +12,7 @@ from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.png_normalize import PNGNormalize
 
 script_path = os.path.dirname(os.path.abspath(__file__))
+FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestPNGNormalize(unittest.TestCase):
@@ -68,6 +70,7 @@ class TestPNGNormalize(unittest.TestCase):
             "timestamp": datetime(2020, 1, 1, 21, 51, tzinfo=timezone.utc),
             "timestamp_date": date(2020, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -100,6 +103,7 @@ class TestPNGNormalize(unittest.TestCase):
             "timestamp": datetime(2020, 1, 1, 22, 21, tzinfo=timezone.utc),
             "timestamp_date": date(2020, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -132,6 +136,7 @@ class TestPNGNormalize(unittest.TestCase):
             "timestamp": datetime(2020, 1, 1, 23, 51, tzinfo=timezone.utc),
             "timestamp_date": date(2020, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -164,6 +169,7 @@ class TestPNGNormalize(unittest.TestCase):
             "timestamp": datetime(2020, 1, 1, 9, 46, tzinfo=timezone.utc),
             "timestamp_date": date(2020, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -196,6 +202,7 @@ class TestPNGNormalize(unittest.TestCase):
             "timestamp": datetime(2020, 1, 1, 11, 46, tzinfo=timezone.utc),
             "timestamp_date": date(2020, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -228,12 +235,17 @@ class TestPNGNormalize(unittest.TestCase):
             "timestamp": datetime(2020, 1, 1, 20, 16, tzinfo=timezone.utc),
             "timestamp_date": date(2020, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestPNGNormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.

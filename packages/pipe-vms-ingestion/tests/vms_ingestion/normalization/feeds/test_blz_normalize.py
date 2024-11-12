@@ -1,8 +1,11 @@
 import os
 import unittest
 from datetime import date, datetime, timezone
+from unittest.mock import MagicMock, patch
 
 import apache_beam as beam
+import pytest
+import vms_ingestion.normalization.transforms.map_normalized_message
 from apache_beam import pvalue
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
@@ -11,6 +14,8 @@ from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.blz_normalize import BLZNormalize
 
 script_path = os.path.dirname(os.path.abspath(__file__))
+
+FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestBLZNormalize(unittest.TestCase):
@@ -43,6 +48,7 @@ class TestBLZNormalize(unittest.TestCase):
             "course": None,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": -35.561983,
@@ -66,6 +72,7 @@ class TestBLZNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 1, 1, 21, 50, 21, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -74,6 +81,7 @@ class TestBLZNormalize(unittest.TestCase):
             "course": None,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": 6.4383,
@@ -97,6 +105,7 @@ class TestBLZNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 1, 1, 12, 8, 35, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -105,6 +114,7 @@ class TestBLZNormalize(unittest.TestCase):
             "course": 285.39249139403387,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": 6.451333,
@@ -128,6 +138,7 @@ class TestBLZNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 1, 1, 12, 31, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -136,6 +147,7 @@ class TestBLZNormalize(unittest.TestCase):
             "course": None,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": "9876543",
             "ingested_at": None,
             "lat": 13.857133,
@@ -159,12 +171,17 @@ class TestBLZNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 1, 1, 17, 45, 54, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 1, 1),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestBLZNormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
@@ -175,5 +192,7 @@ class TestBLZNormalize(unittest.TestCase):
 
             # Assert that the output PCollection matches the EXPECTED data.
             assert_that(
-                output, pcol_equal_to(TestBLZNormalize.EXPECTED), label="CheckOutput"
+                output,
+                pcol_equal_to(TestBLZNormalize.EXPECTED),
+                label="CheckOutput",
             )
