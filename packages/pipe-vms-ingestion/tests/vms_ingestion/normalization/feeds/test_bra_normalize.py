@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime
+from unittest.mock import patch
 
 import apache_beam as beam
 from apache_beam import pvalue
@@ -8,6 +9,8 @@ from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.bra_normalize import BRANormalize
+
+FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestBRANormalize(unittest.TestCase):
@@ -56,12 +59,14 @@ class TestBRANormalize(unittest.TestCase):
             "speed": 9.1792656587473,
             "course": 192.0,
             "heading": None,
+            "flag": None,
             "shipname": "CIBRADEP X",
             "callsign": None,
             "destination": None,
             "imo": None,
             "shiptype": "FISHING",
             "receiver_type": None,
+            "registry_number": "210180889PA",
             "receiver": None,
             "length": None,
             "width": None,
@@ -69,6 +74,7 @@ class TestBRANormalize(unittest.TestCase):
             "class_b_cs_flag": None,
             "received_at": None,
             "ingested_at": None,
+            "updated_at": FAKE_TIME,
             "timestamp_date": datetime.date(
                 datetime.fromisoformat("2024-05-01 05:35:45+00:00")
             ),
@@ -76,7 +82,11 @@ class TestBRANormalize(unittest.TestCase):
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestBRANormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.

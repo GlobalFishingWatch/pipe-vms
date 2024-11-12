@@ -16,3 +16,7 @@ def prev_month_from_YYYYMMDD(dt_str):
 
 def parse_yyyy_mm_dd_param(value, tzinfo=timezone.utc):
     return datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=tzinfo)
+
+
+def now(tz=timezone.utc):
+    return datetime.now(tz=tz)

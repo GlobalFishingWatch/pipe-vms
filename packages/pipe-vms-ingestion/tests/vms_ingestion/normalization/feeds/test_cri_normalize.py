@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime
+from unittest.mock import patch
 
 import apache_beam as beam
 from apache_beam import pvalue
@@ -8,6 +9,8 @@ from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.cri_normalize import CRINormalize
+
+FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestCRINormalize(unittest.TestCase):
@@ -78,12 +81,17 @@ class TestCRINormalize(unittest.TestCase):
                 datetime.fromisoformat("2024-05-01 12:15:01+00:00")
             ),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestCRINormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.

@@ -23,7 +23,7 @@ class CommonPipelineOptions(PipelineOptions):
         required.add_argument(
             "--destination",
             required=True,
-            help="Destination table prefix to write messages to, in the standard sql format PROJECT.DATASET.TABLE.",
+            help="Destination table to write messages to, in the standard sql format PROJECT.DATASET.TABLE",
         )
 
         required.add_argument(

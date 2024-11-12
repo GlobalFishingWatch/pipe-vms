@@ -1,6 +1,7 @@
 import os
 import unittest
 from datetime import date, datetime
+from unittest.mock import patch
 
 import apache_beam as beam
 from apache_beam import pvalue
@@ -11,6 +12,7 @@ from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.per_normalize import PERNormalize
 
 script_path = os.path.dirname(os.path.abspath(__file__))
+FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestPERNormalize(unittest.TestCase):
@@ -43,6 +45,7 @@ class TestPERNormalize(unittest.TestCase):
             "destination": None,
             "fleet": "artisanal",
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": -11.71153,
@@ -52,6 +55,7 @@ class TestPERNormalize(unittest.TestCase):
             "received_at": None,
             "receiver": None,
             "receiver_type": None,
+            "registry_number": "TA-12345-DF",
             "shipname": "SANTA MARIA",
             "shiptype": None,
             "source": "PERU_VMS",
@@ -66,6 +70,7 @@ class TestPERNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 7, 31, 5, 0),
             "timestamp_date": date(2024, 7, 31),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -75,6 +80,7 @@ class TestPERNormalize(unittest.TestCase):
             "destination": None,
             "fleet": "small-scale",
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": -5.81764,
@@ -84,6 +90,7 @@ class TestPERNormalize(unittest.TestCase):
             "received_at": None,
             "receiver": None,
             "receiver_type": None,
+            "registry_number": "CE-45678-CM",
             "shipname": "SANTA MARTA",
             "shiptype": None,
             "source": "PERU_VMS",
@@ -98,6 +105,7 @@ class TestPERNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 7, 30, 14, 56, 59),
             "timestamp_date": date(2024, 7, 30),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -107,6 +115,7 @@ class TestPERNormalize(unittest.TestCase):
             "destination": None,
             "fleet": "artisanal",
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": -10.12852,
@@ -116,6 +125,7 @@ class TestPERNormalize(unittest.TestCase):
             "received_at": None,
             "receiver": None,
             "receiver_type": None,
+            "registry_number": "CE-98765-CM",
             "shipname": "NAUTILUS",
             "shiptype": None,
             "source": "PERU_VMS",
@@ -130,6 +140,7 @@ class TestPERNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 7, 30, 21, 21, 37),
             "timestamp_date": date(2024, 7, 30),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -139,6 +150,7 @@ class TestPERNormalize(unittest.TestCase):
             "destination": None,
             "fleet": "artisanal",
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": -10.15091,
@@ -148,6 +160,7 @@ class TestPERNormalize(unittest.TestCase):
             "received_at": None,
             "receiver": None,
             "receiver_type": None,
+            "registry_number": "CE-98765-CM",
             "shipname": "NAUTILUS",
             "shiptype": None,
             "source": "PERU_VMS",
@@ -162,12 +175,17 @@ class TestPERNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 7, 30, 19, 21, 37),
             "timestamp_date": date(2024, 7, 30),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestPERNormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.

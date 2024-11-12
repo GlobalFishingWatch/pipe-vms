@@ -1,6 +1,7 @@
 import os
 import unittest
 from datetime import date, datetime, timezone
+from unittest.mock import patch
 
 import apache_beam as beam
 from apache_beam import pvalue
@@ -11,6 +12,7 @@ from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.nor_normalize import NORNormalize
 
 script_path = os.path.dirname(os.path.abspath(__file__))
+FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestNORNormalize(unittest.TestCase):
@@ -42,6 +44,7 @@ class TestNORNormalize(unittest.TestCase):
             "course": 150.0,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": 68.6139,
@@ -65,6 +68,7 @@ class TestNORNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 7, 2, 20, 18, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 7, 2),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -73,6 +77,7 @@ class TestNORNormalize(unittest.TestCase):
             "course": 268.0,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "lat": 71.1836,
@@ -96,12 +101,17 @@ class TestNORNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 7, 2, 7, 35, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 7, 2),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestNORNormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
