@@ -18,6 +18,7 @@ def bra_map_source_message(msg):
         "msgid": to_string(msg["mID"]),
         "shiptype": bra_infer_shiptype(msg["codMarinha"]),
         "callsign": "",
+        "registry_number": to_string(msg["codMarinha"]),
     }
 
 

@@ -26,6 +26,7 @@ def ecu_map_source_message(msg):
         "internal_id": to_string(msg["idnave"]),
         "shiptype": ecu_infer_shiptype(msg["matriculanave"]),
         "callsign": to_string(msg["matriculanave"]),
+        "registry_number": to_string(msg["matriculanave"]),
     }
 
 

@@ -49,6 +49,7 @@ class TestECUMapSourceMessage(unittest.TestCase):
             "internal_id": "98765",
             "lat": -2.5014833333,
             "lon": -79.82605,
+            "registry_number": "B -00-123456",
             "shipname": "SANTA MARIA I",
             "shiptype": "boat",
             "speed": 21.0,

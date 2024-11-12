@@ -1,6 +1,7 @@
 import os
 import unittest
 from datetime import date, datetime, timezone
+from unittest.mock import patch
 
 import apache_beam as beam
 from apache_beam import pvalue
@@ -11,6 +12,7 @@ from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.ecu_normalize import ECUNormalize
 
 script_path = os.path.dirname(os.path.abspath(__file__))
+FAKE_TIME = datetime(2024, 4, 20, 23, 59, 55)
 
 
 class TestECUNormalize(unittest.TestCase):
@@ -42,6 +44,7 @@ class TestECUNormalize(unittest.TestCase):
             "course": 117.0,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "internal_id": "98765",
@@ -52,6 +55,7 @@ class TestECUNormalize(unittest.TestCase):
             "received_at": None,
             "receiver": None,
             "receiver_type": None,
+            "registry_number": "TN-00-01234",
             "shipname": "NAUTILUS XXX",
             "shiptype": "NATIONAL TRAFFIC",
             "source": "ECUADOR_VMS",
@@ -66,6 +70,7 @@ class TestECUNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 4, 20, 8, 14, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 4, 20),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
         {
@@ -74,6 +79,7 @@ class TestECUNormalize(unittest.TestCase):
             "course": 72.0,
             "destination": None,
             "heading": None,
+            "flag": None,
             "imo": None,
             "ingested_at": None,
             "internal_id": "12345",
@@ -84,6 +90,7 @@ class TestECUNormalize(unittest.TestCase):
             "received_at": None,
             "receiver": None,
             "receiver_type": None,
+            "registry_number": "P -00-00123",
             "shipname": "SANTA MARTA DOS",
             "shiptype": "FISHING",
             "source": "ECUADOR_VMS",
@@ -98,12 +105,17 @@ class TestECUNormalize(unittest.TestCase):
             "timestamp": datetime(2024, 4, 20, 8, 0, tzinfo=timezone.utc),
             "timestamp_date": date(2024, 4, 20),
             "type": "VMS",
+            "updated_at": FAKE_TIME,
             "width": None,
         },
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestECUNormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.

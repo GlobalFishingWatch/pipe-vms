@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import apache_beam as beam
 from shipdataprocess.normalize import normalize_callsign, normalize_shipname
@@ -8,6 +8,7 @@ from shipdataprocess.standardize import (
     standardize_str,
 )
 from utils.convert import to_string
+from utils.dates import now
 from vms_ingestion.normalization.transforms.calculate_msgid import get_message_id
 from vms_ingestion.normalization.transforms.calculate_ssvid import get_ssvid
 
@@ -41,6 +42,8 @@ def map_normalized_message(msg, feed, source_provider, source_format):
         "received_at": msg.get("received_at"),
         "ingested_at": msg.get("ingested_at"),
         "timestamp_date": datetime.date(msg["timestamp"]),
+        "flag": msg.get("flag"),
+        "updated_at": now(tz=timezone.utc),
     }
     return {**result, "source": standardize_str(source_format.format(**result))}
 

@@ -53,6 +53,7 @@ class TestPERMapSourceMessage(unittest.TestCase):
             "fleet": "artisanal",
             "lat": -11.71153,
             "lon": -78.28806,
+            "registry_number": "TA-12345-OP",
             "shipname": "SANTA MARIA",
             "speed": 0.5,
             "ssvid": "TA-12345-OP",

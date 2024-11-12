@@ -37,6 +37,7 @@ def per_map_source_message(msg):
         "course": to_float(msg["COURSE"]),
         "ssvid": to_string(msg["PLATE"]),
         "callsign": None,
+        "registry_number": to_string(msg["PLATE"]),
     }
 
 

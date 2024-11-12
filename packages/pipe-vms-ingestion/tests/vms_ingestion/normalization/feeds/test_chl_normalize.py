@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime
+from unittest.mock import patch
 
 import apache_beam as beam
 from apache_beam import pvalue
@@ -8,6 +9,8 @@ from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.chl_normalize import CHLNormalize
+
+FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestCHLNormalize(unittest.TestCase):
@@ -54,6 +57,7 @@ class TestCHLNormalize(unittest.TestCase):
             "speed": 9.0,
             "course": 37.0,
             "heading": None,
+            "flag": None,
             "shipname": "AUSTRAL TRAVELER",
             "callsign": "ABC123",
             "fleet": "some_fleet",
@@ -68,6 +72,7 @@ class TestCHLNormalize(unittest.TestCase):
             "class_b_cs_flag": None,
             "received_at": None,
             "ingested_at": None,
+            "updated_at": FAKE_TIME,
             "timestamp_date": datetime.date(
                 datetime.fromisoformat("2020-01-01 20:23:01+00:00")
             ),
@@ -75,7 +80,11 @@ class TestCHLNormalize(unittest.TestCase):
     ]
 
     # Example test that tests the pipeline's transforms.
-    def test_normalize(self):
+    @patch(
+        "vms_ingestion.normalization.transforms.map_normalized_message.now",
+        side_effect=lambda tz: FAKE_TIME,
+    )
+    def test_normalize(self, mock_now):
         with TestPipeline(options=TestCHLNormalize.options) as p:
 
             # Create a PCollection from the RECORDS static input data.
