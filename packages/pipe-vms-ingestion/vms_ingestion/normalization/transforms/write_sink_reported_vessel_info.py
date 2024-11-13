@@ -10,7 +10,7 @@ def table_description():
     return f"""
 Created by pipe-vms-ingestion: {__getattr__('version')}.
 
-* Reported vessel info included on position messages provided by VMS countries. 
+* Reported vessel info included on position messages provided by VMS countries.
 * Daily produced.
 * https://github.com/GlobalFishingWatch/pipe-vms/packages/pipe-vms-ingestion
 

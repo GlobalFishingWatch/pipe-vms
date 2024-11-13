@@ -1,11 +1,9 @@
 import os
 import unittest
 from datetime import date, datetime, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import apache_beam as beam
-import pytest
-import vms_ingestion.normalization.transforms.map_normalized_message
 from apache_beam import pvalue
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
