@@ -4,7 +4,6 @@ from enum import Enum
 from vms_ingestion.options import CommonPipelineOptions
 
 
-# class syntax
 class Entities(str, Enum):
     POSITIONS = "positions"
     VESSEL_INFO = "vessel_info"
