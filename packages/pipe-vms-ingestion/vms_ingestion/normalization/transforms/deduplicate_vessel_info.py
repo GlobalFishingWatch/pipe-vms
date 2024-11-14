@@ -22,16 +22,18 @@ def choose_from_group(group):
 
 
 class DeduplicateVesselInfo(PTransform):
-    """The id of the record is the combination of ssvid.
+    """The id of the record is the combination of ssvid and year,
+    since there should be at least one vessel info record per year.
     First we tag with this id and then group by it.
     Later we prioritize most recent messages."""
 
     def expand(self, pcoll):
-        return pcoll | self.group_by_ssvid_timestamp() | self.prioritize_most_recent()
+        return pcoll | self.group_by_ssvid_year() | self.prioritize_most_recent()
 
-    def group_by_ssvid_timestamp(self):
+    def group_by_ssvid_year(self):
         return GroupBy(
             id=lambda message: message["ssvid"],
+            year=lambda message: message["timestamp"].year,
         )
 
     def prioritize_most_recent(self):
