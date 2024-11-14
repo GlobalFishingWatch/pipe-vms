@@ -13,7 +13,7 @@ class Entities(str, Enum):
 def validate_affected_entities(value):
     accepted_values = [Entities.POSITIONS, Entities.VESSEL_INFO]
 
-    entities = value.split(",") if type(value) == str else []
+    entities = value.split(",") if isinstance(value, str) else []
     if len(entities) == 0:
         raise argparse.ArgumentTypeError(
             "Invalid affected entities value. At least one entity must be provided"
