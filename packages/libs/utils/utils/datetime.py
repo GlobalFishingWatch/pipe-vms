@@ -22,7 +22,8 @@ def parse_yyyy_mm_dd_param(value, tzinfo=timezone.utc):
 
     Args:
         value (str): The date string to parse.
-        tzinfo (timezone, optional): The time zone info to use for the resulting datetime object. Defaults to timezone.utc.
+        tzinfo (timezone, optional): The time zone info to use for the resulting datetime object.
+        Defaults to timezone.utc.
 
     Returns:
         `datetime`: A `datetime` object representing the parsed date and time.
