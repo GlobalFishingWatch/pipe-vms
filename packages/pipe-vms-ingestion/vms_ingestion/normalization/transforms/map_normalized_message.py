@@ -8,7 +8,7 @@ from shipdataprocess.standardize import (
     standardize_str,
 )
 from utils.convert import to_string
-from utils.dates import now
+from utils.datetime import now
 from vms_ingestion.normalization.transforms.calculate_msgid import get_message_id
 from vms_ingestion.normalization.transforms.calculate_ssvid import get_ssvid
 
