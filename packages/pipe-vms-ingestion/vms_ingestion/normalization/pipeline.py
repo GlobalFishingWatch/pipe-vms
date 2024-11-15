@@ -4,17 +4,11 @@ from bigquery.table import clear_records, ensure_table_exists
 from common.transforms.pick_output_fields import PickOutputFields
 from utils.convert import list_to_dict
 from utils.datetime import parse_yyyy_mm_dd_param
-from vms_ingestion.normalization.feed_normalization_factory import (
-    FeedNormalizationFactory,
-)
+from vms_ingestion.normalization.feed_normalization_factory import FeedNormalizationFactory
 from vms_ingestion.normalization.pipeline_options import Entities, NormalizationOptions
 from vms_ingestion.normalization.transforms.deduplicate_msgs import DeduplicateMsgs
-from vms_ingestion.normalization.transforms.deduplicate_vessel_info import (
-    DeduplicateVesselInfo,
-)
-from vms_ingestion.normalization.transforms.discard_zero_lat_lon import (
-    DiscardZeroLatLon,
-)
+from vms_ingestion.normalization.transforms.deduplicate_vessel_info import DeduplicateVesselInfo
+from vms_ingestion.normalization.transforms.discard_zero_lat_lon import DiscardZeroLatLon
 from vms_ingestion.normalization.transforms.filter_date_range import FilterDateRange
 from vms_ingestion.normalization.transforms.map_latlon import MapLatLon
 from vms_ingestion.normalization.transforms.read_source import ReadSource
@@ -80,9 +74,7 @@ class NormalizationPipeline:
         self.output_fields = [field["name"] for field in self.table_schema]
 
         self.table_schema_vessel_info = table_schema_vessel_info()
-        self.output_fields_vessel_info = [
-            field["name"] for field in self.table_schema_vessel_info
-        ]
+        self.output_fields_vessel_info = [field["name"] for field in self.table_schema_vessel_info]
 
         if self.destination:
             if Entities.POSITIONS in self.affected_entities:
@@ -100,9 +92,7 @@ class NormalizationPipeline:
                     date_field="timestamp",
                     date_from=self.start_date,
                     date_to=self.end_date,
-                    additional_conditions=[
-                        f"upper(source_tenant) = upper('{self.feed}')"
-                    ],
+                    additional_conditions=[f"upper(source_tenant) = upper('{self.feed}')"],
                 )
             if Entities.VESSEL_INFO in self.affected_entities:
                 # Ensure output tables exists
@@ -119,9 +109,7 @@ class NormalizationPipeline:
                     date_field="timestamp",
                     date_from=self.start_date,
                     date_to=self.end_date,
-                    additional_conditions=[
-                        f"upper(source_tenant) = upper('{self.feed}')"
-                    ],
+                    additional_conditions=[f"upper(source_tenant) = upper('{self.feed}')"],
                 )
 
         position_messages = (
@@ -137,8 +125,7 @@ class NormalizationPipeline:
             | "Discard Zero Lat and Lon" >> DiscardZeroLatLon()
             | "Normalize" >> FeedNormalizationFactory.get_normalization(feed=self.feed)
             | "Deduplicate" >> DeduplicateMsgs()
-            | "Filter date range"
-            >> FilterDateRange(date_range=(self.start_date, self.end_date))
+            | "Filter date range" >> FilterDateRange(date_range=(self.start_date, self.end_date))
         )
 
         if Entities.POSITIONS in self.affected_entities:
