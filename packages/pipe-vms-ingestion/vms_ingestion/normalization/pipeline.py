@@ -3,7 +3,7 @@ from apache_beam.options.pipeline_options import GoogleCloudOptions
 from bigquery.table import clear_records, ensure_table_exists
 from common.transforms.pick_output_fields import PickOutputFields
 from utils.convert import list_to_dict
-from utils.dates import parse_yyyy_mm_dd_param
+from utils.datetime import parse_yyyy_mm_dd_param
 from vms_ingestion.normalization.feed_normalization_factory import (
     FeedNormalizationFactory,
 )
