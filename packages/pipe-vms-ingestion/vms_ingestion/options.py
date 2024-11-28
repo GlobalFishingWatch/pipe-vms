@@ -22,7 +22,7 @@ class CommonPipelineOptions(PipelineOptions):
 
         required.add_argument(
             "--destination",
-            required=True,
+            required=False,
             help="Destination table to write messages to, in the standard sql format PROJECT.DATASET.TABLE",
         )
 
