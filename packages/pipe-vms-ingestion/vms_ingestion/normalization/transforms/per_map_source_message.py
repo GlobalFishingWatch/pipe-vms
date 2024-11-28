@@ -1,7 +1,8 @@
 import datetime as dt
 
 import apache_beam as beam
-from utils.convert import to_float, to_string
+from utils.convert import mmsi_to_iso3166_alpha3, to_float, to_string
+from utils.validators import is_valid_mmsi
 
 FLEET_BY_REGIMEN_DESCRIPTION = {
     "ARTESANAL": "artisanal",
@@ -26,6 +27,7 @@ FLEET_BY_REGIMEN_DESCRIPTION = {
 
 
 def per_map_source_message(msg):
+    mmsi = to_string(msg["PLATE"]) if is_valid_mmsi(msg["PLATE"]) else None
     return {
         "shipname": to_string(msg["nickname"]),
         # convert timestamp from peru timezone to utc
@@ -38,6 +40,8 @@ def per_map_source_message(msg):
         "ssvid": to_string(msg["PLATE"]),
         "callsign": None,
         "registry_number": to_string(msg["PLATE"]),
+        "mmsi": mmsi,
+        "flag": mmsi_to_iso3166_alpha3(mmsi),
     }
 
 
@@ -51,6 +55,4 @@ def per_infer_fleet(regime_description):
 class PERMapSourceMessage(beam.PTransform):
 
     def expand(self, pcoll):
-        return pcoll | "Preliminary source fields mapping" >> beam.Map(
-            per_map_source_message
-        )
+        return pcoll | "Preliminary source fields mapping" >> beam.Map(per_map_source_message)

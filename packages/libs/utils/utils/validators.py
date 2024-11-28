@@ -16,3 +16,13 @@ def check_if_it_is_a_valid_YYYYMMDD(date):
     except ValueError:
         msg = "Not a valid date: '{0}'.".format(date)
         raise argparse.ArgumentTypeError(msg)
+
+
+def is_valid_mmsi(mmsi):
+    if not isinstance(mmsi, str):
+        return False
+    if len(mmsi) != 9:
+        return False
+    if not "2" <= mmsi[0] <= "7":
+        return False
+    return True
