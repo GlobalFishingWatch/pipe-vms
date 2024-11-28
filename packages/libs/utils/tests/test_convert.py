@@ -12,7 +12,7 @@ class TestConvert(unittest.TestCase):
         result = to_float("9.8")
         self.assertEqual(result, 9.8)
 
-    def test_prev_month_from_YYYYMMDD_with_invalid_input(self):
+    def test_with_invalid_input(self):
         with self.assertRaises(ValueError):
             to_float("wrong_float")
 
