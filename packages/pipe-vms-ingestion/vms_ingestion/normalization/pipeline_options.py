@@ -16,8 +16,5 @@ class NormalizationOptions(CommonPipelineOptions):
         optional.add_argument(
             "--destination_vessel_info",
             required=False,
-            help="Destination table to write vessel info to, in the standard sql format PROJECT.DATASET.TABLE. \n"
-            "Defaults to the same project and dataset provided in [destination] with reported_vessel_info "
-            "table name.",
-            default="reported_vessel_info",
+            help="Destination table to write vessel info to, in the standard sql format PROJECT.DATASET.TABLE",
         )
