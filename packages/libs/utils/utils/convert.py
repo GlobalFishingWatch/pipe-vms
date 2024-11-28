@@ -1,3 +1,7 @@
+from utils.mmsi_mid_codes import mmsi_mid_codes
+from utils.validators import is_valid_mmsi
+
+
 def list_to_dict(labels):
     return {x.split("=")[0]: x.split("=")[1] for x in labels}
 
@@ -28,3 +32,11 @@ def dms_to_float(dms_value: str):
     if direction in ["S", "W"]:
         float_value = -float_value
     return float_value
+
+
+def mmsi_to_iso3166_alpha3(mmsi):
+    if not is_valid_mmsi(mmsi):
+        return None
+
+    _, alpha3, _, _ = mmsi_mid_codes[mmsi[0:3]] or [None, None, None, None]
+    return alpha3

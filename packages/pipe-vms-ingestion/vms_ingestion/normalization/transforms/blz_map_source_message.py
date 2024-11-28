@@ -4,7 +4,8 @@ import re
 import apache_beam as beam
 from common.transforms.calculate_implied_course import calculate_implied_course
 from common.transforms.calculate_implied_speed import calculate_implied_speed_kt
-from utils.convert import to_float, to_string
+from utils.convert import mmsi_to_iso3166_alpha3, to_float, to_string
+from utils.validators import is_valid_mmsi
 
 
 def extract_shipname_from_name(name: str) -> str:
@@ -87,9 +88,7 @@ def implies_speed_and_course(msg):
             msg["lon"],
         )
     if not course:
-        course = calculate_implied_course(
-            msg["prev_lat"], msg["prev_lon"], msg["lat"], msg["lon"]
-        )
+        course = calculate_implied_course(msg["prev_lat"], msg["prev_lon"], msg["lat"], msg["lon"])
     res["speed"] = speed
     res["course"] = course
     return res
@@ -110,6 +109,7 @@ def blz_map_source_message(msg):
         else:
             msg["shiptype"] = msg["short_shiptype"]
 
+    mmsi = to_string(msg["mmsi"])
     return {
         "shipname": to_string(msg["shipname"]),
         "timestamp": msg["timestamp"],
@@ -122,6 +122,8 @@ def blz_map_source_message(msg):
         "callsign": to_string(msg["callsign"]),
         "shiptype": to_string(msg["shiptype"]),
         "imo": to_string(msg["imo"]),
+        "mmsi": mmsi if is_valid_mmsi(mmsi) else None,
+        "flag": mmsi_to_iso3166_alpha3(mmsi),
     }
 
 
@@ -132,7 +134,6 @@ class BLZMapSourceMessage(beam.PTransform):
             | "Extract From Name" >> beam.Map(extract_fields_from_name)
             | "Group by id" >> beam.GroupBy(id=lambda msg: msg["id"])
             | "Set previous timestamp,lat,lon" >> beam.FlatMap(set_previous_attr)
-            | "Impling Speed and Course if not coming"
-            >> beam.Map(implies_speed_and_course)
+            | "Impling Speed and Course if not coming" >> beam.Map(implies_speed_and_course)
             | "Preliminary source fields mapping" >> beam.Map(blz_map_source_message)
         )

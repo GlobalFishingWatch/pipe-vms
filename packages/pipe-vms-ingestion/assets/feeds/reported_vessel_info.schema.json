@@ -55,6 +55,12 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "mmsi",
+    "type": "STRING",
+    "description": "MMSI identifier"
+  },
+  {
+    "mode": "NULLABLE",
     "name": "shiptype",
     "type": "STRING",
     "description": "Type of vessel"
