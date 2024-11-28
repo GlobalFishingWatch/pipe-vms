@@ -2,23 +2,12 @@ from apache_beam import GroupBy, Map, PTransform
 
 
 def choose_from_group(group):
-    _, msgs = group
-    msgs_list = list(msgs)
-    sorted_messages = [*msgs_list]
-    # Sort the messages, most recent at the top
-    sorted_messages.sort(
-        key=lambda x: (
-            x["timestamp"].timestamp()
-            if x["timestamp"]
-            else x["received_at"].timestamp() if x["received_at"] else 0
-        ),
-        reverse=True,
-    )
-    proposed_msg = msgs_list[0]
-    if len(sorted_messages) > 0:
-        proposed_msg = sorted_messages[0]
+    def sort_key(x):
+        return x["timestamp"].timestamp() if x["timestamp"] else x["received_at"].timestamp() if x["received_at"] else 0
 
-    return proposed_msg
+    _, msgs = group
+    sorted_msgs = sorted(msgs, key=sort_key, reverse=True)
+    return sorted_msgs[0]
 
 
 class DeduplicateVesselInfo(PTransform):
