@@ -19,10 +19,13 @@ def check_if_it_is_a_valid_YYYYMMDD(date):
 
 
 def is_valid_mmsi(mmsi):
-    if not isinstance(mmsi, str):
+    if not (isinstance(mmsi, str) or isinstance(mmsi, int)):
         return False
-    if len(mmsi) != 9:
+
+    try:
+        numeric_mmsi = int(mmsi)
+        if not (200000000 <= numeric_mmsi <= 799999999):
+            return False
+        return True
+    except ValueError:
         return False
-    if not "2" <= mmsi[0] <= "7":
-        return False
-    return True
