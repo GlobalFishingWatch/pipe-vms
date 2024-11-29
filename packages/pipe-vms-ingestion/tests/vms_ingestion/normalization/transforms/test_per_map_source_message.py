@@ -8,10 +8,7 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.transforms.per_map_source_message import (
-    PERMapSourceMessage,
-    per_infer_fleet,
-)
+from vms_ingestion.normalization.transforms.per_map_source_message import PERMapSourceMessage, per_infer_fleet
 
 
 class TestPERMapSourceMessage(unittest.TestCase):
@@ -42,7 +39,24 @@ class TestPERMapSourceMessage(unittest.TestCase):
             "ESPECIESCHI": "",
             "ESPECIESCHD": "PER/POT",
             "DESC_REGIMEN": "DS. 006-2016-PRODUCE",
-        }
+        },
+        {
+            "Correlativo": "41",
+            "ID": "2.4073014212795151e+18",
+            "DATETRANSMISSION": datetime.fromisoformat("2024-07-30 14:21:38"),
+            "COASTLENGHT": "53.85904",
+            "LATITUDE": "-10.15091",
+            "LONGITUDE": "-79.12178",
+            "SPEED": "4.3",
+            "COURSE": "271.0",
+            "EVENTDESCRIPTION": "NO DEFINIDO",
+            "PLATE": "412412412",
+            "nickname": "NAUTILUS CHN II",
+            "SOURCE": "CLS",
+            "ESPECIESCHI": "",
+            "ESPECIESCHD": "ANGL/SAR/R.H./ANCH/B",
+            "DESC_REGIMEN": "DECRETO LEGISLATIVO N 1392",
+        },
     ]
 
     # Our output data, which is the expected data that the final PCollection must match.
@@ -50,15 +64,31 @@ class TestPERMapSourceMessage(unittest.TestCase):
         {
             "callsign": None,
             "course": 245.0,
+            "flag": None,
             "fleet": "artisanal",
             "lat": -11.71153,
             "lon": -78.28806,
+            "mmsi": None,
             "registry_number": "TA-12345-OP",
             "shipname": "SANTA MARIA",
             "speed": 0.5,
             "ssvid": "TA-12345-OP",
             "timestamp": datetime.fromisoformat("2024-07-31 05:00:00+00:00"),
-        }
+        },
+        {
+            "callsign": None,
+            "course": 271.0,
+            "flag": "CHN",
+            "fleet": "artisanal",
+            "lat": -10.15091,
+            "lon": -79.12178,
+            "mmsi": "412412412",
+            "registry_number": "412412412",
+            "shipname": "NAUTILUS CHN II",
+            "speed": 4.3,
+            "ssvid": "412412412",
+            "timestamp": datetime(2024, 7, 30, 19, 21, 38),
+        },
     ]
 
     # Tests the transform.

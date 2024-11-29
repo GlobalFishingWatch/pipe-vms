@@ -51,6 +51,7 @@ class TestPERNormalize(unittest.TestCase):
             "lat": -11.71153,
             "length": None,
             "lon": -78.28806,
+            "mmsi": None,
             "msgid": "a27fd65ad5d2993887701e80d13dd7aa528f2442105b1e157952b9e30612e312",
             "received_at": None,
             "receiver": None,
@@ -86,6 +87,7 @@ class TestPERNormalize(unittest.TestCase):
             "lat": -5.81764,
             "length": None,
             "lon": -81.03528,
+            "mmsi": None,
             "msgid": "af314b1b519a8f075d09c7dbccba002733701a18348c7373a400611fbba2456b",
             "received_at": None,
             "receiver": None,
@@ -121,6 +123,7 @@ class TestPERNormalize(unittest.TestCase):
             "lat": -10.12852,
             "length": None,
             "lon": -79.17246,
+            "mmsi": None,
             "msgid": "bd33418b076e4707082a958d182a1a0d896393b6479be61f025e81283efaca41",
             "received_at": None,
             "receiver": None,
@@ -156,6 +159,7 @@ class TestPERNormalize(unittest.TestCase):
             "lat": -10.15091,
             "length": None,
             "lon": -79.12178,
+            "mmsi": None,
             "msgid": "189384014029369382bcf37b6e0468d7c84b024b08ccd201f1bf80d8527d427b",
             "received_at": None,
             "receiver": None,
@@ -178,6 +182,42 @@ class TestPERNormalize(unittest.TestCase):
             "updated_at": FAKE_TIME,
             "width": None,
         },
+        {
+            "callsign": None,
+            "class_b_cs_flag": None,
+            "course": 271.0,
+            "destination": None,
+            "flag": "CHN",
+            "fleet": "artisanal",
+            "heading": None,
+            "imo": None,
+            "ingested_at": None,
+            "lat": -10.15091,
+            "length": None,
+            "lon": -79.12178,
+            "mmsi": "412412412",
+            "msgid": "894ac86a79cc0f9008f7bea013e60f7fc36dc7fb178e6e7a2ab184abcfb4fd59",
+            "received_at": None,
+            "receiver": None,
+            "receiver_type": None,
+            "registry_number": "412412412",
+            "shipname": "NAUTILUS CHN II",
+            "shiptype": None,
+            "source": "PERU_VMS",
+            "source_fleet": "ARTISANAL",
+            "source_provider": "DIRNEA",
+            "source_ssvid": None,
+            "source_tenant": "PER",
+            "source_type": "VMS",
+            "speed": 4.3,
+            "ssvid": "2d2fb6e498322431a04d52ab1d39ab1a1008524882bdbf2c200db107484295f4",
+            "status": None,
+            "timestamp": datetime(2024, 7, 30, 19, 21, 38),
+            "timestamp_date": date(2024, 7, 30),
+            "type": "VMS",
+            "updated_at": datetime(2020, 2, 3, 17, 5, 55),
+            "width": None,
+        },
     ]
 
     # Example test that tests the pipeline's transforms.
@@ -195,6 +235,4 @@ class TestPERNormalize(unittest.TestCase):
             output: pvalue.PCollection = input | PERNormalize(feed="PEr")
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(
-                output, pcol_equal_to(TestPERNormalize.EXPECTED), label="CheckOutput"
-            )
+            assert_that(output, pcol_equal_to(TestPERNormalize.EXPECTED), label="CheckOutput")
