@@ -7,9 +7,7 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
 from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.transforms.blz_map_source_message import (
-    BLZMapSourceMessage,
-)
+from vms_ingestion.normalization.transforms.blz_map_source_message import BLZMapSourceMessage
 
 
 class TestBLZMapSourceMessage(unittest.TestCase):
@@ -32,7 +30,7 @@ class TestBLZMapSourceMessage(unittest.TestCase):
             "imo": "789123456",
             "callsign": None,
             "name": "ERTYUIO",
-            "mmsi": None,
+            "mmsi": "312312312",
             "lon": 1.840367,
             "timestamp": datetime.fromisoformat("2024-01-01 21:50:21+00:00"),
             "lat": -35.561983,
@@ -45,8 +43,10 @@ class TestBLZMapSourceMessage(unittest.TestCase):
             "callsign": None,
             "course": None,
             "imo": "789123456",
+            "flag": "BLZ",
             "lat": -35.561983,
             "lon": 1.840367,
+            "mmsi": "312312312",
             "received_at": datetime(2024, 1, 1, 22, 15, 19, tzinfo=timezone.utc),
             "shipname": "ERTYUIO",
             "shiptype": None,
