@@ -7,7 +7,7 @@
     "imo": "789123456",
     "callsign": null,
     "name": "ERTYUIO",
-    "mmsi": null,
+    "mmsi": "312312209",
     "lon": 1.840367,
     "timestamp": "2024-01-01 21:50:21+00:00",
     "lat": -35.561983
@@ -20,7 +20,7 @@
     "imo": null,
     "callsign": null,
     "name": "ZAIRA",
-    "mmsi": null,
+    "mmsi": "312312229",
     "lon": -47.32655,
     "timestamp": "2024-01-01 12:08:35+00:00",
     "lat": 6.4383
@@ -33,7 +33,7 @@
     "imo": null,
     "callsign": null,
     "name": "ZAIRA",
-    "mmsi": null,
+    "mmsi": "312312229",
     "lon": -47.3742,
     "timestamp": "2024-01-01 12:31:00+00:00",
     "lat": 6.451333
@@ -46,7 +46,7 @@
     "imo": "9876543",
     "callsign": null,
     "name": "EUGENIA",
-    "mmsi": "31231231",
+    "mmsi": "312312319",
     "lon": -21.080833,
     "timestamp": "2024-01-01 17:45:54+00:00",
     "lat": 13.857133
