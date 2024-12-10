@@ -2,9 +2,10 @@ from apache_beam.options.pipeline_options import PipelineOptions, StandardOption
 from apache_beam.runners import PipelineState
 
 
-def build_pipeline_options_with_defaults(argv):
+def build_pipeline_options_with_defaults(argv, **kwargs):
     return PipelineOptions(
         flags=argv,
+        **kwargs,
     )
 
 

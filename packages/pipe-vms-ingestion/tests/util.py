@@ -2,6 +2,7 @@ import csv
 import json
 import shutil
 
+import apache_beam as beam
 import icdiff
 from pprintpp import pformat
 
@@ -154,3 +155,8 @@ def pcol_equal_to(expected, equals_fn=None):
             raise CustomBeamAssertException(msg)
 
     return _equal
+
+
+class MockTransform(beam.PTransform):
+    def expand(self, pcoll):
+        return pcoll
