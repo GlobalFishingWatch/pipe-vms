@@ -1,4 +1,4 @@
-FROM python:3.10-slim as python-base
+FROM python:3.10-slim AS python-base
 
 LABEL maintainer="rodrigo.fuentes@globalfishingwatch.org"
 
@@ -17,7 +17,7 @@ ENV POETRY_VENV=/opt/poetry-venv
 ENV POETRY_CACHE_DIR=/opt/.cache
 
 # Create stage for Poetry installation
-FROM python-base as poetry-base
+FROM python-base AS poetry-base
 
 # Creating a virtual environment just for poetry and install it with pip
 RUN python3 -m venv $POETRY_VENV \
@@ -25,7 +25,7 @@ RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
 
 # Create a new stage from the base python image
-FROM poetry-base as monorepo-base
+FROM poetry-base AS monorepo-base
 
 # Copy Poetry to app image
 COPY --from=poetry-base ${POETRY_VENV} ${POETRY_VENV}
@@ -41,13 +41,13 @@ COPY ./libs ./libs
 COPY ./pipe-vms-ingestion ./pipe-vms-ingestion
 
 # Prepare the dev environment
-FROM monorepo-base as dev
+FROM monorepo-base AS dev
 WORKDIR /app/pipe-vms-ingestion
 RUN poetry install
 ENTRYPOINT ["poetry", "run", "python", "-u", "main.py"]
 
 # Create the package wheel and source using poetry for distribution
-FROM monorepo-base as builder
+FROM monorepo-base AS builder
 
 # IMPORTANT: Move the contents of the package in the /app root, important 
 # for building the package with the libs and update libs references with 
@@ -59,7 +59,7 @@ RUN mv ./pipe-vms-ingestion/* ./ && mv pyproject-build.toml pyproject.toml
 RUN poetry build
 
 # Create a new stage from the base python image
-FROM python-base as final
+FROM python-base AS final
 
 # Copy files from official SDK image, including script/dependencies.
 COPY --from=apache/beam_python3.10_sdk:2.56.0 /opt/apache/beam /opt/apache/beam
