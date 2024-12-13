@@ -2,6 +2,7 @@
 exclude =
 	.git,
 	__pycache__,
+	tmp,
 	build,
 	dist,
 	.tox,
