@@ -7,24 +7,13 @@ from apache_beam import pvalue
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to, read_json
-from vms_ingestion.normalization import build_pipeline_options_with_defaults
-from vms_ingestion.normalization.transforms.deduplicate_vessel_info import (
-    DeduplicateVesselInfo,
-)
+from vms_ingestion.normalization.transforms.deduplicate_vessel_info import DeduplicateVesselInfo
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 
 
 class TestDeduplicateVesselInfo(unittest.TestCase):
-    options = build_pipeline_options_with_defaults(
-        argv=[
-            "--country_code=chl",
-            '--source=""',
-            '--destination=""',
-            '--start_date=""',
-            '--end_date=""',
-        ]
-    )
+
     # Our input data, which will make up the initial PCollection.
     RECORDS = [
         {
@@ -102,7 +91,7 @@ class TestDeduplicateVesselInfo(unittest.TestCase):
 
     # Tests the pipeline's transforms.
     def test_deduplicate_vessel_info(self):
-        with TestPipeline(options=TestDeduplicateVesselInfo.options) as p:
+        with TestPipeline() as p:
 
             # Create a PCollection from the RECORDS static input data.
             input = p | beam.Create(TestDeduplicateVesselInfo.RECORDS)

@@ -3,6 +3,7 @@ from datetime import datetime
 from unittest.mock import patch
 
 import apache_beam as beam
+from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that, equal_to
 from common.transforms.map_naf_to_position import MapNAFToPosition, map_naf_to_position
@@ -47,6 +48,7 @@ class TestMapNAFToPosition(unittest.TestCase):
                 "internal_id": "INTERNAL_ID",
                 "lat": "12.3456",
                 "lon": "65.4321",
+                "mmsi": None,
                 "received_at": "2021-01-01T12:34:56Z",
                 "shipname": "SHIPNAME",
                 "source_fleet": "FLEET",
@@ -81,6 +83,7 @@ class TestMapNAFToPosition(unittest.TestCase):
                 "internal_id": None,
                 "lat": None,
                 "lon": None,
+                "mmsi": None,
                 "received_at": None,
                 "shipname": None,
                 "source_fleet": None,
@@ -139,6 +142,7 @@ class TestMapNAFToPosition(unittest.TestCase):
                     "internal_id": "INTERNAL_ID",
                     "lat": "12.3456",
                     "lon": "65.4321",
+                    "mmsi": None,
                     "received_at": "2021-01-01T12:34:56Z",
                     "shipname": "SHIPNAME",
                     "source_fleet": "FLEET",
@@ -158,7 +162,8 @@ class TestMapNAFToPosition(unittest.TestCase):
             }
         ]
 
-        with TestPipeline() as p:
+        options = PipelineOptions(runner='DirectRunner', temp_location='/tmp/temp1', staging_location='/tmp/staging1')
+        with TestPipeline(options=options) as p:
             input = p | beam.Create(input_data)
             output = input | MapNAFToPosition()
             assert_that(output, equal_to(expected_output))

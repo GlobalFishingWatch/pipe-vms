@@ -32,6 +32,7 @@ def map_naf_to_position(msg):
             "internal_id": naf_msg.get("IR"),
             "lat": naf_msg.get("LT"),
             "lon": naf_msg.get("LG"),
+            "mmsi": None,
             "received_at": common_msg.get("received_at"),
             "shipname": naf_msg.get("NA"),
             "source_fleet": standardize_str(common_msg.get("fleet")),

@@ -4,29 +4,18 @@ from bigquery.table import clear_records, ensure_table_exists
 from common.transforms.pick_output_fields import PickOutputFields
 from utils.convert import list_to_dict
 from utils.datetime import parse_yyyy_mm_dd_param
-from vms_ingestion.ingestion.excel_to_bq.feed_ingestion_factory import (
-    FeedIngestionFactory,
-)
-from vms_ingestion.ingestion.excel_to_bq.options import IngestionExcelToBQOptions
-from vms_ingestion.ingestion.excel_to_bq.transforms.map_ingested_message import (
-    MapIngestedMessage,
-)
-from vms_ingestion.ingestion.excel_to_bq.transforms.read_excel_to_dict import (
-    read_excel_to_dict,
-)
+from vms_ingestion.ingestion.excel_to_bq.feed_ingestion_factory import FeedIngestionFactory
+from vms_ingestion.ingestion.excel_to_bq.transforms.map_ingested_message import MapIngestedMessage
+from vms_ingestion.ingestion.excel_to_bq.transforms.read_excel_to_dict import read_excel_to_dict
 from vms_ingestion.ingestion.excel_to_bq.transforms.read_source import ReadSource
-from vms_ingestion.ingestion.excel_to_bq.transforms.write_sink import (
-    WriteSink,
-    table_descriptor,
-    table_schema,
-)
+from vms_ingestion.ingestion.excel_to_bq.transforms.write_sink import WriteSink, table_descriptor, table_schema
 
 
 class IngestionExcelToBQPipeline:
-    def __init__(self, options):
+    def __init__(self, args, options):
         self.pipeline = beam.Pipeline(options=options)
 
-        params = options.view_as(IngestionExcelToBQOptions)
+        params = args
         gCloudParams = options.view_as(GoogleCloudOptions)
 
         self.feed = params.country_code
@@ -74,12 +63,8 @@ class IngestionExcelToBQPipeline:
             | "Read Excel Files" >> beam.FlatMap(lambda x: read_excel_to_dict(x.read()))
             | "Ingest data" >> FeedIngestionFactory.get_ingestion(feed=self.feed)
             | "Filter messages inside date range"
-            >> beam.Filter(
-                lambda x: x["timestamp"] >= self.start_date
-                and x["timestamp"] < self.end_date
-            )
-            | "Map ingested message"
-            >> MapIngestedMessage(feed=self.feed, fleet=self.fleet)
+            >> beam.Filter(lambda x: x["timestamp"] >= self.start_date and x["timestamp"] < self.end_date)
+            | "Map ingested message" >> MapIngestedMessage(feed=self.feed, fleet=self.fleet)
             | PickOutputFields(fields=[f"{field}" for field in self.output_fields])
             # | "Print" >> beam.Map(print)
             | "Write Sink"

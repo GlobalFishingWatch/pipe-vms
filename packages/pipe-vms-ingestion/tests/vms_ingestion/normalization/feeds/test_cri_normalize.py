@@ -7,23 +7,12 @@ from apache_beam import pvalue
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
-from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.cri_normalize import CRINormalize
 
 FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestCRINormalize(unittest.TestCase):
-
-    options = build_pipeline_options_with_defaults(
-        argv=[
-            "--country_code=cri",
-            '--source=""',
-            '--destination=""',
-            '--start_date=""',
-            '--end_date=""',
-        ]
-    )
 
     # Our input data, which will make up the initial PCollection.
     RECORDS = [
@@ -77,9 +66,7 @@ class TestCRINormalize(unittest.TestCase):
             "ssvid": "e41ebf65d65dd6355e6665e272320a8a552c2e68d6374a4dec601ed2aeb54b6b",
             "status": None,
             "timestamp": datetime.fromisoformat("2024-05-01 12:15:01+00:00"),
-            "timestamp_date": datetime.date(
-                datetime.fromisoformat("2024-05-01 12:15:01+00:00")
-            ),
+            "timestamp_date": datetime.date(datetime.fromisoformat("2024-05-01 12:15:01+00:00")),
             "type": "VMS",
             "updated_at": FAKE_TIME,
             "width": None,
@@ -92,7 +79,7 @@ class TestCRINormalize(unittest.TestCase):
         side_effect=lambda tz: FAKE_TIME,
     )
     def test_normalize(self, mock_now):
-        with TestPipeline(options=TestCRINormalize.options) as p:
+        with TestPipeline() as p:
 
             # Create a PCollection from the RECORDS static input data.
             input = p | beam.Create(TestCRINormalize.RECORDS)
@@ -101,6 +88,4 @@ class TestCRINormalize(unittest.TestCase):
             output: pvalue.PCollection = input | CRINormalize(feed="cri")
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(
-                output, pcol_equal_to(TestCRINormalize.EXPECTED), label="CheckOutput"
-            )
+            assert_that(output, pcol_equal_to(TestCRINormalize.EXPECTED), label="CheckOutput")

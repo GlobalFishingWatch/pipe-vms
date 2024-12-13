@@ -5,7 +5,7 @@ from common.transforms.pick_output_fields import PickOutputFields
 from utils.convert import list_to_dict
 from utils.datetime import parse_yyyy_mm_dd_param
 from vms_ingestion.normalization.feed_normalization_factory import FeedNormalizationFactory
-from vms_ingestion.normalization.pipeline_options import Entities, NormalizationOptions
+from vms_ingestion.normalization.pipeline_options import Entities
 from vms_ingestion.normalization.transforms.deduplicate_msgs import DeduplicateMsgs
 from vms_ingestion.normalization.transforms.deduplicate_vessel_info import DeduplicateVesselInfo
 from vms_ingestion.normalization.transforms.discard_zero_lat_lon import DiscardZeroLatLon
@@ -23,10 +23,10 @@ from vms_ingestion.normalization.transforms.write_sink_reported_vessel_info impo
 
 
 class NormalizationPipeline:
-    def __init__(self, options):
+    def __init__(self, args, options):
         self.pipeline = beam.Pipeline(options=options)
 
-        params = options.view_as(NormalizationOptions)
+        params = args
         gCloudParams = options.view_as(GoogleCloudOptions)
 
         self.feed = params.country_code

@@ -1,11 +1,12 @@
 import os
 import unittest
 from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import apache_beam as beam
+from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.testing.test_pipeline import TestPipeline
-from apache_beam.testing.util import assert_that, equal_to
+from apache_beam.testing.util import assert_that
 from common.transforms.read_naf import ReadNAF
 from tests.util import MockTransform, pcol_equal_to
 
@@ -23,14 +24,15 @@ class ReadNAFTest(unittest.TestCase):
         MockWriteToPubSub.return_value = MockTransform()
 
         # Create a test pipeline
-        with TestPipeline() as p:
+        options = PipelineOptions(runner='DirectRunner', temp_location='/tmp/temp1', staging_location='/tmp/staging1')
+        with TestPipeline(options=options) as p:
             # Create a PCollection with test data
             input_data = [
                 {
                     'bucket': f"{script_path}/data/",
                     'name': 'naf-sample.data',
                     "common": {
-                        "notificationConfig": "projects/_/buckets/gfw-raw-data-vms-chl-central/notificationConfigs/68",
+                        "notificationConfig": "projects/_/buckets/gcs-bucket/notificationConfigs/68",
                         "fleet": "SOME_FLEET",
                         "objectGeneration": "1733428914890573",
                         "eventType": "OBJECT_FINALIZE",
@@ -73,7 +75,7 @@ class ReadNAFTest(unittest.TestCase):
                         "FS": "XYZ",
                     },
                     "common": {
-                        "notificationConfig": "projects/_/buckets/gfw-raw-data-vms-chl-central/notificationConfigs/68",
+                        "notificationConfig": "projects/_/buckets/gcs-bucket/notificationConfigs/68",
                         "fleet": "SOME_FLEET",
                         "objectGeneration": "1733428914890573",
                         "eventType": "OBJECT_FINALIZE",
@@ -91,12 +93,9 @@ class ReadNAFTest(unittest.TestCase):
                     },
                 }
             ]
-            # print(result_pcoll)
             # Assert that the output matches the expected output
-            # assert_that(result_pcoll, equal_to(expected_output))
             assert_that(result_pcoll, pcol_equal_to(expected_output))
-            # MockWriteToPubSub.expand.assert_called_no_times()
 
 
-if __name__ == '__main__':
-    unittest.main()
+# if __name__ == '__main__':
+#     unittest.main()

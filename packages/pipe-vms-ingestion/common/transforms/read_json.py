@@ -1,11 +1,11 @@
 import apache_beam as beam
-from common.coders.naf_coder import NAFCoder
+from common.coders.json_coder import JSONCoder
 from common.transforms.decode_lines_with_custom_coder import DecodeLinesWithCustomCoder
 from common.transforms.read_lines_from_file import ReadLinesFromFile
 
 
-class ReadNAF(beam.io.ReadFromText):
-    """Read NAF file and decode it"""
+class ReadJson(beam.io.ReadFromText):
+    """Read Json file and decode it"""
 
     def __init__(self, schema, error_topic):
         self.schema = schema
@@ -21,7 +21,7 @@ class ReadNAF(beam.io.ReadFromText):
             "errors", main="lines"
         )
         decoded_records = lines.lines | "Decode records" >> beam.ParDo(
-            DecodeLinesWithCustomCoder(NAFCoder())
+            DecodeLinesWithCustomCoder(JSONCoder())
         ).with_outputs("errors", main="decoded")
         errors = (lines.errors, decoded_records.errors) | "Flatten errors" >> beam.Flatten()
         errors | "Write errors" >> beam.io.WriteToPubSub(topic=self.error_topic)

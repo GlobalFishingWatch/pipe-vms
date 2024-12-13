@@ -1,25 +1,28 @@
-from apache_beam.options.pipeline_options import PipelineOptions
+import argparse
 
 
-class IngestionFetchRawOptions(PipelineOptions):
-    @classmethod
-    def _add_argparse_args(cls, parser):
-        optional = parser.add_argument_group("Optional")
+class IngestionFetchRawOptions:
+    def __init__(self):
+        parser = argparse.ArgumentParser()
 
-        optional.add_argument(
+        parser.add_argument(
             "--input_topic",
-            required=False,
+            required=True,
             help="The Cloud Pub/Sub topic to read from.",
         )
 
-        optional.add_argument(
+        parser.add_argument(
             "--output_topic",
-            required=False,
+            required=True,
             help="The Cloud Pub/Sub topic to write positions to.",
         )
 
-        optional.add_argument(
+        parser.add_argument(
             "--error_topic",
-            required=False,
+            required=True,
             help="The Cloud Pub/Sub topic to write failed messages to.",
         )
+        self.parser = parser
+
+    def parse_known_args(self, **argv):
+        return self.parser.parse_known_args(**argv)

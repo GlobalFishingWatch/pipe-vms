@@ -1,10 +1,13 @@
+import argparse
+
 from apache_beam.options.pipeline_options import PipelineOptions
 from common import validators
 
 
-class CommonPipelineOptions(PipelineOptions):
-    @classmethod
-    def _add_argparse_args(cls, parser):
+class CommonPipelineOptions:
+    def __init__(self):
+        parser = argparse.ArgumentParser()
+
         required = parser.add_argument_group("Required")
         required.add_argument(
             "--country_code",
@@ -45,9 +48,20 @@ class CommonPipelineOptions(PipelineOptions):
             default="timestamp",
             help="Field name in source table that contains the timestamp of the position record.",
         )
-        optional.add_argument(
-            "--wait_for_job",
-            default=False,
-            action="store_true",
-            help="Wait until the job finishes before returning.",
+        self.parser = parser
+        self.required = required
+        self.optional = optional
+
+    def parse_known_args(self, **argv):
+        return self.parser.parse_known_args(**argv)
+
+    def parse_args(self, **argv):
+        return self.parser.parse_args(**argv)
+
+
+class IngestionPipelineOptions(PipelineOptions):
+    @classmethod
+    def _add_argparse_args(cls, parser):
+        parser.add_argument(
+            "--wait_for_job", default=False, action="store_true", help="Wait until the job finishes before returning."
         )

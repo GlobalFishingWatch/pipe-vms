@@ -9,14 +9,9 @@ from apache_beam.io.fileio import ReadMatches
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
-from vms_ingestion.ingestion.excel_to_bq.feed_ingestion_factory import (
-    FeedIngestionFactory,
-)
+from vms_ingestion.ingestion.excel_to_bq.feed_ingestion_factory import FeedIngestionFactory
 from vms_ingestion.ingestion.excel_to_bq.transforms import map_ingested_message
-from vms_ingestion.ingestion.excel_to_bq.transforms.read_excel_to_dict import (
-    read_excel_to_dict,
-)
-from vms_ingestion.normalization import build_pipeline_options_with_defaults
+from vms_ingestion.ingestion.excel_to_bq.transforms.read_excel_to_dict import read_excel_to_dict
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -29,17 +24,6 @@ def mocked_now():
 
 
 class TestPANIngestion(unittest.TestCase):
-
-    options = build_pipeline_options_with_defaults(
-        argv=[
-            "--country_code=pan",
-            '--source=""',
-            '--destination=""',
-            '--start_date="2020-07-01"',
-            '--end_date="2020-07-02"',
-            "--fleet=trawler",
-        ]
-    )
 
     # Our input data, which will make up the initial PCollection.
     RECORDS = [f"{script_path}/data/pan_ingestion.xlsx"]
@@ -141,30 +125,24 @@ class TestPANIngestion(unittest.TestCase):
 
     # Example test that tests the pipeline's transforms.
     def test_excel_to_bq(self):
-        with TestPipeline(options=TestPANIngestion.options) as p:
+        with TestPipeline() as p:
             # Create a PCollection from the RECORDS static input data.
             input = p | beam.Create(TestPANIngestion.RECORDS)
 
-            self.monkeypatch.setattr(
-                map_ingested_message, "get_ingested_at", mocked_now
-            )
+            self.monkeypatch.setattr(map_ingested_message, "get_ingested_at", mocked_now)
             # Run ALL the pipeline's transforms (in this case, the Ingestion transform).
             output: pvalue.PCollection = (
                 input
                 | "Read Excel Files" >> ReadMatches()
-                | "Convert Excel Files to Dict"
-                >> beam.FlatMap(lambda x: read_excel_to_dict(x.read()))
+                | "Convert Excel Files to Dict" >> beam.FlatMap(lambda x: read_excel_to_dict(x.read()))
                 | "Ingest data" >> FeedIngestionFactory.get_ingestion(feed="pan")
                 | "Filter messages inside date range"
                 >> beam.Filter(
                     lambda x: x["timestamp"] >= datetime.datetime(2020, 7, 1, 0, 0)
                     and x["timestamp"] < datetime.datetime(2020, 9, 1, 0, 0)
                 )
-                | "Map ingested message"
-                >> map_ingested_message.MapIngestedMessage(feed="pan", fleet="trawler")
+                | "Map ingested message" >> map_ingested_message.MapIngestedMessage(feed="pan", fleet="trawler")
             )
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(
-                output, pcol_equal_to(TestPANIngestion.EXPECTED), label="CheckOutput"
-            )
+            assert_that(output, pcol_equal_to(TestPANIngestion.EXPECTED), label="CheckOutput")

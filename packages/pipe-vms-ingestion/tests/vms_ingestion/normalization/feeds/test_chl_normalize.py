@@ -7,23 +7,12 @@ from apache_beam import pvalue
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to
-from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.chl_normalize import CHLNormalize
 
 FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestCHLNormalize(unittest.TestCase):
-
-    options = build_pipeline_options_with_defaults(
-        argv=[
-            "--country_code=chl",
-            '--source=""',
-            '--destination=""',
-            '--start_date=""',
-            '--end_date=""',
-        ]
-    )
 
     # Our input data, which will make up the initial PCollection.
     RECORDS = [
@@ -73,9 +62,7 @@ class TestCHLNormalize(unittest.TestCase):
             "received_at": None,
             "ingested_at": None,
             "updated_at": FAKE_TIME,
-            "timestamp_date": datetime.date(
-                datetime.fromisoformat("2020-01-01 20:23:01+00:00")
-            ),
+            "timestamp_date": datetime.date(datetime.fromisoformat("2020-01-01 20:23:01+00:00")),
         }
     ]
 
@@ -85,7 +72,7 @@ class TestCHLNormalize(unittest.TestCase):
         side_effect=lambda tz: FAKE_TIME,
     )
     def test_normalize(self, mock_now):
-        with TestPipeline(options=TestCHLNormalize.options) as p:
+        with TestPipeline() as p:
 
             # Create a PCollection from the RECORDS static input data.
             input = p | beam.Create(TestCHLNormalize.RECORDS)
@@ -94,6 +81,4 @@ class TestCHLNormalize(unittest.TestCase):
             output: pvalue.PCollection = input | CHLNormalize(feed="chl")
 
             # Assert that the output PCollection matches the EXPECTED data.
-            assert_that(
-                output, pcol_equal_to(TestCHLNormalize.EXPECTED), label="CheckOutput"
-            )
+            assert_that(output, pcol_equal_to(TestCHLNormalize.EXPECTED), label="CheckOutput")

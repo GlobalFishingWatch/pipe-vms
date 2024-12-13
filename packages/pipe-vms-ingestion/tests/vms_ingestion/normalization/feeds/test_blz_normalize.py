@@ -8,7 +8,6 @@ from apache_beam import pvalue
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from tests.util import pcol_equal_to, read_json
-from vms_ingestion.normalization import build_pipeline_options_with_defaults
 from vms_ingestion.normalization.feeds.blz_normalize import BLZNormalize
 
 script_path = os.path.dirname(os.path.abspath(__file__))
@@ -17,16 +16,6 @@ FAKE_TIME = datetime(2020, 2, 3, 17, 5, 55)
 
 
 class TestBLZNormalize(unittest.TestCase):
-
-    options = build_pipeline_options_with_defaults(
-        argv=[
-            "--country_code=blz",
-            '--source=""',
-            '--destination=""',
-            '--start_date=""',
-            '--end_date=""',
-        ]
-    )
 
     # Our input data, which will make up the initial PCollection.
     RECORDS = [
@@ -184,7 +173,7 @@ class TestBLZNormalize(unittest.TestCase):
         side_effect=lambda tz: FAKE_TIME,
     )
     def test_normalize(self, mock_now):
-        with TestPipeline(options=TestBLZNormalize.options) as p:
+        with TestPipeline() as p:
 
             # Create a PCollection from the RECORDS static input data.
             input = p | beam.Create(TestBLZNormalize.RECORDS)

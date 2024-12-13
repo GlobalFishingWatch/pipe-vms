@@ -1,10 +1,14 @@
+import argparse
 import json
 from datetime import date, datetime, timezone
 
 import apache_beam as beam
 from apache_beam.io import ReadFromPubSub, WriteToPubSub
+from apache_beam.options.pipeline_options import PipelineOptions
 from common.pipeline import build_pipeline_options_with_defaults
+from common.transforms.map_api_ingest_to_position import MapAPIIngestToPosition
 from common.transforms.map_naf_to_position import MapNAFToPosition
+from common.transforms.read_json import ReadJson
 from common.transforms.read_naf import ReadNAF
 from logger import logger
 from vms_ingestion.ingestion.fetch_raw.options import IngestionFetchRawOptions
@@ -42,34 +46,51 @@ def fetch_raw(argv):
     logging.info("Running fetch raw ingestion dataflow pipeline with args %s", argv)
 
     logging.info("Building pipeline options")
-    options = build_pipeline_options_with_defaults(argv, **{"streaming": True, "save_main_session": True}).view_as(
-        IngestionFetchRawOptions
-    )
+
+    default_options = {"streaming": True, "save_main_session": True}
+
+    options, beam_args = IngestionFetchRawOptions().parse_known_args()
+    beam_options = PipelineOptions({**beam_args, **default_options})
 
     logging.info("Launching pipeline")
 
-    input_topic = options.input_topic  # ."gfw-raw-data-vms-central-notification-topic"
-    with beam.Pipeline(options=options) as pipeline:
+    process = "API_INGEST"
+
+    with beam.Pipeline(options=beam_options) as pipeline:
         files = (
             pipeline
-            | "Read from Pub/Sub" >> ReadFromPubSub(topic=input_topic, with_attributes=True)
+            | "Read from Pub/Sub" >> ReadFromPubSub(topic=options.input_topic, with_attributes=True)
             | 'Parse To JSON' >> beam.ParDo(FilterAndParse())
             | "Add common outout attributes" >> beam.Map(add_common_output_attributes)
         )
         naf_positions = (
-            files
-            | "Filter NAF" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f == "NAF"))
-            | "Read Lines from NAF File" >> ReadNAF(schema="gs://", error_topic=options.error_topic)
-            | "Map NAF message to position" >> MapNAFToPosition()
+            (
+                files
+                | "Filter NAF" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f == "NAF"))
+                | "Read Lines from NAF File" >> ReadNAF(schema="gs://", error_topic=options.error_topic)
+                | "Map NAF message to position" >> MapNAFToPosition()
+            )
+            if process == "NAF"
+            else beam.Create([])
+        )
+        api_ingest_positions = (
+            (
+                files
+                | "Filter API_INGEST" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f == "API_INGEST"))
+                | "Read Lines from JSON File" >> ReadJson(schema="gs://", error_topic=options.error_topic)
+                | "Map API_INGEST message to position" >> MapAPIIngestToPosition()
+            )
+            if process == "API_INGEST"
+            else beam.Create([])
         )
         (
-            naf_positions
+            (naf_positions + api_ingest_positions)
             | "Encode position" >> beam.ParDo(EncodePosition())
             | "Write to Pub/Sub" >> WriteToPubSub(topic=options.output_topic)
         )
         # unhandled positions
         (
             files
-            | "Filter Unhandled" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f != "NAF"))
+            | "Filter Unhandled" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f not in ["NAF", "API_INGEST"]))
             | "Write to Pub/Sub" >> WriteToPubSub(topic=options.error_topic)
         )
