@@ -15,12 +15,9 @@ script_path = os.path.dirname(os.path.abspath(__file__))
 
 class ReadNAFTest(unittest.TestCase):
 
-    # @patch('common.transforms.read_naf.NAFCoder')
-    # def test_read_naf(self, MockNAFCoder):
     @patch('apache_beam.io.WriteToPubSub')
     def test_read_naf(self, MockWriteToPubSub):
-        # Mock the NAFCoder
-        # mock_coder = MockNAFCoder.return_value
+        # Mock the WriteToPubSub
         MockWriteToPubSub.return_value = MockTransform()
 
         # Create a test pipeline
@@ -97,5 +94,5 @@ class ReadNAFTest(unittest.TestCase):
             assert_that(result_pcoll, pcol_equal_to(expected_output))
 
 
-# if __name__ == '__main__':
-#     unittest.main()
+if __name__ == '__main__':
+    unittest.main()
