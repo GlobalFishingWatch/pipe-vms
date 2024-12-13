@@ -1,11 +1,9 @@
-import argparse
 import json
 from datetime import date, datetime, timezone
 
 import apache_beam as beam
 from apache_beam.io import ReadFromPubSub, WriteToPubSub
 from apache_beam.options.pipeline_options import PipelineOptions
-from common.pipeline import build_pipeline_options_with_defaults
 from common.transforms.map_api_ingest_to_position import MapAPIIngestToPosition
 from common.transforms.map_naf_to_position import MapNAFToPosition
 from common.transforms.read_json import ReadJson
@@ -54,8 +52,6 @@ def fetch_raw(argv):
 
     logging.info("Launching pipeline")
 
-    process = "API_INGEST"
-
     with beam.Pipeline(options=beam_options) as pipeline:
         files = (
             pipeline
@@ -64,24 +60,16 @@ def fetch_raw(argv):
             | "Add common outout attributes" >> beam.Map(add_common_output_attributes)
         )
         naf_positions = (
-            (
-                files
-                | "Filter NAF" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f == "NAF"))
-                | "Read Lines from NAF File" >> ReadNAF(schema="gs://", error_topic=options.error_topic)
-                | "Map NAF message to position" >> MapNAFToPosition()
-            )
-            if process == "NAF"
-            else beam.Create([])
+            files
+            | "Filter NAF" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f == "NAF"))
+            | "Read Lines from NAF File" >> ReadNAF(schema="gs://", error_topic=options.error_topic)
+            | "Map NAF message to position" >> MapNAFToPosition()
         )
         api_ingest_positions = (
-            (
-                files
-                | "Filter API_INGEST" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f == "API_INGEST"))
-                | "Read Lines from JSON File" >> ReadJson(schema="gs://", error_topic=options.error_topic)
-                | "Map API_INGEST message to position" >> MapAPIIngestToPosition()
-            )
-            if process == "API_INGEST"
-            else beam.Create([])
+            files
+            | "Filter API_INGEST" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f == "API_INGEST"))
+            | "Read Lines from JSON File" >> ReadJson(schema="gs://", error_topic=options.error_topic)
+            | "Map API_INGEST message to position" >> MapAPIIngestToPosition()
         )
         (
             (naf_positions + api_ingest_positions)
