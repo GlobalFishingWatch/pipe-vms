@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package com.gfw.vms.ingestion.v3;
+
+// Schema for vessel monitoring system (VMS) position messages published to Pub/Sub.
+message VmsMessage {
+  // Timestamp of the vessel's reported position (in ISO 8601 format).
+  string timestamp = 1;
+
+  // Latitude of the vessel's reported position (in decimal degrees).
+  string lat = 2;
+
+  // Longitude of the vessel's reported position (in decimal degrees).
+  string lon = 3;
+
+  // International radio callsign of the vessel.
+  optional string callsign = 4;
+
+  // Current course of the vessel in degrees (0-360).
+  optional string course = 5;
+
+  // External identifier for the vessel (may be assigned by a third-party system).
+  optional string external_id = 6;
+
+  // Country flag under which the vessel is registered.
+  optional string flag = 7;
+
+  // IMO (International Maritime Organization) number of the vessel.
+  optional string imo = 8;
+
+  // Internal system identifier for the vessel.
+  optional string internal_id = 9;
+
+  // Maritime Mobile Service Identity (MMSI) of the vessel.
+  optional string mmsi = 10;
+
+  // Name of the vessel.
+  optional string shipname = 11;
+
+  // Fleet or organization that owns or operates the vessel.
+  optional string source_fleet = 12;
+
+  // The source provider responsible for sending the message.
+  string source_provider = 13;
+
+  // Tenant or client that owns the data pipeline.
+  string source_tenant = 14;
+
+  // Type of source providing the message (e.g., VMS, AIS).
+  string source_type = 15;
+
+  // Speed of the vessel (in knots).
+  optional string speed = 16;
+
+  // Additional dynamic fields provided as key-value pairs.
+  map<string, string> extra_fields = 17;
+
+  // Timestamp when the position message was received by our system.
+  string received_at = 18;
+
+  // Timestamp when the message was ingested into the system.
+  string ingested_at = 19;
+}

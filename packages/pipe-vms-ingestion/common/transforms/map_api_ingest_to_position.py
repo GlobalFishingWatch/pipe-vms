@@ -42,6 +42,7 @@ def map_api_ingest_to_position(msg):
             "timestamp": datetime.strptime(
                 get_datetime_with_millis(position_msg["timestamp"]), "%Y-%m-%dT%H:%M:%S.%fZ"
             ).replace(tzinfo=timezone.utc),
+            "extra_fields": {},
         },
         "common": common_msg,
     }

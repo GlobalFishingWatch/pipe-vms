@@ -1,6 +1,6 @@
 from logger import logger
 from vms_ingestion.ingestion.excel_to_bq import excel_to_bq
-from vms_ingestion.ingestion.fetch_raw import fetch_raw
+from vms_ingestion.ingestion.fetch_raw import run as fetch_raw
 
 logger.setup_logger(1)
 logging = logger.get_logger()

@@ -41,6 +41,7 @@ def map_naf_to_position(msg):
             "source_type": f"VMS-{common_msg.get('format')}",
             "speed": naf_msg.get("SP"),
             "timestamp": datetime.strptime(get_datetime_value(naf_msg), "%Y%m%d%H%M%S"),
+            "extra_fields": {},
         },
         "common": common_msg,
     }
