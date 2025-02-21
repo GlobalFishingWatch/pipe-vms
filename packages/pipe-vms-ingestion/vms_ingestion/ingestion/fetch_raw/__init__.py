@@ -3,6 +3,7 @@ import pprint
 from datetime import date, datetime, timezone
 
 import apache_beam as beam
+from apache_beam import pvalue
 from apache_beam.io import ReadFromPubSub, WriteToPubSub
 from apache_beam.options.pipeline_options import PipelineOptions
 from common.transforms.map_api_ingest_to_position import MapAPIIngestToPosition
@@ -130,6 +131,8 @@ def run(argv):
             | beam.WindowInto(beam.window.FixedWindows(5))
             | 'Parse To JSON' >> beam.ParDo(FilterAndParse())
             | "Add common output attributes" >> beam.Map(add_common_output_attributes)
+            # | "Log bucket notification"
+            # >> beam.LogElements(label="New File ", prefix="✅", with_timestamp=True, level=beam.logging.INFO)
         )
         naf_positions = (
             files
@@ -143,18 +146,27 @@ def run(argv):
             | "Read Lines from JSON File" >> ReadJson(schema="gs://", error_topic=options.error_topic)
             | "Map API_INGEST message to position" >> MapAPIIngestToPosition()
         )
-        positions = (
+        positions: pvalue.DoOutputsTuple = (
             (naf_positions, api_ingest_positions)
             | "Flatten positions from different formats" >> beam.Flatten()
-            | "Convert to Protobuf" >> beam.ParDo(ConvertToProtobuf()).with_outputs("protobuf")
-            | "Exclude None and non dict" >> beam.Filter(lambda x: x is not None and isinstance(x, dict))
+            | "Convert to Protobuf" >> beam.ParDo(ConvertToProtobuf()).with_outputs("protobuf", "errors")
         )
 
+        # Write positions to PubSub
         (
-            # positions.protobuf
-            positions
-            # | "Group by key" >> beam.GroupByKey()
-            | "Write to local file" >> beam.io.WriteToText("vms_ingestion/output.txt")
+            positions.protobuf
+            # positions
+            | "Log position message"
+            >> beam.LogElements(label="Position", prefix="✅", with_timestamp=True, level=beam.logging.INFO)
+            # | "Write to Pub/Sub" >> WriteToPubSub(topic=options.output_topic, with_attributes=True)
+        )
+
+        # Write errors to PubSub
+        (
+            positions.errors
+            #  | "Write conversion errors to Pub/Sub" >> WriteToPubSub(topic=options.error_topic)
+            | "Log Errors"
+            >> beam.LogElements(label="Errors", prefix="⛔️ Error: ", with_timestamp=True, level=beam.logging.ERROR)
         )
 
         # | "Write to Pub/Sub" >> WriteToPubSub(topic=options.output_topic, with_attributes=True)
@@ -168,22 +180,6 @@ def run(argv):
         # | "Convert to Protobuf" >> beam.Map(convert_to_protobuf)
         # | "Log Element 1" >> beam.Map(lambda x: print(f"✅ after protobuf: {x}"))
         # | "Log Element 2" >> beam.Map(lambda x: print(f"✅ Element: {x}"))
-        # )
-
-        # Write positions to PubSub
-        # (
-        #     # positions.protobuf
-        #     positions
-        #     # >> beam.LogElements(label="Position", prefix="✅", with_timestamp=True, level=beam.logging.INFO)
-        #     # | "Write to Pub/Sub" >> WriteToPubSub(topic=options.output_topic, with_attributes=True)
-        # )
-
-        # Write errors to PubSub
-        # (
-        #     positions.errors
-        #     #  | "Write conversion errors to Pub/Sub" >> WriteToPubSub(topic=options.error_topic)
-        #     | "Log Errors"
-        #     >> beam.LogElements(label="Errors", prefix="⛔️ Error: ", with_timestamp=True, level=beam.logging.ERROR)
         # )
 
         # unhandled files
