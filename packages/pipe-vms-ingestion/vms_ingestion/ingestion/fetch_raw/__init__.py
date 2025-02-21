@@ -1,10 +1,9 @@
-import json
 import pprint
 from datetime import date, datetime, timezone
 
 import apache_beam as beam
 from apache_beam import pvalue
-from apache_beam.io import ReadFromPubSub, WriteToPubSub
+from apache_beam.io import PubsubMessage, ReadFromPubSub, WriteToPubSub
 from apache_beam.options.pipeline_options import PipelineOptions
 from common.transforms.map_api_ingest_to_position import MapAPIIngestToPosition
 from common.transforms.map_naf_to_position import MapNAFToPosition
@@ -53,13 +52,14 @@ def convert_to_protobuf(element):
     serialized_message = message.SerializeToString()
 
     # Set attributes for Pub/Sub
+    # ensuring that all of thenm are strings
     attributes = {
-        "tf_project": element["common"]["tf_project"],
-        "fleet": element["common"].get("fleet"),
-        "provider": element["common"]["provider"],
-        "country": element["common"]["country"],
-        "format": element["common"]["format"],
-        "received_at": element["common"]["received_at"].isoformat(),
+        "tf_project": str(element["common"]["tf_project"]),
+        "fleet": str(element["common"].get("fleet")),
+        "provider": str(element["common"]["provider"]),
+        "country": str(element["common"]["country"]),
+        "format": str(element["common"]["format"]),
+        "received_at": str(element["common"]["received_at"].isoformat()),
     }
     return {"data": serialized_message, "attributes": attributes}
 
@@ -90,6 +90,11 @@ class ConvertToProtobuf(beam.DoFn):
 
             logging.error(f"Error converting to Protobuf: {e}", element, exc_info=True, stack_info=True)
             yield beam.pvalue.TaggedOutput("errors", {"error": f"Error converting to protobuf: {e}", "data": element})
+
+
+class CreatePubsubMessage(beam.DoFn):
+    def process(self, element):
+        yield PubsubMessage(data=element["data"], attributes=element["attributes"])
 
 
 def default_serializer(o):
@@ -156,9 +161,12 @@ def run(argv):
         (
             positions.protobuf
             # positions
-            | "Log position message"
-            >> beam.LogElements(label="Position", prefix="✅", with_timestamp=True, level=beam.logging.INFO)
-            # | "Write to Pub/Sub" >> WriteToPubSub(topic=options.output_topic, with_attributes=True)
+            # | "Log position message dict"
+            # >> beam.LogElements(label="Position", prefix="✅ dict ", with_timestamp=True, level=beam.logging.INFO)
+            | "Create PubSub Message" >> beam.ParDo(CreatePubsubMessage())
+            # | "Log position message"
+            # >> beam.LogElements(label="Position", prefix="✅ ", with_timestamp=True, level=beam.logging.INFO)
+            | "Write to Pub/Sub" >> WriteToPubSub(topic=options.output_topic, with_attributes=True)
         )
 
         # Write errors to PubSub
@@ -168,19 +176,6 @@ def run(argv):
             | "Log Errors"
             >> beam.LogElements(label="Errors", prefix="⛔️ Error: ", with_timestamp=True, level=beam.logging.ERROR)
         )
-
-        # | "Write to Pub/Sub" >> WriteToPubSub(topic=options.output_topic, with_attributes=True)
-
-        # (
-        #     (naf_positions, api_ingest_positions)
-        #     | "Flatten positions from different formats" >> beam.Flatten()
-        #     | "Convert to Protobuf" >> beam.ParDo(ConvertToProtobuf()).with_outputs("protobuf")
-        # | "Exclude None and non dict" >> beam.Filter(lambda x: x is not None and isinstance(x, dict))
-        # | "Write to local file" >> beam.io.WriteToText("vms_ingestion/output.txt")
-        # | "Convert to Protobuf" >> beam.Map(convert_to_protobuf)
-        # | "Log Element 1" >> beam.Map(lambda x: print(f"✅ after protobuf: {x}"))
-        # | "Log Element 2" >> beam.Map(lambda x: print(f"✅ Element: {x}"))
-        # )
 
         # unhandled files
         (
@@ -198,6 +193,7 @@ def run(argv):
                     gcs_file_path=None,
                 ).to_dict()
             )
-            | beam.Map(lambda x: print(f"⛔️ Unhandled: {json.dumps(x)}"))
+            | "Log unhandled files"
+            >> beam.LogElements(label="Errors", prefix="⛔️ Error: ", with_timestamp=True, level=beam.logging.ERROR)
             # | "Write error to Pub/Sub" >> WriteToPubSub(topic=options.error_topic)
         )
