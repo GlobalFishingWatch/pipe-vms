@@ -1,0 +1,35 @@
+// Vms Message schema
+// ------------------
+// Need to use proto2 to define required fields that match the table Definition
+// to solve the error: 
+//      Error 400: Incompatible schema: field timestamp is required in table, but nullable in topic.
+//
+// https://stackoverflow.com/questions/75519391/google-pubsub-bigquery-subscription-fails-if-the-topic-schema-has-nullable-field
+syntax = "proto2";
+
+package com.gfw.vms.ingestion.v3;
+
+// Schema for capturing failed messages from VMS ingestion pipeline.
+message VmsDeadLetter {
+  required string message_id = 1;
+
+  required string subscription_name = 2;
+
+  required string publish_time = 3;
+
+  optional string attributes = 4;
+
+  required bytes data = 5;
+
+  required string error_message = 6;
+
+  optional string stack_trace = 7;
+
+  required string timestamp = 8;
+
+  optional string pipeline_step = 9;
+
+  optional string gcs_bucket = 10;
+
+  optional string gcs_file_path = 11;
+}

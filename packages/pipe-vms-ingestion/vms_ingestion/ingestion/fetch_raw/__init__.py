@@ -1,18 +1,20 @@
+import json
 from datetime import datetime, timezone
 
 import apache_beam as beam
 from apache_beam import pvalue
 from apache_beam.io import ReadFromPubSub, WriteToPubSub
 from apache_beam.options.pipeline_options import PipelineOptions
+from common.coders.json_coder import default_serializer
 from common.transforms.map_api_ingest_to_position import MapAPIIngestToPosition
 from common.transforms.map_naf_to_position import MapNAFToPosition
 from common.transforms.read_json import ReadJson
 from common.transforms.read_naf import ReadNAF
 from logger import logger
-from vms_ingestion.ingestion.fetch_raw.dtos.dead_letter import DeadLetter
 from vms_ingestion.ingestion.fetch_raw.options import IngestionFetchRawOptions
 from vms_ingestion.ingestion.fetch_raw.transforms.create_pubsub_message import CreatePubsubMessage
 from vms_ingestion.ingestion.fetch_raw.transforms.filter import FilterAndParse, FilterFormat
+from vms_ingestion.ingestion.fetch_raw.transforms.vms_dead_letter_dict_to_protobuf import VMSDeadLetterDictToProtobuf
 from vms_ingestion.ingestion.fetch_raw.transforms.vms_message_dict_to_protobuf import VMSMessageDictToProtobuf
 
 logger.setup_logger(1)
@@ -28,6 +30,10 @@ def add_common_output_attributes(message):
         ),
     }
     return message
+
+
+def encode_message(message):
+    return json.dumps(message, default=default_serializer).encode('utf-8')
 
 
 def run(argv):
@@ -96,19 +102,11 @@ def run(argv):
         (
             files
             | "Filter Unhandled" >> beam.ParDo(FilterFormat(filter_format_fn=lambda f: f not in ["NAF", "API_INGEST"]))
-            | "Map DeadLetter"
-            >> beam.Map(
-                lambda x: DeadLetter(
-                    message_id=x["message_id"],
-                    attributes=x["attributes"],
-                    data=x["data"],
-                    error=Exception("Unhandled format"),
-                    pipeline_step="Filter Unhandled",
-                    gcs_bucket=None,
-                    gcs_file_path=None,
-                ).to_dict()
+            | beam.ParDo(
+                VMSDeadLetterDictToProtobuf(error_message="Unhandled format", pipeline_step="Filter Unhandled")
             )
+            | beam.ParDo(CreatePubsubMessage())
             | "Log unhandled files"
             >> beam.LogElements(label="Errors", prefix="⛔️ Error: ", with_timestamp=True, level=beam.logging.ERROR)
-            # | "Write error to Pub/Sub" >> WriteToPubSub(topic=options.error_topic)
+            | "Write error to Pub/Sub" >> WriteToPubSub(topic=options.error_topic, with_attributes=True)
         )
