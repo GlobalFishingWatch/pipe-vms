@@ -46,6 +46,7 @@ class TestMapAPIIngestToPosition(unittest.TestCase):
                 "callsign": "ABC123",
                 "course": 90,
                 "external_id": "ext123",
+                'extra_fields': {},
                 "flag": "US",
                 "imo": "1234567",
                 "ingested_at": FAKE_TIME,
