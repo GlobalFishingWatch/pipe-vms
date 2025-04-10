@@ -4,7 +4,7 @@ from logger import logger
 from vms_ingestion.ingestion import run_ingestion
 from vms_ingestion.normalization import run_normalization
 
-logger.setup_logger(1)
+logger.setup_logger(0)
 logging = logger.get_logger()
 
 

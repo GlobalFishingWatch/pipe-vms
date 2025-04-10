@@ -1,7 +1,6 @@
 from logger import logger
 from vms_ingestion.ingestion.excel_to_bq import excel_to_bq
 
-logger.setup_logger(1)
 logging = logger.get_logger()
 
 SUBCOMMANDS = {
