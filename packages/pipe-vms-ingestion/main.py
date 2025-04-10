@@ -1,8 +1,10 @@
 import sys
 
 from logger import logger
+from utils.cli import execute_subcommand
 from vms_ingestion.ingestion import run_ingestion
 from vms_ingestion.normalization import run_normalization
+from vms_ingestion.utils import run_utils
 
 logger.setup_logger(0)
 logging = logger.get_logger()
@@ -11,20 +13,10 @@ logging = logger.get_logger()
 SUBCOMMANDS = {
     "normalize": run_normalization,
     "ingestion": run_ingestion,
+    "utils": run_utils,
 }
 
 if __name__ == "__main__":
     logging.info("Running %s", sys.argv)
-
-    if len(sys.argv) < 2:
-        logging.info(
-            "No subcommand specified. Run pipeline [SUBCOMMAND], "
-            + "where subcommand is one of %s",
-            SUBCOMMANDS.keys(),
-        )
-        exit(1)
-
-    subcommand = sys.argv[1]
-    subcommand_args = sys.argv[2:]
-
-    SUBCOMMANDS[subcommand](subcommand_args)
+    args = sys.argv[1:]
+    execute_subcommand(args=args, subcommands=SUBCOMMANDS)
