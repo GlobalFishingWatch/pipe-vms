@@ -11,7 +11,7 @@ addopts = "--cov --cov-report html:'../../coverage/packages/pipe-vms-ingestion/h
 
 [tool.poetry]
 name = "pipe-vms-ingestion"
-version = "0.1.0"
+version = "0.2.0"
 description = "VMS Ingestion"
 authors = [ ]
 license = 'Proprietary'
