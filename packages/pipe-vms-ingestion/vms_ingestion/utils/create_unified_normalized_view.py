@@ -39,6 +39,7 @@ BQ_VIEW_DESCRIPYION = """\
 """
 HELP_VIEW_NAME = "BigQuery view name of the unified normalized positions from all countries."
 HELP_SOURCE_TABLE_NAMES = "BigQuery table name of normalized positions source. Multiple values are accepted."
+HELP_SKIP_VIEW_CREATION_IF_EXISTS = "Skips overwriting the view if exists."
 HELP_LABELS = "Labels to assign to the BigQuery view in the form of KEY=VALUE pairs. Multiple values are accepted."
 
 
@@ -79,6 +80,7 @@ def run_create_unified_normalized_view(argv):
         action="append",
         help=f"{HELP_SOURCE_TABLE_NAMES} (Required)",
     )
+    add("-s", "--skip_if_exists", default=False, action="store_true", help=HELP_SKIP_VIEW_CREATION_IF_EXISTS)
     add("--labels", type=str, metavar="KEY=VALUE", default=[], action="append", help=HELP_LABELS)
 
     ns, _ = p.parse_known_args(args=argv or ["--help"])
@@ -92,12 +94,12 @@ def run_create_unified_normalized_view(argv):
             table_names="\n".join([f"    ⬖ {table_name}" for table_name in ns.source_table_names]),
         )
         view_labels = {k: v for k, v in (item.split("=") for item in ns.labels)}
-
+        delete_if_exists = not ns.skip_if_exists
         view.create(
             view_name=ns.view_name,
             query=view_query,
             description=view_description,
-            delete_view_if_exists=True,
+            delete_view_if_exists=delete_if_exists,
             labels=view_labels,
         )
     except Exception as e:

@@ -1,15 +1,18 @@
 from google.cloud import bigquery
+from logger import logger
+
+logging = logger.get_logger()
 
 
 def create(
     view_name,
-    table_name,
+    query,
     schema=None,
     delete_view_if_exists=False,
     description=None,
     labels=None,
 ):
-    print(f"Creating view: {view_name}")
+    logging.info(f"Creating view: {view_name}")
 
     client = bigquery.Client()
 
@@ -17,21 +20,20 @@ def create(
         delete_if_exists(view_name)
 
     view_id = view_name
-    source_id = table_name
     view_ref = bigquery.Table(view_id)
 
     if description is not None:
-        print(f"Setting description to the view: {description}")
+        logging.info(f"Setting description to the view: {description}")
         view_ref.description = description
 
     if labels is not None:
-        print(f"Setting labels to the view: {labels}")
+        logging.info(f"Setting labels to the view: {labels}")
         view_ref.labels = labels
 
-    view_ref.view_query = f"SELECT * FROM `{source_id}`"
+    view_ref.view_query = query
 
     view = client.create_table(view_ref, exists_ok=True)
-    print(f"View created: {str(view.reference)}")
+    logging.info(f"View created: {str(view.reference)}")
 
     if schema is not None:
         view_ref = bigquery.Table(view_id, schema=schema)
@@ -39,11 +41,11 @@ def create(
 
 
 def delete_if_exists(view_name):
-    print(f"Deleting view (if exists) with name: {view_name}")
+    logging.info(f"Deleting view (if exists) with name: {view_name}")
     client = bigquery.Client()
 
     client.delete_table(view_name, not_found_ok=True)
-    print(f"View deleted: {view_name}")
+    logging.info(f"View deleted: {view_name}")
 
 
 def get_default_view_description(table_name: str) -> str:
