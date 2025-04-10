@@ -5,23 +5,8 @@ SUBCOMMANDS = {"create_unified_normalized_view": run_create_unified_normalized_v
 
 
 def run_utils(argv):
-    print(argv)
     execute_subcommand(
         args=argv,
         subcommands=SUBCOMMANDS,
         missing_subcomand_message="No utils subcommand specified. Run pipeline utils [SUBCOMMAND]",
     )
-
-    # logging = logger.get_logger()
-
-    # if len(argv) < 2:
-    #     logging.info(
-    #         "No utils subcommand specified. Run pipeline utils [SUBCOMMAND], " + "where subcommand is one of %s",
-    #         SUBCOMMANDS.keys(),
-    #     )
-    #     exit(1)
-
-    # subcommand = argv[0]
-    # subcommand_args = argv[1:]
-
-    # SUBCOMMANDS[subcommand](subcommand_args)
