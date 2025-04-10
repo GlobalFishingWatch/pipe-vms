@@ -1,13 +1,8 @@
-from common.pipeline import (
-    build_pipeline_options_with_defaults,
-    is_blocking_run,
-    success_states,
-)
+from common.pipeline import build_pipeline_options_with_defaults, is_blocking_run, success_states
 from logger import logger
 from vms_ingestion.ingestion.excel_to_bq.pipeline import IngestionExcelToBQPipeline
 from vms_ingestion.options import CommonPipelineOptions
 
-logger.setup_logger(1)
 logging = logger.get_logger()
 
 
