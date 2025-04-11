@@ -24,8 +24,8 @@ packages = [
 ]
 
   [tool.poetry.dependencies]
-  python = ">=3.9,<3.11"
-  apache-beam = {extras = ["gcp"], version = "2.56.0"}
+  python = ">=3.9,<=3.12.2"
+  apache-beam = {extras = ["gcp"], version = "^pip list2.56.0"}
   jinja2 = "^3.0.3"
   shipdataprocess = "0.8.6"
   pandas = "^2.2.2"
