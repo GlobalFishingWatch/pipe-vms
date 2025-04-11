@@ -62,7 +62,7 @@ RUN poetry build
 FROM python-base AS final
 
 # Copy files from official SDK image, including script/dependencies.
-COPY --from=apache/beam_python3.10_sdk:2.56.0 /opt/apache/beam /opt/apache/beam
+COPY --from=apache/beam_python3.12_sdk:2.64.0 /opt/apache/beam /opt/apache/beam
 
 # Copy app
 COPY --from=builder /app /app
