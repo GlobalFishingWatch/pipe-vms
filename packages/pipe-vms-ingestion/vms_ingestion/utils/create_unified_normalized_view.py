@@ -85,23 +85,21 @@ def run_create_unified_normalized_view(argv):
 
     ns, _ = p.parse_known_args(args=argv or ["--help"])
 
-    try:
-        view_query = query.get_sql_from_file(
-            filepath='assets/normalized_positions.view.sql.j2', source_table_names=ns.source_table_names
-        )
-        view_description = BQ_VIEW_DESCRIPYION.format(
-            version=__getattr__('version'),
-            table_names="\n".join([f"    ⬖ {table_name}" for table_name in ns.source_table_names]),
-        )
-        view_labels = {k: v for k, v in (item.split("=") for item in ns.labels)}
-        delete_if_exists = not ns.skip_if_exists
-        view.create(
-            view_name=ns.view_name,
-            query=view_query,
-            description=view_description,
-            delete_view_if_exists=delete_if_exists,
-            labels=view_labels,
-        )
-    except Exception as e:
-        logging.error(e)
-        raise e
+    view_query = query.get_sql_from_file(
+        filepath='assets/normalized_positions.view.sql.j2', source_table_names=ns.source_table_names
+    )
+    view_description = BQ_VIEW_DESCRIPYION.format(
+        version=__getattr__('version'),
+        table_names="\n".join([f"    ⬖ {table_name}" for table_name in ns.source_table_names]),
+    )
+    view_labels = {k: v for k, v in (item.split("=") for item in ns.labels)}
+    delete_if_exists = not ns.skip_if_exists
+    view.create(
+        view_name=ns.view_name,
+        query=view_query,
+        description=view_description,
+        delete_view_if_exists=delete_if_exists,
+        labels=view_labels,
+    )
+
+    logging.info("Terminating process successfully")
