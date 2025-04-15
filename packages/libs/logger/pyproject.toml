@@ -21,7 +21,7 @@ readme = 'README.md'
   include = "logger"
 
   [tool.poetry.dependencies]
-  python = ">=3.9,<=3.12.2"
+  python = ">=3.9"
 
   [tool.poetry.group.dev.dependencies]
   autopep8 = "2.0.2"

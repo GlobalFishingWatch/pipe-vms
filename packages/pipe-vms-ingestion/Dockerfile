@@ -1,4 +1,4 @@
-FROM python:3.12.2-slim AS python-base
+FROM python:3.12-slim AS python-base
 
 LABEL maintainer="rodrigo.fuentes@globalfishingwatch.org"
 
