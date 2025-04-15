@@ -1,4 +1,5 @@
 import sys
+from logging import NOTSET
 
 from logger import logger
 from utils.cli import execute_subcommand
@@ -6,7 +7,7 @@ from vms_ingestion.ingestion import run_ingestion
 from vms_ingestion.normalization import run_normalization
 from vms_ingestion.utils import run_utils
 
-logger.setup_logger(0)
+logger.setup_logger(NOTSET)
 logging = logger.get_logger()
 
 
